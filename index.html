@@ -125,7 +125,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .admin-login { background:var(--deep2); border-radius:24px; padding:40px; width:100%; max-width:360px; text-align:center; border:1px solid rgba(201,168,76,0.3); box-shadow:0 30px 80px rgba(0,0,0,0.5); }
 .admin-login h3 { color:var(--gold-light); font-family:'Amiri',serif; font-size:1.4rem; margin-bottom:6px; }
 .admin-login p { color:rgba(245,233,200,0.5); font-size:0.85rem; margin-bottom:22px; }
-.admin-pass { width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid rgba(201,168,76,0.3); background:rgba(255,255,255,0.08); color:white; font-family:'Tajawal',sans-serif; font-size:1rem; text-align:center; letter-spacing:4px; margin-bottom:14px; outline:none; direction:ltr; }
+.admin-pass { width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid rgba(201,168,76,0.3); background:white; color:#000; font-family:'Tajawal',sans-serif; font-size:1rem; text-align:center; letter-spacing:4px; margin-bottom:14px; outline:none; direction:ltr; font-weight:700; }
 .admin-pass:focus { border-color:var(--gold); }
 .admin-login-btn { width:100%; padding:13px; background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--deep); border:none; border-radius:12px; font-family:'Tajawal',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; }
 .admin-err { color:#e74c3c; font-size:0.85rem; margin-top:10px; min-height:20px; }
@@ -175,6 +175,12 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   .booking-card,.calendar-wrapper{padding:18px 14px;}
   .admin-stats{gap:8px;} .stat-n{font-size:1.3rem;}
 }
+/* إخفاء أسهم input number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance:none; margin:0;
+}
+input[type=number] { -moz-appearance:textfield; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -228,12 +234,11 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
       </div>
       <div class="form-group">
         <label>عدد الأشخاص</label>
-        <select id="guestCount">
-          <option value="1-5">١ — ٥ أشخاص</option>
-          <option value="6-10">٦ — ١٠ أشخاص</option>
-          <option value="11-20">١١ — ٢٠ شخص</option>
-          <option value="20+">أكثر من ٢٠</option>
-        </select>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;padding:6px;">
+          <button type="button" onclick="var i=document.getElementById('guestCount');var v=parseInt(i.value)||0;if(v>1)i.value=v-1;" style="width:36px;height:36px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:white;border-radius:8px;font-size:1.3rem;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">−</button>
+          <input type="number" id="guestCount" min="1" max="100" value="1" style="flex:1;border:none;background:transparent;text-align:center;font-family:'Tajawal',sans-serif;font-size:1.2rem;font-weight:700;color:var(--deep2);outline:none;padding:0;width:100%;-moz-appearance:textfield;">
+          <button type="button" onclick="var i=document.getElementById('guestCount');var v=parseInt(i.value)||0;if(v<100)i.value=v+1;" style="width:36px;height:36px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:white;border-radius:8px;font-size:1.3rem;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">+</button>
+        </div>
       </div>
     </div>
     <button class="btn-book" id="btnScroll">✨ اختر التاريخ من التقويم لعرض الأسعار</button>
@@ -317,7 +322,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
     <p>أدخل كلمة السر للدخول</p>
     <div style="position:relative;">
       <input type="password" class="admin-pass" id="adminPass" placeholder="كلمة السر" style="padding-right:45px;">
-      <button type="button" id="btnTogglePass" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(245,233,200,0.6);cursor:pointer;font-size:1.1rem;padding:5px;">👁️</button>
+      <button type="button" id="btnTogglePass" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8B7355;cursor:pointer;font-size:1.1rem;padding:5px;">👁️</button>
     </div>
     <button class="admin-login-btn" id="btnAdminLogin">دخول</button>
     <script>
@@ -430,7 +435,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   var months=['شهر الأول','شهر الثاني','شهر الثالث','شهر الرابع','شهر الخامس','شهر السادس','شهر السابع','شهر الثامن','شهر التاسع','شهر العاشر','شهر الحادي عشر','شهر الثاني عشر'];
   var days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
-  function ar(n){return String(n).replace(/[0-9]/g,function(c){return '٠١٢٣٤٥٦٧٨٩'[+c];});}
+  function ar(n){return String(n);}
   function dkey(y,m,d){return y+'-'+('0'+(m+1)).slice(-2)+'-'+('0'+d).slice(-2);}
   function bForDate(k){return bookings.filter(function(b){return b.date===k;});}
   function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
