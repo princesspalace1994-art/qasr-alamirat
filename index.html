@@ -873,16 +873,53 @@ input[type=number] { -moz-appearance:textfield; }
     });
   };
 
-  document.getElementById('btnAddImg').onclick=function(){
+  async function fetchImgbbDirectUrl(pageUrl){
+    try{
+      // محاولة جلب صفحة imgbb واستخراج الصورة المباشرة
+      var resp=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(pageUrl));
+      var html=await resp.text();
+      // ابحث عن og:image
+      var match=html.match(/<meta property="og:image" content="([^"]+)"/);
+      if(match&&match[1]) return match[1];
+      // أو ابحث عن i.ibb.co مباشرة
+      var match2=html.match(/(https?:\/\/i\.ibb\.co\/[^"\s]+)/);
+      if(match2&&match2[1]) return match2[1];
+    }catch(e){console.log('Fetch error:',e);}
+    return null;
+  }
+
+  document.getElementById('btnAddImg').onclick=async function(){
     var url=document.getElementById('newImgUrl').value.trim();
     if(!url){toast('الصق رابط الصورة');return;}
     if(!url.startsWith('http')){toast('رابط غير صحيح');return;}
-    galleryImages.push(url);
+
+    var btn=this;
+    btn.disabled=true;
+    btn.textContent='⏳ جاري التحميل...';
+
+    var finalUrl=url;
+    
+    // إذا كان رابط صفحة ibb.co (وليس i.ibb.co مباشر)
+    if(url.includes('ibb.co/') && !url.includes('i.ibb.co/')){
+      var directUrl=await fetchImgbbDirectUrl(url);
+      if(directUrl){
+        finalUrl=directUrl;
+      } else {
+        toast('⚠️ لم نقدر نحول الرابط — استخدم Direct Link من imgbb');
+        btn.disabled=false;
+        btn.textContent='+ إضافة';
+        return;
+      }
+    }
+
+    galleryImages.push(finalUrl);
     localStorage.setItem('qasr_gallery',JSON.stringify(galleryImages));
     document.getElementById('newImgUrl').value='';
     renderGallery();
     renderImgsList();
     toast('✅ تمت إضافة الصورة');
+    btn.disabled=false;
+    btn.textContent='+ إضافة';
   };
 
   renderGallery();
