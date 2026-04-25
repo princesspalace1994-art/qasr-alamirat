@@ -315,8 +315,23 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
     <div style="font-size:2rem;color:var(--gold);margin-bottom:12px">👑</div>
     <h3>لوحة الإدارة</h3>
     <p>أدخل كلمة السر للدخول</p>
-    <input type="password" class="admin-pass" id="adminPass" placeholder="••••••">
+    <div style="position:relative;">
+      <input type="password" class="admin-pass" id="adminPass" placeholder="كلمة السر" style="padding-right:45px;">
+      <button type="button" id="btnTogglePass" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(245,233,200,0.6);cursor:pointer;font-size:1.1rem;padding:5px;">👁️</button>
+    </div>
     <button class="admin-login-btn" id="btnAdminLogin">دخول</button>
+    <script>
+      (function(){
+        var t=document.getElementById('btnTogglePass');
+        var p=document.getElementById('adminPass');
+        if(t&&p){
+          t.onclick=function(){
+            if(p.type==='password'){p.type='text';t.textContent='🙈';}
+            else{p.type='password';t.textContent='👁️';}
+          };
+        }
+      })();
+    </script>
     <div class="admin-err" id="adminErr"></div>
     <button class="admin-cancel" id="btnAdminCancel">إلغاء</button>
   </div>
@@ -513,6 +528,16 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
     document.getElementById('pcNight').className='price-card'+(nb?' price-disabled':'');
     document.getElementById('pcFull').className='price-card'+((db2||nb)?' price-disabled':'');
+    
+    // تحديث الأسعار حسب اليوم
+    var dayKey=cd.getDay();
+    var dayPrice=customPrices[dayKey]||defaultPrices[dayKey];
+    var dayCard=document.getElementById('pcDay').querySelector('.pc-price');
+    var nightCard=document.getElementById('pcNight').querySelector('.pc-price');
+    var fullCard=document.getElementById('pcFull').querySelector('.pc-price');
+    if(dayCard) dayCard.innerHTML=dayPrice.day.toLocaleString()+' <span>د.ع</span>';
+    if(nightCard) nightCard.innerHTML=dayPrice.night.toLocaleString()+' <span>د.ع</span>';
+    if(fullCard) fullCard.innerHTML=dayPrice.full.toLocaleString()+' <span>د.ع</span>';
     document.getElementById('pmName').value=document.getElementById('guestName').value||'';
     document.getElementById('pmPhone').value=document.getElementById('guestPhone').value||'';
     selShift=null;
@@ -559,7 +584,9 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
     var sl={day:'نهاري',night:'مسائي',full:'يوم كامل'};
     var se={day:'☀️',night:'🌙',full:'🌟'};
     var st={day:'١٠ص—٥م',night:'٧م—٨ص',full:'٢٤ ساعة'};
-    var sp={day:'٣٥٠,٠٠٠',night:'٤٠٠,٠٠٠',full:'٧٠٠,٠٠٠'};
+    var dKey=new Date(dkey(y,m,d)).getDay();
+    var dynPrices=customPrices[dKey]||defaultPrices[dKey];
+    var sp={day:dynPrices.day.toLocaleString(),night:dynPrices.night.toLocaleString(),full:dynPrices.full.toLocaleString()};
 
     try {
       await addDoc(collection(db,'bookings'),{
