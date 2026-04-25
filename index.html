@@ -864,13 +864,13 @@ input[type=number] { -moz-appearance:textfield; }
   }
 
   window.removeGalleryImg=function(i){
-    conf2('تريد حذف هذه الصورة؟',function(){
+    if(confirm('تريد حذف هذه الصورة؟')){
       galleryImages.splice(i,1);
       localStorage.setItem('qasr_gallery',JSON.stringify(galleryImages));
       renderGallery();
       renderImgsList();
       toast('تم حذف الصورة');
-    });
+    }
   };
 
   async function fetchImgbbDirectUrl(pageUrl){
