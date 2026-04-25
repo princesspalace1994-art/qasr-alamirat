@@ -359,10 +359,10 @@ input[type=number] { -moz-appearance:textfield; }
         </summary>
         <div style="margin-top:14px;">
           <div style="display:flex;gap:8px;margin-bottom:12px;">
-            <input type="text" id="newImgUrl" placeholder="الصق رابط الصورة هنا..." style="flex:1;padding:10px 12px;border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.85rem;background:#FAF6EE;outline:none;direction:ltr;">
+            <textarea id="newImgUrl" placeholder="الصق روابط الصور هنا (يقبل أكثر من رابط)..." style="flex:1;padding:10px 12px;border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;background:#FAF6EE;outline:none;direction:ltr;min-height:60px;resize:vertical;"></textarea>
             <button id="btnAddImg" style="padding:10px 18px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;">+ إضافة</button>
           </div>
-          <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">💡 ارفع صورك على imgbb.com وانسخ رابط الصورة المباشر (يبدأ بـ https://i.ibb.co)</p>
+          <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">💡 ارفع صورك على imgbb.com وانسخ كود HTML من خانة "HTML full linked" — راح يستخرج كل الصور تلقائياً</p>
           <div id="imgsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;"></div>
         </div>
       </details>
@@ -888,38 +888,33 @@ input[type=number] { -moz-appearance:textfield; }
     return null;
   }
 
-  document.getElementById('btnAddImg').onclick=async function(){
-    var url=document.getElementById('newImgUrl').value.trim();
-    if(!url){toast('الصق رابط الصورة');return;}
-    if(!url.startsWith('http')){toast('رابط غير صحيح');return;}
+  document.getElementById('btnAddImg').onclick=function(){
+    var input=document.getElementById('newImgUrl').value.trim();
+    if(!input){toast('الصق رابط الصورة');return;}
 
-    var btn=this;
-    btn.disabled=true;
-    btn.textContent='⏳ جاري التحميل...';
-
-    var finalUrl=url;
-    
-    // إذا كان رابط صفحة ibb.co (وليس i.ibb.co مباشر)
-    if(url.includes('ibb.co/') && !url.includes('i.ibb.co/')){
-      var directUrl=await fetchImgbbDirectUrl(url);
-      if(directUrl){
-        finalUrl=directUrl;
-      } else {
-        toast('⚠️ لم نقدر نحول الرابط — استخدم Direct Link من imgbb');
-        btn.disabled=false;
-        btn.textContent='+ إضافة';
-        return;
-      }
+    // استخراج كل روابط الصور المباشرة من النص (i.ibb.co أو غيرها)
+    var directUrls=[];
+    var directRegex=/https?:\/\/[^\s"'<>]+\.(jpg|jpeg|png|gif|webp)/gi;
+    var matches=input.match(directRegex);
+    if(matches){
+      directUrls=matches;
+    } else if(input.startsWith('http')){
+      directUrls=[input];
     }
 
-    galleryImages.push(finalUrl);
+    if(!directUrls.length){
+      toast('❌ لم نجد روابط صور صالحة');
+      return;
+    }
+
+    directUrls.forEach(function(u){
+      if(galleryImages.indexOf(u)===-1) galleryImages.push(u);
+    });
     localStorage.setItem('qasr_gallery',JSON.stringify(galleryImages));
     document.getElementById('newImgUrl').value='';
     renderGallery();
     renderImgsList();
-    toast('✅ تمت إضافة الصورة');
-    btn.disabled=false;
-    btn.textContent='+ إضافة';
+    toast('✅ تمت إضافة '+directUrls.length+' صورة');
   };
 
   renderGallery();
