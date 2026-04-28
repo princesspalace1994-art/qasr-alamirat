@@ -214,32 +214,115 @@ input[type=number] { -moz-appearance:textfield; }
   margin-bottom: 24px;
 }
 
-/* عرض بطاقتين فقط - يوم عادي ويوم عطلة */
+/* عرض بطاقتين فقط - سلايدر أفقي صغير */
 .prices-grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  gap: 24px;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 14px;
+  padding: 4px 4px 14px 4px;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  margin: 0 auto;
 }
+.prices-grid-2::-webkit-scrollbar { height: 6px; }
+.prices-grid-2::-webkit-scrollbar-track { background: rgba(201,168,76,0.08); border-radius: 10px; }
+.prices-grid-2::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.4); border-radius: 10px; }
+
 .prices-grid-2 .price-card {
-  padding: 36px 28px 30px;
+  flex: 0 0 280px;
+  scroll-snap-align: center;
+  padding: 20px 18px 18px;
 }
 .prices-grid-2 .price-day-name {
-  font-size: 1.9rem;
+  font-size: 1.3rem;
+  margin-bottom: 2px;
 }
 .prices-grid-2 .price-day-emoji {
-  font-size: 2.4rem;
-  margin-bottom: 8px;
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+.prices-grid-2 .price-day-badge {
+  font-size: 0.65rem;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+}
+.prices-grid-2 .price-shifts {
+  margin-top: 12px;
+  gap: 7px;
 }
 .prices-grid-2 .price-shift {
-  padding: 14px 18px;
+  padding: 9px 12px;
 }
 .prices-grid-2 .price-shift-value {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
 }
 .prices-grid-2 .price-shift-label {
+  font-size: 0.78rem;
+}
+.prices-grid-2 .price-shift-icon {
   font-size: 0.95rem;
+}
+
+/* السهم للسلايدر */
+.prices-slider-wrap {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.prices-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(26,10,46,0.9);
+  color: var(--gold-light);
+  border: 1.5px solid rgba(201,168,76,0.4);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+.prices-slider-arrow:hover {
+  background: var(--deep);
+  transform: translateY(-50%) scale(1.05);
+}
+.prices-slider-arrow.prev { right: -4px; }
+.prices-slider-arrow.next { left: -4px; }
+
+/* مؤشر النقاط */
+.prices-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.prices-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.3);
+  transition: all 0.3s;
+}
+.prices-dot.active {
+  background: var(--gold);
+  width: 22px;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .prices-slider-wrap { max-width: 100%; padding: 0 8px; }
+  .prices-grid-2 .price-card { flex: 0 0 260px; }
+  .prices-slider-arrow { width: 32px; height: 32px; font-size: 1rem; }
+  .prices-slider-arrow.prev { right: 0; }
+  .prices-slider-arrow.next { left: 0; }
 }
 
 .price-card {
@@ -455,7 +538,12 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="prices-showcase">
     <h2 class="section-title">قائمة الأسعار</h2>
     <p class="prices-subtitle">أسعارنا الخاصة لأيام الأسبوع وأيام العطلة</p>
-    <div class="prices-grid prices-grid-2" id="pricesShowcase"></div>
+    <div class="prices-slider-wrap">
+      <button type="button" class="prices-slider-arrow prev" onclick="document.getElementById('pricesShowcase').scrollBy({left:-320,behavior:'smooth'});">›</button>
+      <button type="button" class="prices-slider-arrow next" onclick="document.getElementById('pricesShowcase').scrollBy({left:320,behavior:'smooth'});">‹</button>
+      <div class="prices-grid prices-grid-2" id="pricesShowcase"></div>
+    </div>
+    <div class="prices-dots" id="pricesDots"></div>
   </div>
 
   <!-- معرض الصور -->
@@ -1129,6 +1217,23 @@ input[type=number] { -moz-appearance:textfield; }
         +'</div>';
     }
     c.innerHTML=html;
+
+    // رسم النقاط
+    var dotsEl=document.getElementById('pricesDots');
+    if(dotsEl){
+      dotsEl.innerHTML='<span class="prices-dot active"></span><span class="prices-dot"></span>';
+    }
+
+    // تحديث النقطة الفعّالة عند السحب
+    c.onscroll=function(){
+      var dots=dotsEl?dotsEl.querySelectorAll('.prices-dot'):[];
+      if(!dots.length) return;
+      var cardWidth=c.scrollWidth/2;
+      var idx=Math.round(c.scrollLeft/cardWidth);
+      if(idx>1) idx=1; if(idx<0) idx=0;
+      // في RTL، السكرول يكون سالب أحياناً
+      dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});
+    };
   }
   // عرض الأسعار أول ما يفتح الموقع
   renderPricesShowcase();
