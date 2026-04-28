@@ -104,7 +104,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 }
 .cal-month {
   font-family: 'Amiri', serif;
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: var(--deep2);
   transition: opacity 0.25s;
@@ -171,10 +171,10 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 /* رؤوس أيام الأسبوع */
 .cal-header {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--deep2);
-  padding: 12px 0 14px;
+  padding: 16px 0 18px;
   background: linear-gradient(180deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
   border-radius: 10px;
   letter-spacing: 0.5px;
@@ -184,10 +184,10 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-header::after {
   content: '';
   position: absolute;
-  bottom: 4px;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 16px; height: 2px;
+  width: 20px; height: 2px;
   background: var(--gold);
   border-radius: 2px;
   opacity: 0.5;
@@ -197,7 +197,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-day {
   position: relative;
   border-radius: 14px;
-  min-height: 96px;
+  min-height: 120px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   background: linear-gradient(160deg, #ffffff 0%, #faf6ee 100%);
@@ -227,10 +227,47 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-day.empty { background: transparent; border: none; cursor: default; box-shadow: none; }
 .cal-day.past { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.3); }
 
+/* تمييز أيام العطلة (الخميس - الجمعة - السبت) */
+.cal-day.weekend {
+  background: linear-gradient(160deg, #fdf6e3 0%, #faecc8 100%);
+  border-color: rgba(201,168,76,0.4);
+}
+.cal-day.weekend::after {
+  content: '✦';
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.8rem;
+  color: var(--gold);
+  opacity: 0.7;
+  z-index: 2;
+}
+.cal-day.weekend .day-num {
+  color: #8B6914;
+}
+.cal-day.weekend:hover:not(.empty):not(.past) {
+  background: linear-gradient(160deg, #fdf3d4 0%, #f7e3a8 100%);
+  border-color: var(--gold);
+  box-shadow:
+    0 12px 30px rgba(201,168,76,0.4),
+    0 4px 10px rgba(26,10,46,0.1);
+}
+/* رؤوس أيام العطلة */
+.cal-header.weekend-header {
+  background: linear-gradient(180deg, rgba(201,168,76,0.22), rgba(201,168,76,0.1));
+  color: #8B6914;
+  border-color: rgba(201,168,76,0.35);
+}
+.cal-header.weekend-header::after {
+  background: var(--gold);
+  opacity: 0.8;
+  width: 24px;
+}
+
 .day-num {
   position: absolute;
-  top: 8px; right: 11px;
-  font-size: 1.15rem;
+  top: 10px; right: 14px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--deep2);
   font-family: 'Amiri', serif;
@@ -254,12 +291,12 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   background: linear-gradient(135deg, var(--gold), var(--gold-light));
   color: white;
   border-radius: 50%;
-  width: 30px; height: 30px;
+  width: 36px; height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 7px; right: 7px;
-  font-size: 0.9rem;
+  top: 8px; right: 8px;
+  font-size: 1rem;
   box-shadow: 0 4px 12px rgba(201,168,76,0.5);
   font-family: 'Tajawal', sans-serif;
 }
@@ -269,7 +306,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   position: absolute;
   bottom: 0; left: 0; right: 0;
   display: flex;
-  height: 38px;
+  height: 46px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   overflow: hidden;
@@ -279,7 +316,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: rgba(139,115,85,0.35);
   transition: all 0.2s;
@@ -287,19 +324,19 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .shift.bk-day {
   background: linear-gradient(135deg, #1A5276, #2874A6);
   color: white;
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 .shift.bk-night {
   background: linear-gradient(135deg, var(--deep), var(--deep2));
   color: var(--gold-light);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 .shift.bk-full {
   background: linear-gradient(90deg, #1A5276, var(--deep2));
   color: var(--gold-light);
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   flex: 2;
   letter-spacing: 0.5px;
@@ -310,24 +347,24 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   content: '✦';
   margin-left: 4px;
   color: var(--gold);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
 }
 
 /* تجاوب الجوال */
 @media (max-width: 600px) {
-  .calendar-wrapper { padding: 22px 16px 20px; border-radius: 22px; }
-  .cal-month { font-size: 1.5rem; }
+  .calendar-wrapper { padding: 22px 14px 20px; border-radius: 22px; }
+  .cal-month { font-size: 1.7rem; }
   .cal-month::before, .cal-month::after { margin: 0 6px; font-size: 0.55rem; }
-  .cal-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+  .cal-btn { width: 42px; height: 42px; font-size: 1.25rem; }
   .cal-grid { gap: 5px; }
-  .cal-day { min-height: 76px; border-radius: 11px; }
-  .cal-header { font-size: 0.7rem; padding: 8px 0 10px; border-radius: 8px; }
-  .cal-header::after { width: 12px; }
-  .day-num { font-size: 0.95rem; top: 6px; right: 8px; }
-  .cal-day.today .day-num { width: 24px; height: 24px; font-size: 0.75rem; }
-  .day-shifts { height: 30px; }
-  .shift, .shift.bk-day, .shift.bk-night { font-size: 0.6rem; }
-  .shift.bk-full { font-size: 0.55rem; }
+  .cal-day { min-height: 100px; border-radius: 11px; }
+  .cal-header { font-size: 0.82rem; padding: 12px 0 14px; border-radius: 8px; }
+  .cal-header::after { width: 14px; }
+  .day-num { font-size: 1.25rem; top: 8px; right: 10px; }
+  .cal-day.today .day-num { width: 30px; height: 30px; font-size: 0.85rem; }
+  .day-shifts { height: 38px; }
+  .shift, .shift.bk-day, .shift.bk-night { font-size: 0.78rem; }
+  .shift.bk-full { font-size: 0.72rem; }
 }
 
 /* ============ تلميح السلايد للتقويم ============ */
@@ -863,8 +900,6 @@ input[type=number] { -moz-appearance:textfield; }
     <h2 class="section-title">معرض الصور</h2>
     <div style="position:relative;">
       <div id="galleryGrid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;-webkit-overflow-scrolling:touch;"></div>
-      <button type="button" class="slider-arrow prev" onclick="document.getElementById('galleryGrid').scrollBy({left:-300,behavior:'smooth'});">&#10094;</button>
-      <button type="button" class="slider-arrow next" onclick="document.getElementById('galleryGrid').scrollBy({left:300,behavior:'smooth'});">&#10095;</button>
     </div>
   </div>
 
@@ -902,9 +937,9 @@ input[type=number] { -moz-appearance:textfield; }
   <h2 class="section-title">التقويم التفاعلي</h2>
   <div class="calendar-wrapper" id="calSection">
     <div class="cal-nav">
-      <button class="cal-btn" id="btnPrev">&#10094;</button>
+      <button class="cal-btn" id="btnPrev">&#10095;</button>
       <span class="cal-month" id="calMonth"></span>
-      <button class="cal-btn" id="btnNext">&#10095;</button>
+      <button class="cal-btn" id="btnNext">&#10094;</button>
     </div>
     <div class="cal-grid-wrap">
       <div class="cal-grid" id="calGrid">
@@ -912,9 +947,9 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="cal-header">اثنين</div>
         <div class="cal-header">ثلاثاء</div>
         <div class="cal-header">أربعاء</div>
-        <div class="cal-header">خميس</div>
-        <div class="cal-header">جمعة</div>
-        <div class="cal-header">سبت</div>
+        <div class="cal-header weekend-header">خميس</div>
+        <div class="cal-header weekend-header">جمعة</div>
+        <div class="cal-header weekend-header">سبت</div>
       </div>
     </div>
     <div class="cal-swipe-hint" id="calSwipeHint">
@@ -1180,8 +1215,11 @@ input[type=number] { -moz-appearance:textfield; }
       var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
+      // الخميس=4، الجمعة=5، السبت=6
+      var dayOfWeek=cd.getDay();
+      var isWeekend=(dayOfWeek===4||dayOfWeek===5||dayOfWeek===6);
       var cell=document.createElement('div');
-      cell.className='cal-day'+(past?' past':'')+(isT?' today':'');
+      cell.className='cal-day'+(past?' past':'')+(isT?' today':'')+(isWeekend?' weekend':'');
       var ns=document.createElement('span');ns.className='day-num';ns.textContent=ar(d);cell.appendChild(ns);
       var sd=document.createElement('div');sd.className='day-shifts';
       if(fb2){var s=document.createElement('div');s.className='shift bk-full';s.textContent='كامل';sd.appendChild(s);}
