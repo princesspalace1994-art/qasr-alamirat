@@ -184,6 +184,245 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance:none; margin:0;
 }
 input[type=number] { -moz-appearance:textfield; }
+
+/* ============ قسم الأسعار الفخم ============ */
+.prices-showcase {
+  margin: 0 0 60px 0;
+  position: relative;
+}
+.prices-showcase .section-title {
+  margin-bottom: 8px;
+}
+.prices-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+.prices-subtitle::before, .prices-subtitle::after {
+  content: '✦';
+  color: var(--gold);
+  margin: 0 12px;
+  font-size: 0.8rem;
+}
+
+.prices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* عرض بطاقتين فقط - يوم عادي ويوم عطلة */
+.prices-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 24px;
+}
+.prices-grid-2 .price-card {
+  padding: 36px 28px 30px;
+}
+.prices-grid-2 .price-day-name {
+  font-size: 1.9rem;
+}
+.prices-grid-2 .price-day-emoji {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+.prices-grid-2 .price-shift {
+  padding: 14px 18px;
+}
+.prices-grid-2 .price-shift-value {
+  font-size: 1.2rem;
+}
+.prices-grid-2 .price-shift-label {
+  font-size: 0.95rem;
+}
+
+.price-card {
+  position: relative;
+  background: linear-gradient(160deg, #ffffff 0%, #fdfaf2 100%);
+  border-radius: 22px;
+  padding: 28px 22px 24px;
+  border: 1px solid rgba(201,168,76,0.25);
+  box-shadow: 0 8px 30px rgba(26,10,46,0.08);
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+  text-align: center;
+}
+.price-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+  opacity: 0.7;
+}
+.price-card::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.price-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(26,10,46,0.18);
+  border-color: var(--gold);
+}
+.price-card:hover::after { opacity: 1; }
+
+.price-card.weekend {
+  background: linear-gradient(160deg, #1A0A2E 0%, #2D1654 100%);
+  border-color: rgba(201,168,76,0.5);
+  color: #fff;
+}
+.price-card.weekend::before {
+  background: linear-gradient(90deg, transparent, var(--gold-light), #fff, var(--gold-light), transparent);
+  height: 5px;
+}
+
+.price-day-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep);
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(201,168,76,0.3);
+}
+.price-card.weekend .price-day-badge {
+  background: linear-gradient(135deg, var(--gold-light), #fff);
+}
+
+.price-day-name {
+  font-family: 'Amiri', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--deep2);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+.price-card.weekend .price-day-name {
+  color: var(--gold-light);
+}
+
+.price-day-emoji {
+  font-size: 1.8rem;
+  margin-bottom: 14px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.price-shifts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.price-shift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(201,168,76,0.08);
+  border-radius: 14px;
+  border: 1px solid rgba(201,168,76,0.15);
+  transition: all 0.3s;
+}
+.price-card.weekend .price-shift {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(201,168,76,0.25);
+}
+.price-shift:hover {
+  background: rgba(201,168,76,0.15);
+  transform: scale(1.02);
+}
+.price-card.weekend .price-shift:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.price-shift-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.price-card.weekend .price-shift-label {
+  color: rgba(255,255,255,0.85);
+}
+.price-shift-icon {
+  font-size: 1.1rem;
+}
+
+.price-shift-value {
+  font-family: 'Amiri', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--deep2);
+  white-space: nowrap;
+}
+.price-card.weekend .price-shift-value {
+  color: var(--gold-light);
+}
+.price-shift-value .currency {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-right: 3px;
+}
+.price-card.weekend .price-shift-value .currency {
+  color: rgba(232,201,122,0.7);
+}
+
+.price-card.weekend .price-shift-full {
+  background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(201,168,76,0.1));
+  border-color: var(--gold);
+}
+.price-shift-full {
+  background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.06));
+  border-color: rgba(201,168,76,0.35);
+}
+
+.prices-note {
+  text-align: center;
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04));
+  border: 1px dashed rgba(201,168,76,0.4);
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.prices-note strong {
+  color: var(--deep2);
+  font-weight: 700;
+}
+.prices-note .gold-star {
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin: 0 4px;
+}
+
+@media (max-width: 600px) {
+  .prices-grid { grid-template-columns: 1fr; gap: 14px; }
+  .price-card { padding: 24px 18px 20px; }
+  .price-day-name { font-size: 1.4rem; }
+  .price-shift-value { font-size: 0.95rem; }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -212,6 +451,13 @@ input[type=number] { -moz-appearance:textfield; }
 <div class="fb-status connecting" id="fbStatus">⏳ جاري الاتصال...</div>
 
 <main>
+  <!-- ============ قسم الأسعار الفخم ============ -->
+  <div class="prices-showcase">
+    <h2 class="section-title">قائمة الأسعار</h2>
+    <p class="prices-subtitle">أسعارنا الخاصة لأيام الأسبوع وأيام العطلة</p>
+    <div class="prices-grid prices-grid-2" id="pricesShowcase"></div>
+  </div>
+
   <!-- معرض الصور -->
   <div id="galleryContainer" style="display:none;margin-bottom:50px;">
     <h2 class="section-title">معرض الصور</h2>
@@ -375,13 +621,30 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </details>
 
-      <details style="background:white;border-radius:14px;padding:14px 18px;margin-bottom:18px;border:1px solid rgba(201,168,76,0.2);">
+      <!-- قسم أسعار العرض في الواجهة -->
+      <details style="background:white;border-radius:14px;padding:14px 18px;margin-bottom:14px;border:2px solid rgba(201,168,76,0.4);" open>
         <summary style="cursor:pointer;font-weight:700;color:var(--deep2);font-size:0.95rem;display:flex;align-items:center;gap:8px;">
-          ⚙️ إعدادات الأسعار حسب أيام الأسبوع
+          🏷️ أسعار العرض في الواجهة الرئيسية
         </summary>
         <div style="margin-top:14px;">
+          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.04));border:1px dashed rgba(201,168,76,0.4);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.78rem;color:var(--text);line-height:1.6;">
+            🏷️ هذه الأسعار <strong>للعرض فقط</strong> في قائمة الأسعار بالواجهة الرئيسية. تظهر للزبائن كأسعار ثابتة ليوم عادي ويوم عطلة.
+          </div>
+          <div id="displayPricesEditor" style="display:flex;flex-direction:column;gap:10px;"></div>
+          <button id="btnSaveDisplayPrices" style="width:100%;margin-top:14px;padding:11px;background:linear-gradient(135deg,#C9A84C,#E8C97A);color:#1A0A2E;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(201,168,76,0.3);">💾 حفظ أسعار العرض</button>
+        </div>
+      </details>
+
+      <details style="background:white;border-radius:14px;padding:14px 18px;margin-bottom:18px;border:1px solid rgba(201,168,76,0.2);">
+        <summary style="cursor:pointer;font-weight:700;color:var(--deep2);font-size:0.95rem;display:flex;align-items:center;gap:8px;">
+          ⚙️ أسعار الحجز الفعلية (حسب أيام الأسبوع)
+        </summary>
+        <div style="margin-top:14px;">
+          <div style="background:linear-gradient(135deg,rgba(45,22,84,0.08),rgba(45,22,84,0.02));border:1px dashed rgba(45,22,84,0.3);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.78rem;color:var(--text);line-height:1.6;">
+            💰 هذه الأسعار <strong>الفعلية للحجز</strong> — تُطبَّق على الزبون عند اختيار التاريخ. يمكن تعديلها لكل يوم على حدة حسب المناسبات.
+          </div>
           <div id="pricesEditor" style="display:flex;flex-direction:column;gap:8px;"></div>
-          <button id="btnSavePrices" style="width:100%;margin-top:12px;padding:10px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">💾 حفظ الأسعار</button>
+          <button id="btnSavePrices" style="width:100%;margin-top:12px;padding:10px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">💾 حفظ أسعار الحجز</button>
         </div>
       </details>
       <div class="admin-stats" id="adminStats"></div>
@@ -644,7 +907,7 @@ input[type=number] { -moz-appearance:textfield; }
   // Admin
   function openAdmin(){
     document.getElementById('adminOverlay').classList.add('open');
-    if(adminIn){document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').className='admin-panel show';renderPricesEditor();renderImgsList();renderAdmin();}
+    if(adminIn){document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').className='admin-panel show';renderPricesEditor();renderDisplayPricesEditor();renderImgsList();renderAdmin();}
     else{document.getElementById('adminLogin').style.display='block';document.getElementById('adminPanel').className='admin-panel';document.getElementById('adminPass').value='';document.getElementById('adminErr').textContent='';}
   }
   function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');}
@@ -659,6 +922,7 @@ input[type=number] { -moz-appearance:textfield; }
       document.getElementById('adminLogin').style.display='none';
       document.getElementById('adminPanel').className='admin-panel show';
       renderPricesEditor();
+      renderDisplayPricesEditor();
       renderImgsList();
       renderAdmin();
     }else{document.getElementById('adminErr').textContent='كلمة السر غير صحيحة';document.getElementById('adminPass').value='';}
@@ -811,6 +1075,117 @@ input[type=number] { -moz-appearance:textfield; }
     var d=new Date(date).getDay();
     return customPrices[d]&&customPrices[d][shift]?customPrices[d][shift]:defaultPrices[d][shift];
   }
+
+  // ---- أسعار العرض في الواجهة (منفصلة عن أسعار الحجز) ----
+  var defaultDisplayPrices={
+    normal:{day:350000,night:400000,full:700000},
+    holiday:{day:450000,night:500000,full:900000}
+  };
+  var displayPrices=JSON.parse(localStorage.getItem('qasr_display_prices')||'null')||defaultDisplayPrices;
+
+  // مراقبة أسعار العرض من Firebase
+  try {
+    onSnapshot(doc(db,'settings','display_prices_main'),function(docSnap){
+      if(docSnap.exists() && docSnap.data().prices){
+        displayPrices=docSnap.data().prices;
+        if(adminIn) renderDisplayPricesEditor();
+        renderPricesShowcase();
+      }
+    });
+  } catch(e){console.log('Display prices sync error:',e);}
+
+  // ---- عرض الأسعار في الواجهة الرئيسية ----
+  function renderPricesShowcase(){
+    var c=document.getElementById('pricesShowcase');
+    if(!c) return;
+    var cards=[
+      {key:'normal', name:'يوم عادي', emoji:'💼', badge:'أيام الأسبوع', isWeekend:false},
+      {key:'holiday', name:'يوم عطلة', emoji:'🎉', badge:'عطلة نهاية الأسبوع', isWeekend:true}
+    ];
+    var html='';
+    for(var k=0;k<cards.length;k++){
+      var card=cards[k];
+      var p=displayPrices[card.key]||defaultDisplayPrices[card.key];
+      var weekendClass=card.isWeekend?' weekend':'';
+      html+=
+        '<div class="price-card'+weekendClass+'">'
+        +'<div class="price-day-badge">'+card.badge+'</div>'
+        +'<span class="price-day-emoji">'+card.emoji+'</span>'
+        +'<div class="price-day-name">'+card.name+'</div>'
+        +'<div class="price-shifts">'
+          +'<div class="price-shift">'
+            +'<div class="price-shift-label"><span class="price-shift-icon">☀️</span><span>الشفت النهاري</span></div>'
+            +'<div class="price-shift-value">'+p.day.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'</div>'
+          +'<div class="price-shift">'
+            +'<div class="price-shift-label"><span class="price-shift-icon">🌙</span><span>الشفت الليلي</span></div>'
+            +'<div class="price-shift-value">'+p.night.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'</div>'
+          +'<div class="price-shift price-shift-full">'
+            +'<div class="price-shift-label"><span class="price-shift-icon">🌟</span><span>الشفت الكامل</span></div>'
+            +'<div class="price-shift-value">'+p.full.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'</div>'
+        +'</div>'
+        +'</div>';
+    }
+    c.innerHTML=html;
+  }
+  // عرض الأسعار أول ما يفتح الموقع
+  renderPricesShowcase();
+
+  // ---- محرر أسعار العرض في لوحة الإدارة ----
+  function renderDisplayPricesEditor(){
+    var c=document.getElementById('displayPricesEditor');
+    if(!c)return;
+    var cards=[
+      {key:'normal', name:'يوم عادي', emoji:'💼', color:'#FAF6EE'},
+      {key:'holiday', name:'يوم عطلة', emoji:'🎉', color:'linear-gradient(135deg,#1A0A2E,#2D1654)'}
+    ];
+    var html='';
+    for(var k=0;k<cards.length;k++){
+      var card=cards[k];
+      var p=displayPrices[card.key]||defaultDisplayPrices[card.key];
+      var isHoliday=card.key==='holiday';
+      var bg=isHoliday?'background:linear-gradient(135deg,#1A0A2E,#2D1654);color:#fff;':'background:#FAF6EE;color:var(--text);';
+      var labelColor=isHoliday?'rgba(232,201,122,0.8)':'var(--muted)';
+      var titleColor=isHoliday?'var(--gold-light)':'var(--deep2)';
+      html+='<div style="'+bg+'border-radius:12px;padding:14px;border:1px solid rgba(201,168,76,0.3);">'
+        +'<div style="font-weight:700;color:'+titleColor+';margin-bottom:10px;font-size:1rem;display:flex;align-items:center;gap:6px;">'+card.emoji+' '+card.name+'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">'
+        +'<div><label style="font-size:0.65rem;color:'+labelColor+';display:block;margin-bottom:3px;">☀️ الشفت النهاري</label><input type="number" id="dpr_'+card.key+'_day" value="'+p.day+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;background:#fff;color:#000;"></div>'
+        +'<div><label style="font-size:0.65rem;color:'+labelColor+';display:block;margin-bottom:3px;">🌙 الشفت الليلي</label><input type="number" id="dpr_'+card.key+'_night" value="'+p.night+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;background:#fff;color:#000;"></div>'
+        +'<div><label style="font-size:0.65rem;color:'+labelColor+';display:block;margin-bottom:3px;">🌟 الشفت الكامل</label><input type="number" id="dpr_'+card.key+'_full" value="'+p.full+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;background:#fff;color:#000;"></div>'
+        +'</div></div>';
+    }
+    c.innerHTML=html;
+  }
+
+  // زر حفظ أسعار العرض - يتم ربطه بعد ما الزر يصير موجود في DOM
+  setTimeout(function(){
+    var btnSaveDisplay=document.getElementById('btnSaveDisplayPrices');
+    if(btnSaveDisplay){
+      btnSaveDisplay.onclick=function(){
+        var newDisplay={
+          normal:{
+            day:parseInt(document.getElementById('dpr_normal_day').value)||350000,
+            night:parseInt(document.getElementById('dpr_normal_night').value)||400000,
+            full:parseInt(document.getElementById('dpr_normal_full').value)||700000
+          },
+          holiday:{
+            day:parseInt(document.getElementById('dpr_holiday_day').value)||450000,
+            night:parseInt(document.getElementById('dpr_holiday_night').value)||500000,
+            full:parseInt(document.getElementById('dpr_holiday_full').value)||900000
+          }
+        };
+        displayPrices=newDisplay;
+        localStorage.setItem('qasr_display_prices',JSON.stringify(newDisplay));
+        setDoc(doc(db,'settings','display_prices_main'),{prices:newDisplay})
+          .then(function(){toast('✅ تم حفظ أسعار العرض');})
+          .catch(function(err){toast('❌ خطأ في الحفظ: '+err.message);});
+        renderPricesShowcase();
+      };
+    }
+  },500);
   
   function renderPricesEditor(){
     var c=document.getElementById('pricesEditor');
@@ -821,9 +1196,9 @@ input[type=number] { -moz-appearance:textfield; }
       html+='<div style="background:#FAF6EE;border-radius:10px;padding:12px;border:1px solid rgba(201,168,76,0.15);">'
         +'<div style="font-weight:700;color:var(--deep2);margin-bottom:8px;font-size:0.9rem;">'+dayNames[i]+'</div>'
         +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">'
-        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">☀️ نهاري</label><input type="number" id="pr_'+i+'_day" value="'+p.day+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
-        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">🌙 مسائي</label><input type="number" id="pr_'+i+'_night" value="'+p.night+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
-        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">🌟 يوم كامل</label><input type="number" id="pr_'+i+'_full" value="'+p.full+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
+        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">☀️ الشفت النهاري</label><input type="number" id="pr_'+i+'_day" value="'+p.day+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
+        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">🌙 الشفت الليلي</label><input type="number" id="pr_'+i+'_night" value="'+p.night+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
+        +'<div><label style="font-size:0.65rem;color:var(--muted);display:block;margin-bottom:3px;">🌟 الشفت الكامل</label><input type="number" id="pr_'+i+'_full" value="'+p.full+'" style="padding:6px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-family:Tajawal;font-size:0.8rem;width:100%;"></div>'
         +'</div></div>';
     }
     c.innerHTML=html;
@@ -842,7 +1217,7 @@ input[type=number] { -moz-appearance:textfield; }
     localStorage.setItem('qasr_prices',JSON.stringify(newPrices));
     // حفظ على Firebase لكل الأجهزة
     setDoc(doc(db,'settings','prices_main'),{prices:newPrices})
-      .then(function(){toast('✅ تم حفظ الأسعار لكل الأجهزة');})
+      .then(function(){toast('✅ تم حفظ أسعار الحجز لكل الأجهزة');})
       .catch(function(err){toast('❌ خطأ في الحفظ: '+err.message);});
     renderAdmin();
   };
