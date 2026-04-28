@@ -61,32 +61,336 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .btn-book:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(26,10,46,0.3); }
 
 /* تقويم كبير */
-.calendar-wrapper { background:white; border-radius:20px; padding:28px; box-shadow:0 10px 60px rgba(26,10,46,0.1); border:1px solid rgba(201,168,76,0.2); margin-bottom:50px; overflow:hidden; }
-.cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-.cal-month { font-family:'Amiri',serif; font-size:1.8rem; color:var(--deep2); transition:opacity 0.25s; }
-.cal-grid-wrap { position:relative; overflow:hidden; touch-action:pan-y; }
-.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s; }
-.cal-grid.slide-out-left { transform:translateX(-30%); opacity:0; }
-.cal-grid.slide-out-right { transform:translateX(30%); opacity:0; }
-.cal-grid.slide-in-left { transform:translateX(-30%); opacity:0; transition:none; }
-.cal-grid.slide-in-right { transform:translateX(30%); opacity:0; transition:none; }
-.cal-month { font-family:'Amiri',serif; font-size:1.8rem; color:var(--deep2); }
-.cal-btn { width:42px; height:42px; border-radius:50%; border:1.5px solid rgba(201,168,76,0.5); background:linear-gradient(135deg,rgba(26,10,46,0.95),rgba(45,22,84,0.95)); cursor:pointer; font-size:1.3rem; color:var(--gold-light); transition:all 0.25s cubic-bezier(0.4,0,0.2,1); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(26,10,46,0.25), inset 0 0 0 1px rgba(232,201,122,0.15); font-family:'Tajawal',sans-serif; line-height:1; }
-.cal-btn:hover { background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--deep); border-color:var(--gold); transform:scale(1.08); box-shadow:0 6px 20px rgba(201,168,76,0.4); }
-.cal-btn:active { transform:scale(0.96); }
-.cal-header { text-align:center; font-size:0.85rem; font-weight:700; color:var(--muted); padding:10px 0; background:rgba(201,168,76,0.06); border-radius:8px; }
-.cal-day { position:relative; border-radius:12px; min-height:90px; cursor:pointer; transition:all 0.2s; background:var(--cream); border:2px solid transparent; overflow:hidden; }
-.cal-day:hover:not(.empty):not(.past) { border-color:var(--gold); transform:scale(1.03); z-index:2; box-shadow:0 6px 20px rgba(201,168,76,0.3); }
-.cal-day.empty { background:transparent; border:none; cursor:default; }
-.cal-day.past { opacity:0.35; cursor:not-allowed; }
-.day-num { position:absolute; top:8px; right:10px; font-size:1.1rem; font-weight:700; color:var(--text); }
-.cal-day.today { border-color:var(--gold) !important; }
-.cal-day.today .day-num { background:var(--gold); color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; top:7px; right:7px; font-size:0.85rem; }
-.day-shifts { position:absolute; bottom:0; left:0; right:0; display:flex; height:40px; }
-.shift { flex:1; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:600; color:rgba(139,115,85,0.4); }
-.shift.bk-day { background:#1A5276; color:white; font-size:0.7rem; }
-.shift.bk-night { background:var(--deep2); color:var(--gold-light); font-size:0.7rem; }
-.shift.bk-full { background:linear-gradient(90deg,#1A5276,var(--deep2)); color:var(--gold-light); font-size:0.65rem; flex:2; }
+/* ============ التقويم الملكي الفخم ============ */
+.calendar-wrapper {
+  position: relative;
+  background: linear-gradient(165deg, #ffffff 0%, #fdf9f0 100%);
+  border-radius: 28px;
+  padding: 36px 32px 32px;
+  box-shadow:
+    0 25px 80px rgba(26,10,46,0.12),
+    0 8px 24px rgba(201,168,76,0.08),
+    inset 0 0 0 1px rgba(255,255,255,0.5);
+  border: 1px solid rgba(201,168,76,0.25);
+  margin-bottom: 50px;
+  overflow: hidden;
+}
+.calendar-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-light) 50%, var(--gold) 80%, transparent);
+  opacity: 0.7;
+}
+.calendar-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -150px; right: -150px;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* شريط التنقل العلوي */
+.cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+  padding: 0 4px;
+  position: relative;
+  z-index: 2;
+}
+.cal-month {
+  font-family: 'Amiri', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--deep2);
+  transition: opacity 0.25s;
+  text-align: center;
+  flex: 1;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+.cal-month::before, .cal-month::after {
+  content: '✦';
+  color: var(--gold);
+  font-size: 0.7rem;
+  margin: 0 12px;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+/* حاوية شبكة الأيام */
+.cal-grid-wrap {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  border-radius: 16px;
+  padding: 4px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+}
+.cal-grid.slide-out-left { transform: translateX(-30%); opacity: 0; }
+.cal-grid.slide-out-right { transform: translateX(30%); opacity: 0; }
+.cal-grid.slide-in-left { transform: translateX(-30%); opacity: 0; transition: none; }
+.cal-grid.slide-in-right { transform: translateX(30%); opacity: 0; transition: none; }
+
+/* أزرار التنقل */
+.cal-btn {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,168,76,0.5);
+  background: linear-gradient(135deg, rgba(26,10,46,0.96), rgba(45,22,84,0.96));
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--gold-light);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow:
+    0 6px 20px rgba(26,10,46,0.3),
+    inset 0 0 0 1px rgba(232,201,122,0.2);
+  font-family: 'Tajawal', sans-serif;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.cal-btn:hover {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep);
+  border-color: var(--gold);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 10px 28px rgba(201,168,76,0.5);
+}
+.cal-btn:active { transform: scale(0.95); }
+
+/* رؤوس أيام الأسبوع */
+.cal-header {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--deep2);
+  padding: 12px 0 14px;
+  background: linear-gradient(180deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  position: relative;
+  border: 1px solid rgba(201,168,76,0.15);
+}
+.cal-header::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px; height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+/* خلية اليوم */
+.cal-day {
+  position: relative;
+  border-radius: 14px;
+  min-height: 96px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  background: linear-gradient(160deg, #ffffff 0%, #faf6ee 100%);
+  border: 1.5px solid rgba(201,168,76,0.18);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(26,10,46,0.04);
+}
+.cal-day::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cal-day:hover:not(.empty):not(.past) {
+  border-color: var(--gold);
+  transform: translateY(-4px) scale(1.04);
+  z-index: 3;
+  box-shadow:
+    0 12px 28px rgba(201,168,76,0.35),
+    0 4px 10px rgba(26,10,46,0.1);
+  background: linear-gradient(160deg, #ffffff 0%, #fff8e0 100%);
+}
+.cal-day:hover:not(.empty):not(.past)::before { opacity: 1; }
+.cal-day.empty { background: transparent; border: none; cursor: default; box-shadow: none; }
+.cal-day.past { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.3); }
+
+.day-num {
+  position: absolute;
+  top: 8px; right: 11px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--deep2);
+  font-family: 'Amiri', serif;
+  z-index: 2;
+}
+
+/* اليوم الحالي - تمييز ذهبي ملكي */
+.cal-day.today {
+  border: 2px solid var(--gold);
+  background: linear-gradient(160deg, #fff9e8 0%, #fff3d1 100%);
+  box-shadow:
+    0 8px 24px rgba(201,168,76,0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.5);
+  animation: todayPulse 2.5s ease-in-out infinite;
+}
+@keyframes todayPulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(201,168,76,0.35), inset 0 0 0 1px rgba(255,255,255,0.5); }
+  50% { box-shadow: 0 12px 32px rgba(201,168,76,0.55), inset 0 0 0 1px rgba(255,255,255,0.5); }
+}
+.cal-day.today .day-num {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: white;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 7px; right: 7px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(201,168,76,0.5);
+  font-family: 'Tajawal', sans-serif;
+}
+
+/* مؤشرات الشفت */
+.day-shifts {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  height: 38px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  overflow: hidden;
+}
+.shift {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(139,115,85,0.35);
+  transition: all 0.2s;
+}
+.shift.bk-day {
+  background: linear-gradient(135deg, #1A5276, #2874A6);
+  color: white;
+  font-size: 0.78rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.shift.bk-night {
+  background: linear-gradient(135deg, var(--deep), var(--deep2));
+  color: var(--gold-light);
+  font-size: 0.78rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.shift.bk-full {
+  background: linear-gradient(90deg, #1A5276, var(--deep2));
+  color: var(--gold-light);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex: 2;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  position: relative;
+}
+.shift.bk-full::before {
+  content: '✦';
+  margin-left: 4px;
+  color: var(--gold);
+  font-size: 0.65rem;
+}
+
+/* تجاوب الجوال */
+@media (max-width: 600px) {
+  .calendar-wrapper { padding: 22px 16px 20px; border-radius: 22px; }
+  .cal-month { font-size: 1.5rem; }
+  .cal-month::before, .cal-month::after { margin: 0 6px; font-size: 0.55rem; }
+  .cal-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+  .cal-grid { gap: 5px; }
+  .cal-day { min-height: 76px; border-radius: 11px; }
+  .cal-header { font-size: 0.7rem; padding: 8px 0 10px; border-radius: 8px; }
+  .cal-header::after { width: 12px; }
+  .day-num { font-size: 0.95rem; top: 6px; right: 8px; }
+  .cal-day.today .day-num { width: 24px; height: 24px; font-size: 0.75rem; }
+  .day-shifts { height: 30px; }
+  .shift, .shift.bk-day, .shift.bk-night { font-size: 0.6rem; }
+  .shift.bk-full { font-size: 0.55rem; }
+}
+
+/* ============ تلميح السلايد للتقويم ============ */
+.cal-swipe-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+  border: 1px dashed rgba(201,168,76,0.35);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: opacity 0.4s, transform 0.4s;
+}
+.cal-swipe-hint .hint-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold);
+  font-size: 1rem;
+  animation: swipeHintMove 2s ease-in-out infinite;
+}
+@keyframes swipeHintMove {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+.cal-swipe-hint.fading {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* تأثير ضبابي على أطراف التقويم - يلمح بالسحب */
+.cal-grid-wrap::before,
+.cal-grid-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cal-grid-wrap::before {
+  right: 0;
+  background: linear-gradient(270deg, rgba(255,255,255,0.85), transparent);
+}
+.cal-grid-wrap::after {
+  left: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.85), transparent);
+}
+.cal-grid-wrap.swiping::before,
+.cal-grid-wrap.swiping::after {
+  opacity: 1;
+}
 
 /* نافذة الأسعار */
 .price-overlay { position:fixed; inset:0; background:rgba(26,10,46,0.65); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity 0.3s; padding:16px; overflow-y:auto; }
@@ -559,8 +863,8 @@ input[type=number] { -moz-appearance:textfield; }
     <h2 class="section-title">معرض الصور</h2>
     <div style="position:relative;">
       <div id="galleryGrid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;-webkit-overflow-scrolling:touch;"></div>
-      <button type="button" class="slider-arrow prev" onclick="document.getElementById('galleryGrid').scrollBy({left:-300,behavior:'smooth'});">&#10095;</button>
-      <button type="button" class="slider-arrow next" onclick="document.getElementById('galleryGrid').scrollBy({left:300,behavior:'smooth'});">&#10094;</button>
+      <button type="button" class="slider-arrow prev" onclick="document.getElementById('galleryGrid').scrollBy({left:-300,behavior:'smooth'});">&#10094;</button>
+      <button type="button" class="slider-arrow next" onclick="document.getElementById('galleryGrid').scrollBy({left:300,behavior:'smooth'});">&#10095;</button>
     </div>
   </div>
 
@@ -598,9 +902,9 @@ input[type=number] { -moz-appearance:textfield; }
   <h2 class="section-title">التقويم التفاعلي</h2>
   <div class="calendar-wrapper" id="calSection">
     <div class="cal-nav">
-      <button class="cal-btn" id="btnPrev">&#10095;</button>
+      <button class="cal-btn" id="btnPrev">&#10094;</button>
       <span class="cal-month" id="calMonth"></span>
-      <button class="cal-btn" id="btnNext">&#10094;</button>
+      <button class="cal-btn" id="btnNext">&#10095;</button>
     </div>
     <div class="cal-grid-wrap">
       <div class="cal-grid" id="calGrid">
@@ -612,6 +916,10 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="cal-header">جمعة</div>
         <div class="cal-header">سبت</div>
       </div>
+    </div>
+    <div class="cal-swipe-hint" id="calSwipeHint">
+      <span class="hint-icon">👈</span>
+      <span>اسحب يميناً أو يساراً للتنقل بين الأشهر</span>
     </div>
   </div>
 </main>
@@ -893,6 +1201,8 @@ input[type=number] { -moz-appearance:textfield; }
     var grid=document.getElementById('calGrid');
     var monthLabel=document.getElementById('calMonth');
     if(!grid) return;
+    // إخفاء التلميح بعد أول استخدام
+    hideCalSwipeHint();
     // في RTL: prev يدخل من اليمين، next يدخل من اليسار
     var slideOutClass=direction<0?'slide-out-right':'slide-out-left';
     var slideInClass=direction<0?'slide-in-left':'slide-in-right';
@@ -912,6 +1222,22 @@ input[type=number] { -moz-appearance:textfield; }
   document.getElementById('btnPrev').onclick=function(){changeMonth(-1);};
   document.getElementById('btnNext').onclick=function(){changeMonth(1);};
 
+  // ---- إخفاء تلميح السحب بعد أول استخدام ----
+  function hideCalSwipeHint(){
+    var hint=document.getElementById('calSwipeHint');
+    if(!hint||hint.classList.contains('fading')) return;
+    hint.classList.add('fading');
+    setTimeout(function(){hint.style.display='none';},500);
+    try{localStorage.setItem('qasr_cal_hint_shown','1');}catch(e){}
+  }
+  // إذا كان المستخدم استخدمه قبل، خبّي التلميح من البداية
+  try{
+    if(localStorage.getItem('qasr_cal_hint_shown')==='1'){
+      var h=document.getElementById('calSwipeHint');
+      if(h) h.style.display='none';
+    }
+  }catch(e){}
+
   // ---- دعم السحب باللمس على التقويم ----
   (function(){
     var wrap=document.querySelector('.cal-grid-wrap');
@@ -921,8 +1247,12 @@ input[type=number] { -moz-appearance:textfield; }
       startX=e.touches[0].clientX;
       startY=e.touches[0].clientY;
       isSwiping=true;
+      // إظهار تأثير الأطراف الضبابي
+      wrap.classList.add('swiping');
     },{passive:true});
     wrap.addEventListener('touchend',function(e){
+      // إزالة تأثير الأطراف بعد قليل
+      setTimeout(function(){wrap.classList.remove('swiping');},300);
       if(!isSwiping) return;
       isSwiping=false;
       var dx=e.changedTouches[0].clientX-startX;
