@@ -61,13 +61,19 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .btn-book:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(26,10,46,0.3); }
 
 /* تقويم كبير */
-.calendar-wrapper { background:white; border-radius:20px; padding:28px; box-shadow:0 10px 60px rgba(26,10,46,0.1); border:1px solid rgba(201,168,76,0.2); margin-bottom:50px; }
+.calendar-wrapper { background:white; border-radius:20px; padding:28px; box-shadow:0 10px 60px rgba(26,10,46,0.1); border:1px solid rgba(201,168,76,0.2); margin-bottom:50px; overflow:hidden; }
 .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+.cal-month { font-family:'Amiri',serif; font-size:1.8rem; color:var(--deep2); transition:opacity 0.25s; }
+.cal-grid-wrap { position:relative; overflow:hidden; touch-action:pan-y; }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s; }
+.cal-grid.slide-out-left { transform:translateX(-30%); opacity:0; }
+.cal-grid.slide-out-right { transform:translateX(30%); opacity:0; }
+.cal-grid.slide-in-left { transform:translateX(-30%); opacity:0; transition:none; }
+.cal-grid.slide-in-right { transform:translateX(30%); opacity:0; transition:none; }
 .cal-month { font-family:'Amiri',serif; font-size:1.8rem; color:var(--deep2); }
 .cal-btn { width:42px; height:42px; border-radius:50%; border:1.5px solid rgba(201,168,76,0.5); background:linear-gradient(135deg,rgba(26,10,46,0.95),rgba(45,22,84,0.95)); cursor:pointer; font-size:1.3rem; color:var(--gold-light); transition:all 0.25s cubic-bezier(0.4,0,0.2,1); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(26,10,46,0.25), inset 0 0 0 1px rgba(232,201,122,0.15); font-family:'Tajawal',sans-serif; line-height:1; }
 .cal-btn:hover { background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--deep); border-color:var(--gold); transform:scale(1.08); box-shadow:0 6px 20px rgba(201,168,76,0.4); }
 .cal-btn:active { transform:scale(0.96); }
-.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
 .cal-header { text-align:center; font-size:0.85rem; font-weight:700; color:var(--muted); padding:10px 0; background:rgba(201,168,76,0.06); border-radius:8px; }
 .cal-day { position:relative; border-radius:12px; min-height:90px; cursor:pointer; transition:all 0.2s; background:var(--cream); border:2px solid transparent; overflow:hidden; }
 .cal-day:hover:not(.empty):not(.past) { border-color:var(--gold); transform:scale(1.03); z-index:2; box-shadow:0 6px 20px rgba(201,168,76,0.3); }
@@ -553,8 +559,8 @@ input[type=number] { -moz-appearance:textfield; }
     <h2 class="section-title">معرض الصور</h2>
     <div style="position:relative;">
       <div id="galleryGrid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;-webkit-overflow-scrolling:touch;"></div>
-      <button type="button" class="slider-arrow prev" onclick="document.getElementById('galleryGrid').scrollBy({left:-300,behavior:'smooth'});">‹</button>
-      <button type="button" class="slider-arrow next" onclick="document.getElementById('galleryGrid').scrollBy({left:300,behavior:'smooth'});">›</button>
+      <button type="button" class="slider-arrow prev" onclick="document.getElementById('galleryGrid').scrollBy({left:-300,behavior:'smooth'});">&#10095;</button>
+      <button type="button" class="slider-arrow next" onclick="document.getElementById('galleryGrid').scrollBy({left:300,behavior:'smooth'});">&#10094;</button>
     </div>
   </div>
 
@@ -592,18 +598,20 @@ input[type=number] { -moz-appearance:textfield; }
   <h2 class="section-title">التقويم التفاعلي</h2>
   <div class="calendar-wrapper" id="calSection">
     <div class="cal-nav">
-      <button class="cal-btn" id="btnPrev">›</button>
+      <button class="cal-btn" id="btnPrev">&#10095;</button>
       <span class="cal-month" id="calMonth"></span>
-      <button class="cal-btn" id="btnNext">‹</button>
+      <button class="cal-btn" id="btnNext">&#10094;</button>
     </div>
-    <div class="cal-grid" id="calGrid">
-      <div class="cal-header">أحد</div>
-      <div class="cal-header">اثنين</div>
-      <div class="cal-header">ثلاثاء</div>
-      <div class="cal-header">أربعاء</div>
-      <div class="cal-header">خميس</div>
-      <div class="cal-header">جمعة</div>
-      <div class="cal-header">سبت</div>
+    <div class="cal-grid-wrap">
+      <div class="cal-grid" id="calGrid">
+        <div class="cal-header">أحد</div>
+        <div class="cal-header">اثنين</div>
+        <div class="cal-header">ثلاثاء</div>
+        <div class="cal-header">أربعاء</div>
+        <div class="cal-header">خميس</div>
+        <div class="cal-header">جمعة</div>
+        <div class="cal-header">سبت</div>
+      </div>
     </div>
   </div>
 </main>
@@ -879,8 +887,59 @@ input[type=number] { -moz-appearance:textfield; }
     }
   }
 
-  document.getElementById('btnPrev').onclick=function(){curDate.setMonth(curDate.getMonth()-1);renderCal();};
-  document.getElementById('btnNext').onclick=function(){curDate.setMonth(curDate.getMonth()+1);renderCal();};
+  // ---- التنقل بين الأشهر مع أنيميشن سلايد ----
+  function changeMonth(direction){
+    // direction: -1 (شهر سابق) | +1 (شهر تالي)
+    var grid=document.getElementById('calGrid');
+    var monthLabel=document.getElementById('calMonth');
+    if(!grid) return;
+    // في RTL: prev يدخل من اليمين، next يدخل من اليسار
+    var slideOutClass=direction<0?'slide-out-right':'slide-out-left';
+    var slideInClass=direction<0?'slide-in-left':'slide-in-right';
+    monthLabel.style.opacity='0';
+    grid.classList.add(slideOutClass);
+    setTimeout(function(){
+      curDate.setMonth(curDate.getMonth()+direction);
+      grid.classList.remove(slideOutClass);
+      grid.classList.add(slideInClass);
+      renderCal();
+      // إجبار reflow حتى يطبّق الانتقال
+      void grid.offsetWidth;
+      grid.classList.remove(slideInClass);
+      monthLabel.style.opacity='1';
+    },280);
+  }
+  document.getElementById('btnPrev').onclick=function(){changeMonth(-1);};
+  document.getElementById('btnNext').onclick=function(){changeMonth(1);};
+
+  // ---- دعم السحب باللمس على التقويم ----
+  (function(){
+    var wrap=document.querySelector('.cal-grid-wrap');
+    if(!wrap) return;
+    var startX=0, startY=0, isSwiping=false;
+    wrap.addEventListener('touchstart',function(e){
+      startX=e.touches[0].clientX;
+      startY=e.touches[0].clientY;
+      isSwiping=true;
+    },{passive:true});
+    wrap.addEventListener('touchend',function(e){
+      if(!isSwiping) return;
+      isSwiping=false;
+      var dx=e.changedTouches[0].clientX-startX;
+      var dy=e.changedTouches[0].clientY-startY;
+      // إذا السحب أفقي قوي (أكثر من 50 بكسل) وأقوى من العمودي
+      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
+        // في RTL: السحب لليسار يأخذنا للشهر التالي، السحب لليمين للشهر السابق
+        if(dx<0){
+          // سحب لليسار → شهر تالي
+          changeMonth(1);
+        } else {
+          // سحب لليمين → شهر سابق
+          changeMonth(-1);
+        }
+      }
+    },{passive:true});
+  })();
   document.getElementById('btnScroll').onclick=function(){document.getElementById('calSection').scrollIntoView({behavior:'smooth'});toast('اختر يوم من التقويم');};
 
   // نافذة الأسعار
@@ -1196,9 +1255,10 @@ input[type=number] { -moz-appearance:textfield; }
     var card=cardsData[currentPriceType];
     var p=displayPrices[currentPriceType]||defaultDisplayPrices[currentPriceType];
     var weekendClass=card.isWeekend?' weekend':'';
+    var badgeHtml=card.isWeekend?'<div class="price-day-badge">'+card.badge+'</div>':'';
     c.innerHTML=
       '<div class="price-card'+weekendClass+'">'
-      +'<div class="price-day-badge">'+card.badge+'</div>'
+      +badgeHtml
       +'<span class="price-day-emoji">'+card.emoji+'</span>'
       +'<div class="price-day-name">'+card.name+'</div>'
       +'<div class="price-shifts">'
