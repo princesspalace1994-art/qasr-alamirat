@@ -234,33 +234,6 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-day.empty { background: transparent; border: none; cursor: default; box-shadow: none; }
 .cal-day.past { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.3); }
 
-/* تمييز أيام العطلة (الخميس - الجمعة - السبت) */
-.cal-day.weekend:not(.today):not(.past) {
-  background: linear-gradient(160deg, #fdf6e3 0%, #faecc8 100%) !important;
-  border-color: rgba(201,168,76,0.5) !important;
-}
-.cal-day.weekend .day-num {
-  color: #8B6914;
-}
-.cal-day.weekend:hover:not(.empty):not(.past) {
-  background: linear-gradient(160deg, #fdf3d4 0%, #f7e3a8 100%) !important;
-  border-color: var(--gold) !important;
-  box-shadow:
-    0 12px 30px rgba(201,168,76,0.4),
-    0 4px 10px rgba(26,10,46,0.1);
-}
-/* رؤوس أيام العطلة */
-.cal-header.weekend-header {
-  background: linear-gradient(180deg, rgba(201,168,76,0.22), rgba(201,168,76,0.1));
-  color: #8B6914;
-  border-color: rgba(201,168,76,0.35);
-}
-.cal-header.weekend-header::after {
-  background: var(--gold);
-  opacity: 0.8;
-  width: 24px;
-}
-
 .day-num {
   position: absolute;
   top: 9px; right: 12px;
@@ -944,9 +917,9 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="cal-header">اثنين</div>
         <div class="cal-header">ثلاثاء</div>
         <div class="cal-header">أربعاء</div>
-        <div class="cal-header weekend-header">خميس</div>
-        <div class="cal-header weekend-header">جمعة</div>
-        <div class="cal-header weekend-header">سبت</div>
+        <div class="cal-header">خميس</div>
+        <div class="cal-header">جمعة</div>
+        <div class="cal-header">سبت</div>
       </div>
     </div>
     <div class="cal-swipe-hint" id="calSwipeHint">
@@ -1212,11 +1185,8 @@ input[type=number] { -moz-appearance:textfield; }
       var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
-      // الخميس=4، الجمعة=5، السبت=6
-      var dayOfWeek=cd.getDay();
-      var isWeekend=(dayOfWeek===4||dayOfWeek===5||dayOfWeek===6);
       var cell=document.createElement('div');
-      cell.className='cal-day'+(past?' past':'')+(isT?' today':'')+(isWeekend?' weekend':'');
+      cell.className='cal-day'+(past?' past':'')+(isT?' today':'');
       var ns=document.createElement('span');ns.className='day-num';ns.textContent=ar(d);cell.appendChild(ns);
       var sd=document.createElement('div');sd.className='day-shifts';
       if(fb2){var s=document.createElement('div');s.className='shift bk-full';s.textContent='كامل';sd.appendChild(s);}
