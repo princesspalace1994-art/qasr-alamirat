@@ -234,26 +234,16 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-day.past { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.3); }
 
 /* تمييز أيام العطلة (الخميس - الجمعة - السبت) */
-.cal-day.weekend {
-  background: linear-gradient(160deg, #fdf6e3 0%, #faecc8 100%);
-  border-color: rgba(201,168,76,0.4);
-}
-.cal-day.weekend::after {
-  content: '✦';
-  position: absolute;
-  top: 8px;
-  left: 10px;
-  font-size: 0.8rem;
-  color: var(--gold);
-  opacity: 0.7;
-  z-index: 2;
+.cal-day.weekend:not(.today):not(.past) {
+  background: linear-gradient(160deg, #fdf6e3 0%, #faecc8 100%) !important;
+  border-color: rgba(201,168,76,0.5) !important;
 }
 .cal-day.weekend .day-num {
   color: #8B6914;
 }
 .cal-day.weekend:hover:not(.empty):not(.past) {
-  background: linear-gradient(160deg, #fdf3d4 0%, #f7e3a8 100%);
-  border-color: var(--gold);
+  background: linear-gradient(160deg, #fdf3d4 0%, #f7e3a8 100%) !important;
+  border-color: var(--gold) !important;
   box-shadow:
     0 12px 30px rgba(201,168,76,0.4),
     0 4px 10px rgba(26,10,46,0.1);
