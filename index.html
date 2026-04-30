@@ -1243,7 +1243,7 @@ input[type=number] { -moz-appearance:textfield; }
   const db = getFirestore(app);
 
   // تهيئة EmailJS
-  emailjs.init('KzFRo-6lfN44qilNK');
+  emailjs.init('KzFRo-6lfN44qiINK');
 
   var bookings=[], curDate=new Date(), selDate=null, selShift=null, adminIn=false, pendingOk=null, isFirstLoad=true;
   var todayD=new Date(); todayD.setHours(0,0,0,0);
@@ -1602,14 +1602,18 @@ input[type=number] { -moz-appearance:textfield; }
       if(bm) bm.disabled=false;
       if(bp) bp.disabled=false;
 
-      // إرسال إيميل تلقائي
+      // إرسال إيميل تلقائي - ضمان وصول الحجز حتى لو الزبون تراجع من الواتساب
       try {
-        emailjs.send('princesspalace1994@gmail','template_ger17n8',{
+        emailjs.send('qaser_service','template_ger17n8',{
           name: name,
           date: dd,
           shift: sl[selShift]+' ('+st[selShift]+')',
           phone: phoneClean,
           guests: adultsClean
+        }).then(function(response){
+          console.log('✅ Email sent successfully:', response);
+        },function(error){
+          console.error('❌ Email failed:', error);
         });
       } catch(emailErr){ console.log('Email error:', emailErr); }
 
