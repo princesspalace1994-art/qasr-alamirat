@@ -420,6 +420,81 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .pc-price { font-size:1.25rem; color:#8B5E0A; font-weight:700; font-family:'Amiri',serif; background:rgba(201,168,76,0.12); border-radius:8px; padding:6px 10px; display:inline-block; margin-top:6px; }
 .pc-price span { font-size:0.75rem; color:var(--muted); font-weight:600; }
 .price-input { width:100%; margin-bottom:12px; padding:13px 14px; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.95rem; color:var(--text); background:var(--cream); outline:none; direction:rtl; transition:all 0.2s; }
+
+/* عدد البالغين - stepper */
+.adults-stepper {
+  margin-bottom: 14px;
+  background: var(--cream);
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.adults-stepper-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.adults-stepper-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.stepper-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,168,76,0.5);
+  background: linear-gradient(135deg, var(--deep), var(--deep2));
+  color: var(--gold-light);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-family: 'Tajawal', sans-serif;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.stepper-btn:hover {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep);
+  border-color: var(--gold);
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(201,168,76,0.4);
+}
+.stepper-btn:active {
+  transform: scale(0.95);
+}
+.stepper-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+.stepper-input {
+  width: 80px;
+  text-align: center;
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 10px;
+  padding: 10px 8px;
+  font-family: 'Amiri', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--deep2);
+  background: white;
+  outline: none;
+  transition: all 0.2s;
+}
+.stepper-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
 .price-input:focus { border-color:var(--gold); background:white; }
 .price-btn { width:100%; padding:15px; background:linear-gradient(135deg,#25D366,#128C7E); color:white; border:none; border-radius:12px; font-family:'Tajawal',sans-serif; font-size:1.05rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .price-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,211,102,0.4); }
@@ -736,6 +811,79 @@ input[type=number] { -moz-appearance:textfield; }
   border-radius: 14px;
   border: 1px solid rgba(201,168,76,0.15);
   transition: all 0.3s;
+  position: relative;
+  flex-wrap: wrap;
+}
+.price-shift-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+.price-shift-clickable:active {
+  transform: scale(0.98);
+}
+.price-shift-cta {
+  width: 100%;
+  font-size: 0.7rem;
+  color: var(--gold);
+  margin-top: 4px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s;
+  font-weight: 600;
+  text-align: center;
+}
+.price-shift-clickable:hover .price-shift-cta,
+.price-shift-clickable:focus .price-shift-cta {
+  opacity: 1;
+  max-height: 20px;
+  margin-top: 6px;
+}
+.price-card.weekend .price-shift-cta {
+  color: var(--gold-light);
+}
+
+/* ملاحظة "اختر يوم" تظهر فوق التقويم */
+.select-day-hint {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 22px;
+  margin: 0 0 18px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(232,201,122,0.08));
+  border: 2px dashed var(--gold);
+  border-radius: 16px;
+  color: var(--deep2);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 24px rgba(201,168,76,0.18);
+}
+.select-day-hint.show {
+  display: flex;
+}
+.select-day-hint.animate {
+  animation: hintShake 0.6s ease;
+}
+@keyframes hintShake {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-6px); }
+  75% { transform: translateY(2px); }
+}
+.select-day-hint .hint-pulse {
+  font-size: 1.6rem;
+  display: inline-block;
+  animation: hintBounce 1.2s ease-in-out infinite;
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+.select-day-hint strong {
+  color: var(--gold);
+  font-weight: 700;
 }
 .price-card.weekend .price-shift {
   background: rgba(255,255,255,0.06);
@@ -848,6 +996,14 @@ input[type=number] { -moz-appearance:textfield; }
 <div class="fb-status connecting" id="fbStatus">⏳ جاري الاتصال...</div>
 
 <main>
+  <!-- معرض الصور -->
+  <div id="galleryContainer" style="display:none;margin-bottom:50px;">
+    <h2 class="section-title">معرض الصور</h2>
+    <div style="position:relative;">
+      <div id="galleryGrid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;-webkit-overflow-scrolling:touch;"></div>
+    </div>
+  </div>
+
   <!-- ============ قسم الأسعار الفخم ============ -->
   <div class="prices-showcase">
     <h2 class="section-title">قائمة الأسعار</h2>
@@ -865,44 +1021,11 @@ input[type=number] { -moz-appearance:textfield; }
     <div id="pricesShowcase"></div>
   </div>
 
-  <!-- معرض الصور -->
-  <div id="galleryContainer" style="display:none;margin-bottom:50px;">
-    <h2 class="section-title">معرض الصور</h2>
-    <div style="position:relative;">
-      <div id="galleryGrid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;-webkit-overflow-scrolling:touch;"></div>
-    </div>
-  </div>
-
   <!-- نافذة عرض صورة كبيرة -->
   <div id="imgViewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;">
     <img id="imgViewerSrc" style="max-width:95%;max-height:95%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
     <button onclick="document.getElementById('imgViewer').style.display='none';" style="position:absolute;top:20px;left:20px;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;">✕</button>
   </div>
-
-  <h2 class="section-title">احجز شاليهك الآن</h2>
-  <div class="booking-card">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>اسمك الكريم</label>
-        <input type="text" id="guestName" placeholder="أدخل اسمك...">
-      </div>
-      <div class="form-group">
-        <label>رقم الجوال</label>
-        <input type="tel" id="guestPhone" placeholder="07X XXXX XXXX" dir="ltr">
-      </div>
-      <div class="form-group">
-        <label>عدد الأشخاص</label>
-        <select id="guestCount">
-          <option value="1-5">1 — 5 أشخاص</option>
-          <option value="6-10">6 — 10 أشخاص</option>
-          <option value="11-20">11 — 20 شخص</option>
-          <option value="20+">أكثر من 20</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn-book" id="btnScroll">✨ اختر التاريخ من التقويم لعرض الأسعار</button>
-  </div>
-
 
   <h2 class="section-title">التقويم التفاعلي</h2>
   <div class="calendar-wrapper" id="calSection">
@@ -956,7 +1079,17 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
     <input type="text" class="price-input" id="pmName" placeholder="اسم صاحب الحجز *">
-    <input type="tel" class="price-input" id="pmPhone" placeholder="رقم الجوال" dir="ltr">
+    <input type="tel" class="price-input" id="pmPhone" placeholder="رقم الجوال *" dir="ltr">
+
+    <!-- عدد البالغين بأزرار + و - -->
+    <div class="adults-stepper">
+      <label class="adults-stepper-label">👨‍👩‍👧 عدد الأشخاص البالغين</label>
+      <div class="adults-stepper-controls">
+        <button type="button" class="stepper-btn stepper-minus" id="btnAdultsMinus" aria-label="تقليل">−</button>
+        <input type="text" id="pmAdults" class="stepper-input" value="2" inputmode="numeric">
+        <button type="button" class="stepper-btn stepper-plus" id="btnAdultsPlus" aria-label="زيادة">+</button>
+      </div>
+    </div>
     
     <!-- الشروط والأحكام -->
     <div style="background:#FFF9EF;border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid rgba(201,168,76,0.25);">
@@ -1129,43 +1262,62 @@ input[type=number] { -moz-appearance:textfield; }
   // Firebase
   var fbStatus=document.getElementById('fbStatus');
   try {
-    onSnapshot(query(collection(db,'bookings'),orderBy('date')),function(snap){
-      bookings=[];
-      snap.forEach(function(d){var x=d.data();x.firestoreId=d.id;bookings.push(x);});
-      // كشف حجوزات جديدة وإرسال إشعار
-      var newBookings=[];
-      snap.docChanges().forEach(function(change){
-        if(change.type==='added' && !isFirstLoad){
-          newBookings.push(change.doc.data());
-        }
-      });
-      
-      if(newBookings.length>0 && Notification.permission==='granted'){
-        newBookings.forEach(function(nb){
+    // نستخدم collection بدون orderBy لأن orderBy يفشل لو فيه وثائق بدون الحقل
+    onSnapshot(collection(db,'bookings'),function(snap){
+      try {
+        bookings=[];
+        snap.forEach(function(d){
           try{
-            var n=new Notification('🔔 حجز جديد!', {
-              body: '👤 '+nb.name+'\n📅 '+(nb.displayDate||'')+'\n📞 '+(nb.phone||'—'),
-              icon: 'https://emojicdn.elk.sh/👑',
-              badge: 'https://emojicdn.elk.sh/👑',
-              tag: 'booking-'+Date.now(),
-              requireInteraction: true
-            });
-            // تشغيل صوت تنبيه
-            try{
-              var audio=new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAACAAACcQCqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAaAAAAAAAAACnHkfQTbAAAAAAD/+xDEAAPH3Yc4AhEcgAAA0gAAABBtbHRyYWNrAA==');
-              audio.play().catch(function(){});
-            }catch(e){}
-          }catch(e){console.log('Notification error:',e);}
+            var x=d.data();
+            x.firestoreId=d.id;
+            bookings.push(x);
+          }catch(e){console.log('Booking parse error:',e);}
         });
+        // ترتيب يدوي بالتاريخ
+        bookings.sort(function(a,b){
+          if(!a.date) return 1;
+          if(!b.date) return -1;
+          return a.date.localeCompare(b.date);
+        });
+
+        // كشف حجوزات جديدة وإرسال إشعار (محمي من الأخطاء)
+        try {
+          var newBookings=[];
+          snap.docChanges().forEach(function(change){
+            if(change.type==='added' && !isFirstLoad){
+              newBookings.push(change.doc.data());
+            }
+          });
+          if(newBookings.length>0 && typeof Notification!=='undefined' && Notification.permission==='granted'){
+            newBookings.forEach(function(nb){
+              try{
+                new Notification('🔔 حجز جديد!', {
+                  body: '👤 '+(nb.name||'')+'\n📅 '+(nb.displayDate||'')+'\n📞 '+(nb.phone||'—'),
+                  icon: 'https://emojicdn.elk.sh/👑',
+                  tag: 'booking-'+Date.now(),
+                  requireInteraction: true
+                });
+              }catch(e){console.log('Notification error:',e);}
+            });
+          }
+        } catch(notifErr){ console.log('Notification block error:',notifErr); }
+
+        isFirstLoad=false;
+        if(fbStatus){fbStatus.className='fb-status connected';fbStatus.textContent='🟢 متصل — الحجوزات تظهر للجميع فورياً';}
+        renderCal();
+        if(adminIn)renderAdmin();
+      } catch(handlerErr){
+        console.error('Snapshot handler error:',handlerErr);
+        if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 خطأ بالعرض: '+handlerErr.message;}
       }
-      isFirstLoad=false;
-      
-      fbStatus.className='fb-status connected';
-      fbStatus.textContent='🟢 متصل — الحجوزات تظهر للجميع فورياً';
-      renderCal();
-      if(adminIn)renderAdmin();
-    },function(err){fbStatus.className='fb-status error';fbStatus.textContent='🔴 خطأ: '+err.message;});
-  }catch(e){fbStatus.className='fb-status error';fbStatus.textContent='🔴 '+e.message;}
+    },function(err){
+      console.error('Firestore error:',err);
+      if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 خطأ اتصال: '+err.message;}
+    });
+  }catch(e){
+    console.error('Firebase init error:',e);
+    if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 '+e.message;}
+  }
 
   // Calendar
   function renderCal(){
@@ -1275,7 +1427,8 @@ input[type=number] { -moz-appearance:textfield; }
       }
     },{passive:true});
   })();
-  document.getElementById('btnScroll').onclick=function(){document.getElementById('calSection').scrollIntoView({behavior:'smooth'});toast('اختر يوم من التقويم');};
+  var btnScrollEl=document.getElementById('btnScroll');
+  if(btnScrollEl) btnScrollEl.onclick=function(){document.getElementById('calSection').scrollIntoView({behavior:'smooth'});toast('اختر يوم من التقويم');};
 
   // نافذة الأسعار
   function openPriceModal(d,y,m){
@@ -1298,10 +1451,22 @@ input[type=number] { -moz-appearance:textfield; }
     if(dayCard) dayCard.innerHTML=dayPrice.day.toLocaleString()+' <span>د.ع</span>';
     if(nightCard) nightCard.innerHTML=dayPrice.night.toLocaleString()+' <span>د.ع</span>';
     if(fullCard) fullCard.innerHTML=dayPrice.full.toLocaleString()+' <span>د.ع</span>';
-    document.getElementById('pmName').value=document.getElementById('guestName').value||'';
-    document.getElementById('pmPhone').value=document.getElementById('guestPhone').value||'';
     selShift=null;
     document.getElementById('priceOverlay').classList.add('open');
+    // إخفاء ملاحظة "اختر يوم" بعد فتح نافذة الحجز
+    hideSelectDayHint();
+    // إذا كان الزبون اختار شفت من الواجهة، حدده تلقائياً
+    if(window._preselectedShift){
+      var preShift=window._preselectedShift;
+      window._preselectedShift=null;
+      setTimeout(function(){
+        var map={day:'pcDay',night:'pcNight',full:'pcFull'};
+        var el=document.getElementById(map[preShift]);
+        if(el && !el.classList.contains('price-disabled')){
+          selectShift(preShift);
+        }
+      },150);
+    }
   }
 
   document.getElementById('btnClosePriceModal').onclick=function(){document.getElementById('priceOverlay').classList.remove('open');};
@@ -1320,21 +1485,93 @@ input[type=number] { -moz-appearance:textfield; }
   document.getElementById('pcNight').onclick=function(){selectShift('night');};
   document.getElementById('pcFull').onclick=function(){selectShift('full');};
 
+  // ---- تحويل الأرقام العربية إلى انكليزية ----
+  function arabicToEnglishDigits(str){
+    if(!str) return '';
+    var arabic='٠١٢٣٤٥٦٧٨٩';
+    var persian='۰۱۲۳۴۵۶۷۸۹';
+    return String(str).replace(/[٠-٩]/g,function(c){return arabic.indexOf(c);})
+                       .replace(/[۰-۹]/g,function(c){return persian.indexOf(c);});
+  }
+
+  // ---- أزرار + / - لعدد البالغين ----
+  (function(){
+    var input=document.getElementById('pmAdults');
+    var btnPlus=document.getElementById('btnAdultsPlus');
+    var btnMinus=document.getElementById('btnAdultsMinus');
+    if(!input||!btnPlus||!btnMinus) return;
+
+    function getCurrentValue(){
+      var v=arabicToEnglishDigits(input.value).replace(/[^0-9]/g,'');
+      return v?parseInt(v,10):0;
+    }
+    function setValue(v){
+      if(v<1) v=1;
+      if(v>50) v=50;
+      input.value=v;
+      btnMinus.disabled=(v<=1);
+      btnPlus.disabled=(v>=50);
+    }
+    btnPlus.onclick=function(){setValue(getCurrentValue()+1);};
+    btnMinus.onclick=function(){setValue(getCurrentValue()-1);};
+    // عند الكتابة: يقبل عربي وانكليزي ويحوله للانكليزي تلقائياً
+    input.addEventListener('input',function(){
+      var v=arabicToEnglishDigits(input.value).replace(/[^0-9]/g,'');
+      if(v!==input.value) input.value=v;
+      // تحديث حالة الأزرار
+      var n=v?parseInt(v,10):0;
+      btnMinus.disabled=(n<=1);
+      btnPlus.disabled=(n>=50);
+    });
+    // عند الخروج من الحقل، تأكد من القيمة الدنيا
+    input.addEventListener('blur',function(){
+      var n=getCurrentValue();
+      if(n<1) setValue(1);
+      else if(n>50) setValue(50);
+      else setValue(n);
+    });
+    // تهيئة أولية
+    setValue(2);
+  })();
+
+  // ---- تحويل تلقائي للأرقام في حقل الجوال ----
+  (function(){
+    var phoneInput=document.getElementById('pmPhone');
+    if(!phoneInput) return;
+    phoneInput.addEventListener('input',function(){
+      var v=arabicToEnglishDigits(phoneInput.value).replace(/[^0-9]/g,'');
+      if(v!==phoneInput.value) phoneInput.value=v;
+    });
+  })();
+
   document.getElementById('btnConfirmBooking').onclick=async function(){
     var name=document.getElementById('pmName').value.trim();
-    var phone=document.getElementById('pmPhone').value.trim();
+    var phoneRaw=document.getElementById('pmPhone').value.trim();
+    var adultsRaw=document.getElementById('pmAdults').value.trim();
+    // تحويل الأرقام العربية إلى انكليزية
+    var phone=arabicToEnglishDigits(phoneRaw);
+    var adults=arabicToEnglishDigits(adultsRaw);
     if(!name){toast('أدخل اسم صاحب الحجز');return;}
+    if(!phone){toast('أدخل رقم الجوال');document.getElementById('pmPhone').focus();return;}
+    if(!adults){toast('أدخل عدد الأشخاص البالغين');document.getElementById('pmAdults').focus();return;}
     if(!selShift){toast('اختر الشفت أولاً');return;}
     if(!document.getElementById('termsCheck').checked){toast('⚠️ يجب الموافقة على الشروط والأحكام');return;}
     var phoneClean=phone.replace(/[^0-9]/g,'');
-    if(phone && phoneClean.length!==11){
+    if(phoneClean.length!==11){
       toast('❌ رقم الجوال يجب أن يكون 11 رقم بالضبط');
       document.getElementById('pmPhone').focus();
       document.getElementById('pmPhone').style.borderColor='#e74c3c';
       setTimeout(function(){document.getElementById('pmPhone').style.borderColor='';},3000);
       return;
     }
-    if(!document.getElementById('termsCheck').checked){toast('يجب الموافقة على الشروط والأحكام أولاً');return;}
+    var adultsClean=adults.replace(/[^0-9]/g,'');
+    if(!adultsClean || parseInt(adultsClean)<1){
+      toast('❌ عدد الأشخاص البالغين يجب أن يكون رقم صحيح');
+      document.getElementById('pmAdults').focus();
+      document.getElementById('pmAdults').style.borderColor='#e74c3c';
+      setTimeout(function(){document.getElementById('pmAdults').style.borderColor='';},3000);
+      return;
+    }
 
     var btn=document.getElementById('btnConfirmBooking');
     btn.disabled=true;btn.innerHTML='<span>⏳</span> جاري الحفظ...';
@@ -1351,14 +1588,19 @@ input[type=number] { -moz-appearance:textfield; }
     try {
       await addDoc(collection(db,'bookings'),{
         date:dkey(y,m,d), displayDate:dd, shift:selShift,
-        name:name, phone:phone||'—',
-        guests:document.getElementById('guestCount').value,
+        name:name, phone:phoneClean,
+        guests:adultsClean,
         createdAt:new Date().toISOString()
       });
 
       document.getElementById('priceOverlay').classList.remove('open');
       document.getElementById('pmName').value='';
       document.getElementById('pmPhone').value='';
+      document.getElementById('pmAdults').value='2';
+      // تحديث أزرار + / -
+      var bm=document.getElementById('btnAdultsMinus'),bp=document.getElementById('btnAdultsPlus');
+      if(bm) bm.disabled=false;
+      if(bp) bp.disabled=false;
 
       // إرسال إيميل تلقائي
       try {
@@ -1366,13 +1608,14 @@ input[type=number] { -moz-appearance:textfield; }
           name: name,
           date: dd,
           shift: sl[selShift]+' ('+st[selShift]+')',
-          phone: phone||'—',
-          guests: document.getElementById('guestCount').value
+          phone: phoneClean,
+          guests: adultsClean
         });
       } catch(emailErr){ console.log('Email error:', emailErr); }
 
       var dayName=days[new Date(dkey(y,m,d)).getDay()];
-      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n💰 السعر: '+sp[selShift]+' د.ع\n📞 الجوال: '+(phone||'—')+'\n👨‍👩‍👧 الاشخاص: '+document.getElementById('guestCount').value+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
+      // الرسالة - الرقم بالانكليزي
+      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n💰 السعر: '+sp[selShift]+' د.ع\n📞 الجوال: '+phoneClean+'\n👨‍👩‍👧 عدد البالغين: '+adultsClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
 
       var waUrl='https://wa.me/9647822216325?text='+encodeURIComponent(msg);
       // أظهر نافذة النجاح
@@ -1597,20 +1840,68 @@ input[type=number] { -moz-appearance:textfield; }
       +'<span class="price-day-emoji">'+card.emoji+'</span>'
       +'<div class="price-day-name">'+card.name+'</div>'
       +'<div class="price-shifts">'
-        +'<div class="price-shift">'
+        +'<div class="price-shift price-shift-clickable" data-shift="day">'
           +'<div class="price-shift-label"><span class="price-shift-icon">☀️</span><span>الشفت النهاري</span></div>'
           +'<div class="price-shift-value">'+p.day.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
         +'</div>'
-        +'<div class="price-shift">'
+        +'<div class="price-shift price-shift-clickable" data-shift="night">'
           +'<div class="price-shift-label"><span class="price-shift-icon">🌙</span><span>الشفت الليلي</span></div>'
           +'<div class="price-shift-value">'+p.night.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
         +'</div>'
-        +'<div class="price-shift price-shift-full">'
+        +'<div class="price-shift price-shift-full price-shift-clickable" data-shift="full">'
           +'<div class="price-shift-label"><span class="price-shift-icon">🌟</span><span>الشفت الكامل</span></div>'
           +'<div class="price-shift-value">'+p.full.toLocaleString()+'<span class="currency"> د.ع</span></div>'
+          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
         +'</div>'
       +'</div>'
       +'</div>';
+    // ربط الشفتات بالنزول للتقويم
+    var clickables=c.querySelectorAll('.price-shift-clickable');
+    clickables.forEach(function(el){
+      el.addEventListener('click',function(){
+        var shift=el.getAttribute('data-shift');
+        scrollToCalendarWithShift(shift);
+      });
+    });
+  }
+
+  // ---- النزول للتقويم وعرض ملاحظة لاختيار اليوم ----
+  function scrollToCalendarWithShift(shift){
+    // حفظ الشفت المختار حتى يستخدم لاحقاً
+    window._preselectedShift=shift;
+    // النزول للتقويم بنعومة
+    var cal=document.getElementById('calSection');
+    if(cal){
+      cal.scrollIntoView({behavior:'smooth',block:'start'});
+      // إظهار رسالة "اختر يوم" بشكل ملفت
+      showSelectDayHint(shift);
+    }
+  }
+
+  // ---- عرض ملاحظة "اختر يوم" ----
+  function showSelectDayHint(shift){
+    var shiftNames={day:'الشفت النهاري ☀️', night:'الشفت الليلي 🌙', full:'الشفت الكامل 🌟'};
+    var hint=document.getElementById('selectDayHint');
+    if(!hint){
+      hint=document.createElement('div');
+      hint.id='selectDayHint';
+      hint.className='select-day-hint';
+      var cal=document.getElementById('calSection');
+      if(cal && cal.parentNode){
+        cal.parentNode.insertBefore(hint, cal);
+      }
+    }
+    hint.innerHTML='<span class="hint-pulse">👇</span><strong>اختر يوم من التقويم</strong> لإتمام حجز '+shiftNames[shift];
+    hint.classList.add('show');
+    // تمييز الشفت المختار في الذاكرة لتطبيقه عند فتح نافذة الحجز
+    setTimeout(function(){hint.classList.add('animate');},50);
+  }
+
+  function hideSelectDayHint(){
+    var hint=document.getElementById('selectDayHint');
+    if(hint){hint.classList.remove('show','animate');}
   }
   // عرض الأسعار أول ما يفتح الموقع
   renderPricesShowcase();
@@ -1757,6 +2048,43 @@ input[type=number] { -moz-appearance:textfield; }
         +'</div>';
     });
     g.innerHTML=html;
+    // تشغيل السلايد التلقائي
+    startGalleryAutoSlide();
+  }
+
+  // ---- السلايد التلقائي للمعرض ----
+  var galleryAutoSlideTimer=null;
+  var galleryUserPaused=false;
+  function startGalleryAutoSlide(){
+    var g=document.getElementById('galleryGrid');
+    if(!g||!galleryImages.length||galleryImages.length<2) return;
+    // إيقاف أي تايمر سابق
+    if(galleryAutoSlideTimer){clearInterval(galleryAutoSlideTimer);}
+
+    galleryAutoSlideTimer=setInterval(function(){
+      if(galleryUserPaused) return;
+      // إذا الصور أقل من العرض، لا تحرك
+      if(g.scrollWidth<=g.clientWidth+5) return;
+      var maxScroll=g.scrollWidth-g.clientWidth;
+      // في RTL، scrollLeft يكون قيم سالبة في معظم المتصفحات الحديثة
+      var sl=Math.abs(g.scrollLeft);
+      // إذا وصلنا للنهاية، نرجع للبداية بسلاسة
+      if(sl>=maxScroll-5){
+        g.scrollTo({left:0,behavior:'smooth'});
+      } else {
+        g.scrollBy({left:300,behavior:'smooth'});
+      }
+    },3500); // كل 3.5 ثانية
+
+    // إيقاف السلايد عند تفاعل المستخدم
+    g.addEventListener('mouseenter',function(){galleryUserPaused=true;});
+    g.addEventListener('mouseleave',function(){galleryUserPaused=false;});
+    g.addEventListener('touchstart',function(){
+      galleryUserPaused=true;
+      // استئناف بعد 6 ثواني من آخر لمس
+      clearTimeout(window._galleryResumeTimer);
+      window._galleryResumeTimer=setTimeout(function(){galleryUserPaused=false;},6000);
+    },{passive:true});
   }
 
   function renderImgsList(){
