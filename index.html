@@ -1081,14 +1081,15 @@ input[type=number] { -moz-appearance:textfield; }
     <input type="text" class="price-input" id="pmName" placeholder="اسم صاحب الحجز *">
     <input type="tel" class="price-input" id="pmPhone" placeholder="رقم الجوال *" dir="ltr">
 
-    <!-- عدد البالغين بأزرار + و - -->
-    <div class="adults-stepper">
-      <label class="adults-stepper-label">👨‍👩‍👧 عدد الأشخاص البالغين</label>
-      <div class="adults-stepper-controls">
-        <button type="button" class="stepper-btn stepper-minus" id="btnAdultsMinus" aria-label="تقليل">−</button>
-        <input type="text" id="pmAdults" class="stepper-input" value="2" inputmode="numeric">
-        <button type="button" class="stepper-btn stepper-plus" id="btnAdultsPlus" aria-label="زيادة">+</button>
-      </div>
+    <!-- عدد البالغين - قائمة اختيارات -->
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">👨‍👩‍👧 عدد الأشخاص البالغين *</label>
+      <select id="pmAdults" class="price-input" style="margin-bottom:0;cursor:pointer;">
+        <option value="1-5">1 — 5 أشخاص</option>
+        <option value="6-10" selected>6 — 10 أشخاص</option>
+        <option value="11-20">11 — 20 شخص</option>
+        <option value="20+">أكثر من 20</option>
+      </select>
     </div>
     
     <!-- الشروط والأحكام -->
@@ -1243,7 +1244,7 @@ input[type=number] { -moz-appearance:textfield; }
   const db = getFirestore(app);
 
   // تهيئة EmailJS
-  emailjs.init('KzFRo-6lfN44qiINK');
+  emailjs.init('KzFRo-6IfN44qilNK');
 
   var bookings=[], curDate=new Date(), selDate=null, selShift=null, adminIn=false, pendingOk=null, isFirstLoad=true;
   var todayD=new Date(); todayD.setHours(0,0,0,0);
@@ -1494,46 +1495,6 @@ input[type=number] { -moz-appearance:textfield; }
                        .replace(/[۰-۹]/g,function(c){return persian.indexOf(c);});
   }
 
-  // ---- أزرار + / - لعدد البالغين ----
-  (function(){
-    var input=document.getElementById('pmAdults');
-    var btnPlus=document.getElementById('btnAdultsPlus');
-    var btnMinus=document.getElementById('btnAdultsMinus');
-    if(!input||!btnPlus||!btnMinus) return;
-
-    function getCurrentValue(){
-      var v=arabicToEnglishDigits(input.value).replace(/[^0-9]/g,'');
-      return v?parseInt(v,10):0;
-    }
-    function setValue(v){
-      if(v<1) v=1;
-      if(v>50) v=50;
-      input.value=v;
-      btnMinus.disabled=(v<=1);
-      btnPlus.disabled=(v>=50);
-    }
-    btnPlus.onclick=function(){setValue(getCurrentValue()+1);};
-    btnMinus.onclick=function(){setValue(getCurrentValue()-1);};
-    // عند الكتابة: يقبل عربي وانكليزي ويحوله للانكليزي تلقائياً
-    input.addEventListener('input',function(){
-      var v=arabicToEnglishDigits(input.value).replace(/[^0-9]/g,'');
-      if(v!==input.value) input.value=v;
-      // تحديث حالة الأزرار
-      var n=v?parseInt(v,10):0;
-      btnMinus.disabled=(n<=1);
-      btnPlus.disabled=(n>=50);
-    });
-    // عند الخروج من الحقل، تأكد من القيمة الدنيا
-    input.addEventListener('blur',function(){
-      var n=getCurrentValue();
-      if(n<1) setValue(1);
-      else if(n>50) setValue(50);
-      else setValue(n);
-    });
-    // تهيئة أولية
-    setValue(2);
-  })();
-
   // ---- تحويل تلقائي للأرقام في حقل الجوال ----
   (function(){
     var phoneInput=document.getElementById('pmPhone');
@@ -1547,13 +1508,11 @@ input[type=number] { -moz-appearance:textfield; }
   document.getElementById('btnConfirmBooking').onclick=async function(){
     var name=document.getElementById('pmName').value.trim();
     var phoneRaw=document.getElementById('pmPhone').value.trim();
-    var adultsRaw=document.getElementById('pmAdults').value.trim();
-    // تحويل الأرقام العربية إلى انكليزية
+    var adults=document.getElementById('pmAdults').value;
+    // تحويل الأرقام العربية إلى انكليزية للجوال
     var phone=arabicToEnglishDigits(phoneRaw);
-    var adults=arabicToEnglishDigits(adultsRaw);
     if(!name){toast('أدخل اسم صاحب الحجز');return;}
     if(!phone){toast('أدخل رقم الجوال');document.getElementById('pmPhone').focus();return;}
-    if(!adults){toast('أدخل عدد الأشخاص البالغين');document.getElementById('pmAdults').focus();return;}
     if(!selShift){toast('اختر الشفت أولاً');return;}
     if(!document.getElementById('termsCheck').checked){toast('⚠️ يجب الموافقة على الشروط والأحكام');return;}
     var phoneClean=phone.replace(/[^0-9]/g,'');
@@ -1564,14 +1523,8 @@ input[type=number] { -moz-appearance:textfield; }
       setTimeout(function(){document.getElementById('pmPhone').style.borderColor='';},3000);
       return;
     }
-    var adultsClean=adults.replace(/[^0-9]/g,'');
-    if(!adultsClean || parseInt(adultsClean)<1){
-      toast('❌ عدد الأشخاص البالغين يجب أن يكون رقم صحيح');
-      document.getElementById('pmAdults').focus();
-      document.getElementById('pmAdults').style.borderColor='#e74c3c';
-      setTimeout(function(){document.getElementById('pmAdults').style.borderColor='';},3000);
-      return;
-    }
+    // عدد البالغين من الـ select - دائماً صحيح
+    var adultsClean=adults||'1-5';
 
     var btn=document.getElementById('btnConfirmBooking');
     btn.disabled=true;btn.innerHTML='<span>⏳</span> جاري الحفظ...';
@@ -1596,11 +1549,7 @@ input[type=number] { -moz-appearance:textfield; }
       document.getElementById('priceOverlay').classList.remove('open');
       document.getElementById('pmName').value='';
       document.getElementById('pmPhone').value='';
-      document.getElementById('pmAdults').value='2';
-      // تحديث أزرار + / -
-      var bm=document.getElementById('btnAdultsMinus'),bp=document.getElementById('btnAdultsPlus');
-      if(bm) bm.disabled=false;
-      if(bp) bp.disabled=false;
+      document.getElementById('pmAdults').value='6-10';
 
       // إرسال إيميل تلقائي - ضمان وصول الحجز حتى لو الزبون تراجع من الواتساب
       try {
