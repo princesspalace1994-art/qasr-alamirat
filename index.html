@@ -1551,24 +1551,26 @@ input[type=number] { -moz-appearance:textfield; }
       document.getElementById('pmPhone').value='';
       document.getElementById('pmAdults').value='6-10';
 
-      // إرسال إيميل تلقائي - ضمان وصول الحجز حتى لو الزبون تراجع من الواتساب
+      // بناء رسالة الحجز الكاملة (نفس الرسالة للواتساب والإيميل)
+      var dayName=days[new Date(dkey(y,m,d)).getDay()];
+      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n💰 السعر: '+sp[selShift]+' د.ع\n📞 الجوال: '+phoneClean+'\n👨‍👩‍👧 عدد البالغين: '+adultsClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
+
+      // إرسال إيميل تلقائي بنفس رسالة الواتساب
       try {
         emailjs.send('qaser_service','template_ger17n8',{
           name: name,
-          date: dd,
-          shift: sl[selShift]+' ('+st[selShift]+')',
+          date: dayName+' '+dd,
+          shift: se[selShift]+' '+sl[selShift]+' ('+st[selShift]+')',
           phone: phoneClean,
-          guests: adultsClean
+          guests: adultsClean,
+          price: sp[selShift]+' د.ع',
+          full_message: msg
         }).then(function(response){
           console.log('✅ Email sent successfully:', response);
         },function(error){
           console.error('❌ Email failed:', error);
         });
       } catch(emailErr){ console.log('Email error:', emailErr); }
-
-      var dayName=days[new Date(dkey(y,m,d)).getDay()];
-      // الرسالة - الرقم بالانكليزي
-      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n💰 السعر: '+sp[selShift]+' د.ع\n📞 الجوال: '+phoneClean+'\n👨‍👩‍👧 عدد البالغين: '+adultsClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
 
       var waUrl='https://wa.me/9647822216325?text='+encodeURIComponent(msg);
       // أظهر نافذة النجاح
@@ -1712,6 +1714,24 @@ input[type=number] { -moz-appearance:textfield; }
         var remaining=(afterDisc-depN).toLocaleString();
         var dayNm=dayNames[new Date(b2.date).getDay()];
         var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━\n👨‍👩‍👧‍👦 حصراً للعوائل الكريمة';
+
+        // إرسال نفس رسالة التثبيت للإيميل
+        try {
+          emailjs.send('qaser_service','template_ger17n8',{
+            name: b2.name+' (✅ تثبيت حجز)',
+            date: dayNm+' '+b2.displayDate,
+            shift: ic[b2.shift]+' '+sl2[b2.shift]+' ('+st2[b2.shift]+')',
+            phone: b2.phone,
+            guests: b2.guests,
+            price: afterDisc.toLocaleString()+' د.ع',
+            full_message: msg
+          }).then(function(response){
+            console.log('✅ Confirmation email sent:', response);
+          },function(error){
+            console.error('❌ Confirmation email failed:', error);
+          });
+        } catch(emailErr){ console.log('Email error:', emailErr); }
+
         window.open('https://wa.me/'+phone4+'?text='+encodeURIComponent(msg),'_blank');
       };
     });
