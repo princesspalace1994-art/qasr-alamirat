@@ -276,7 +276,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   position: absolute;
   bottom: 0; left: 0; right: 0;
   display: flex;
-  height: 48px;
+  height: 24px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   overflow: hidden;
@@ -287,20 +287,20 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
-  font-size: 0.62rem;
+  gap: 0;
+  font-size: 0.42rem;
   font-weight: 600;
   transition: all 0.2s;
   background: rgba(201,168,76,0.06);
   border-top: 1px solid rgba(201,168,76,0.1);
 }
 .shift .shift-icon {
-  font-size: 1.15rem;
+  font-size: 0.65rem;
   line-height: 1;
   filter: grayscale(0.6) opacity(0.55);
 }
 .shift .shift-text {
-  font-size: 0.6rem;
+  font-size: 0.4rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -311,7 +311,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 }
 .shift.bk-day .shift-icon {
   filter: none;
-  font-size: 1.25rem;
+  font-size: 0.7rem;
 }
 .shift.bk-night {
   background: linear-gradient(135deg, var(--deep), var(--deep2));
@@ -320,24 +320,24 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 }
 .shift.bk-night .shift-icon {
   filter: none;
-  font-size: 1.25rem;
+  font-size: 0.7rem;
 }
 .shift.bk-full {
   background: linear-gradient(90deg, #1A5276, var(--deep2));
   color: var(--gold-light);
   font-weight: 700;
   flex: 2;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-shadow: 0 1px 3px rgba(0,0,0,0.3);
   flex-direction: row;
-  gap: 6px;
+  gap: 3px;
 }
 .shift.bk-full .shift-icon {
   filter: none;
-  font-size: 1.3rem;
+  font-size: 0.75rem;
 }
 .shift.bk-full .shift-text {
-  font-size: 0.78rem;
+  font-size: 0.5rem;
 }
 
 /* ============ مفتاح علامات الحجز ============ */
@@ -464,9 +464,12 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   .cal-header::after { width: 12px; }
   .day-num { font-size: 1rem; top: 6px; right: 8px; }
   .cal-day.today .day-num { width: 26px; height: 26px; font-size: 0.78rem; }
-  .day-shifts { height: 36px; }
-  .shift, .shift.bk-day, .shift.bk-night { font-size: 0.7rem; }
-  .shift.bk-full { font-size: 0.62rem; }
+  .day-shifts { height: 22px; }
+  .shift .shift-icon { font-size: 0.55rem; }
+  .shift.bk-day .shift-icon, .shift.bk-night .shift-icon { font-size: 0.6rem; }
+  .shift .shift-text { font-size: 0.35rem; }
+  .shift.bk-full .shift-icon { font-size: 0.65rem; }
+  .shift.bk-full .shift-text { font-size: 0.45rem; }
 }
 
 /* ============ تلميح السلايد للتقويم ============ */
@@ -552,6 +555,39 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .pc-price { font-size:1.25rem; color:#8B5E0A; font-weight:700; font-family:'Amiri',serif; background:rgba(201,168,76,0.12); border-radius:8px; padding:6px 10px; display:inline-block; margin-top:6px; }
 .pc-price span { font-size:0.75rem; color:var(--muted); font-weight:600; }
 .price-input { width:100%; margin-bottom:12px; padding:13px 14px; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.95rem; color:var(--text); background:var(--cream); outline:none; direction:rtl; transition:all 0.2s; }
+
+/* أزرار نوع الحجز - شباب/عوائل */
+.booking-type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.booking-type-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 12px;
+  background: white;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.booking-type-btn:hover {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+.booking-type-btn.active {
+  background: linear-gradient(135deg, var(--deep), var(--deep2));
+  color: var(--gold-light);
+  border-color: var(--gold);
+  box-shadow: 0 4px 14px rgba(26,10,46,0.25);
+}
 
 /* عدد البالغين - stepper */
 .adults-stepper {
@@ -1163,23 +1199,11 @@ input[type=number] { -moz-appearance:textfield; }
     <div class="legend-title">دليل علامات الحجز</div>
     <div class="legend-items">
       <div class="legend-item">
-        <div class="legend-box legend-available">
-          <span style="font-size:1.1rem;">☀️</span>
-        </div>
-        <span class="legend-label">شفت نهاري <strong>متاح</strong></span>
-      </div>
-      <div class="legend-item">
         <div class="legend-box legend-day-booked">
           <span style="font-size:1.1rem;">☀️</span>
           <span style="font-size:0.55rem;font-weight:700;">محجوز</span>
         </div>
         <span class="legend-label">شفت نهاري <strong>محجوز</strong></span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-box legend-available">
-          <span style="font-size:1.1rem;">🌙</span>
-        </div>
-        <span class="legend-label">شفت ليلي <strong>متاح</strong></span>
       </div>
       <div class="legend-item">
         <div class="legend-box legend-night-booked">
@@ -1250,15 +1274,39 @@ input[type=number] { -moz-appearance:textfield; }
     <input type="text" class="price-input" id="pmName" placeholder="اسم صاحب الحجز *">
     <input type="tel" class="price-input" id="pmPhone" placeholder="رقم الجوال *" dir="ltr">
 
-    <!-- عدد البالغين - قائمة اختيارات -->
+    <!-- نوع الحجز: شباب / عوائل -->
     <div style="margin-bottom:12px;">
-      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">👨‍👩‍👧 عدد الأشخاص البالغين *</label>
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:8px;font-weight:600;">🎯 نوع الحجز *</label>
+      <div class="booking-type-toggle">
+        <button type="button" class="booking-type-btn active" data-type="family" id="btnTypeFamily">
+          <span style="font-size:1.2rem;">👨‍👩‍👧‍👦</span>
+          <span>عوائل</span>
+        </button>
+        <button type="button" class="booking-type-btn" data-type="youth" id="btnTypeYouth">
+          <span style="font-size:1.2rem;">🧑‍🤝‍🧑</span>
+          <span>شباب</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- عدد الأشخاص - قائمة اختيارات (تتغير حسب النوع) -->
+    <div style="margin-bottom:12px;" id="adultsWrap">
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;" id="adultsLabel">👨‍👩‍👧 عدد الأشخاص البالغين *</label>
       <select id="pmAdults" class="price-input" style="margin-bottom:0;cursor:pointer;">
         <option value="1-5">1 — 5 أشخاص</option>
         <option value="6-10" selected>6 — 10 أشخاص</option>
         <option value="11-20">11 — 20 شخص</option>
         <option value="20+">أكثر من 20</option>
       </select>
+    </div>
+
+    <!-- إدخال عدد الأشخاص للشباب (مخفي بالافتراضي) -->
+    <div style="margin-bottom:12px;display:none;" id="youthCountWrap">
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">🧑‍🤝‍🧑 عدد الأشخاص (الحد الأقصى 10، فوق ذلك إضافي 10,000 د.ع/شخص) *</label>
+      <input type="number" id="pmYouthCount" class="price-input" min="1" max="50" value="5" style="margin-bottom:0;">
+      <div id="youthExtraInfo" style="margin-top:8px;font-size:0.8rem;color:var(--muted);display:none;background:rgba(201,168,76,0.08);padding:8px 12px;border-radius:8px;border:1px dashed rgba(201,168,76,0.3);">
+        <strong style="color:var(--gold);">ℹ️ تنبيه:</strong> <span id="youthExtraText"></span>
+      </div>
     </div>
     
     <!-- الشروط والأحكام -->
@@ -1672,10 +1720,64 @@ input[type=number] { -moz-appearance:textfield; }
     });
   })();
 
+  // ---- نوع الحجز: شباب / عوائل ----
+  var currentBookingType='family'; // الافتراضي: عوائل
+  var YOUTH_EXTRA_PER_PERSON=10000; // الزيادة لكل شخص فوق 10
+  var YOUTH_FREE_LIMIT=10;
+
+  (function(){
+    var btnFamily=document.getElementById('btnTypeFamily');
+    var btnYouth=document.getElementById('btnTypeYouth');
+    var adultsWrap=document.getElementById('adultsWrap');
+    var youthWrap=document.getElementById('youthCountWrap');
+    var youthInput=document.getElementById('pmYouthCount');
+    var youthExtraInfo=document.getElementById('youthExtraInfo');
+    var youthExtraText=document.getElementById('youthExtraText');
+    if(!btnFamily||!btnYouth) return;
+
+    function setType(type){
+      currentBookingType=type;
+      if(type==='family'){
+        btnFamily.classList.add('active');
+        btnYouth.classList.remove('active');
+        adultsWrap.style.display='block';
+        youthWrap.style.display='none';
+      } else {
+        btnYouth.classList.add('active');
+        btnFamily.classList.remove('active');
+        adultsWrap.style.display='none';
+        youthWrap.style.display='block';
+        updateYouthExtra();
+      }
+    }
+    btnFamily.onclick=function(){setType('family');};
+    btnYouth.onclick=function(){setType('youth');};
+
+    // حساب الإضافي للشباب
+    function updateYouthExtra(){
+      if(!youthInput) return;
+      var count=parseInt(arabicToEnglishDigits(youthInput.value))||0;
+      if(count>YOUTH_FREE_LIMIT){
+        var extra=count-YOUTH_FREE_LIMIT;
+        var extraAmount=extra*YOUTH_EXTRA_PER_PERSON;
+        youthExtraText.textContent='عدد الأشخاص الإضافي: '+extra+' × 10,000 د.ع = '+extraAmount.toLocaleString()+' د.ع زيادة';
+        youthExtraInfo.style.display='block';
+      } else {
+        youthExtraInfo.style.display='none';
+      }
+    }
+    if(youthInput){
+      youthInput.addEventListener('input',function(){
+        var v=arabicToEnglishDigits(youthInput.value).replace(/[^0-9]/g,'');
+        if(v!==youthInput.value) youthInput.value=v;
+        updateYouthExtra();
+      });
+    }
+  })();
+
   document.getElementById('btnConfirmBooking').onclick=async function(){
     var name=document.getElementById('pmName').value.trim();
     var phoneRaw=document.getElementById('pmPhone').value.trim();
-    var adults=document.getElementById('pmAdults').value;
     // تحويل الأرقام العربية إلى انكليزية للجوال
     var phone=arabicToEnglishDigits(phoneRaw);
     if(!name){toast('أدخل اسم صاحب الحجز');return;}
@@ -1690,8 +1792,31 @@ input[type=number] { -moz-appearance:textfield; }
       setTimeout(function(){document.getElementById('pmPhone').style.borderColor='';},3000);
       return;
     }
-    // عدد البالغين من الـ select - دائماً صحيح
-    var adultsClean=adults||'1-5';
+
+    // تحديد عدد الأشخاص ونوع الحجز
+    var typeLabel='';
+    var guestsDisplay='';
+    var youthCount=0;
+    var extraAmount=0;
+
+    if(currentBookingType==='youth'){
+      typeLabel='🧑‍🤝‍🧑 شباب';
+      var yc=arabicToEnglishDigits(document.getElementById('pmYouthCount').value).replace(/[^0-9]/g,'');
+      youthCount=parseInt(yc)||0;
+      if(youthCount<1){
+        toast('❌ أدخل عدد الأشخاص');
+        document.getElementById('pmYouthCount').focus();
+        return;
+      }
+      guestsDisplay=youthCount+' شخص';
+      if(youthCount>YOUTH_FREE_LIMIT){
+        var extra=youthCount-YOUTH_FREE_LIMIT;
+        extraAmount=extra*YOUTH_EXTRA_PER_PERSON;
+      }
+    } else {
+      typeLabel='👨‍👩‍👧‍👦 عوائل';
+      guestsDisplay=document.getElementById('pmAdults').value||'1-5';
+    }
 
     var btn=document.getElementById('btnConfirmBooking');
     btn.disabled=true;btn.innerHTML='<span>⏳</span> جاري الحفظ...';
@@ -1703,13 +1828,20 @@ input[type=number] { -moz-appearance:textfield; }
     var st={day:'١٠ص—٥م',night:'٧م—٨ص',full:'٢٤ ساعة'};
     var dKey=new Date(dkey(y,m,d)).getDay();
     var dynPrices=customPrices[dKey]||defaultPrices[dKey];
-    var sp={day:dynPrices.day.toLocaleString(),night:dynPrices.night.toLocaleString(),full:dynPrices.full.toLocaleString()};
+    // حساب السعر الأساسي + الإضافي
+    var basePrice=dynPrices[selShift];
+    var totalPrice=basePrice+extraAmount;
+    var sp={day:basePrice.toLocaleString(),night:basePrice.toLocaleString(),full:basePrice.toLocaleString()};
 
     try {
       await addDoc(collection(db,'bookings'),{
         date:dkey(y,m,d), displayDate:dd, shift:selShift,
         name:name, phone:phoneClean,
-        guests:adultsClean,
+        guests:guestsDisplay,
+        bookingType:currentBookingType,
+        youthCount:currentBookingType==='youth'?youthCount:null,
+        extraAmount:extraAmount,
+        totalPrice:totalPrice,
         createdAt:new Date().toISOString()
       });
 
@@ -1717,10 +1849,16 @@ input[type=number] { -moz-appearance:textfield; }
       document.getElementById('pmName').value='';
       document.getElementById('pmPhone').value='';
       document.getElementById('pmAdults').value='6-10';
+      document.getElementById('pmYouthCount').value='5';
 
-      // بناء رسالة الحجز الكاملة (نفس الرسالة للواتساب والإيميل)
+      // بناء رسالة الحجز الكاملة
       var dayName=days[new Date(dkey(y,m,d)).getDay()];
-      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n💰 السعر: '+sp[selShift]+' د.ع\n📞 الجوال: '+phoneClean+'\n👨‍👩‍👧 عدد البالغين: '+adultsClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
+      var priceSection='💰 السعر الأساسي: '+basePrice.toLocaleString()+' د.ع';
+      if(extraAmount>0){
+        priceSection+='\n➕ إضافي ('+(youthCount-YOUTH_FREE_LIMIT)+' شخص × 10,000): '+extraAmount.toLocaleString()+' د.ع';
+        priceSection+='\n💎 الإجمالي: '+totalPrice.toLocaleString()+' د.ع';
+      }
+      var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')\n🎯 نوع الحجز: '+typeLabel+'\n👥 عدد الأشخاص: '+guestsDisplay+'\n'+priceSection+'\n📞 الجوال: '+phoneClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور والموسيقى\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
 
       // إرسال إيميل تلقائي بنفس رسالة الواتساب
       try {
@@ -1729,8 +1867,8 @@ input[type=number] { -moz-appearance:textfield; }
           date: dayName+' '+dd,
           shift: se[selShift]+' '+sl[selShift]+' ('+st[selShift]+')',
           phone: phoneClean,
-          guests: adultsClean,
-          price: sp[selShift]+' د.ع',
+          guests: guestsDisplay,
+          price: totalPrice.toLocaleString()+' د.ع',
           full_message: msg
         }).then(function(response){
           console.log('✅ Email sent successfully:', response);
