@@ -330,14 +330,14 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   letter-spacing: 0.3px;
   text-shadow: 0 1px 3px rgba(0,0,0,0.3);
   flex-direction: row;
-  gap: 3px;
+  gap: 1px;
+  justify-content: center;
+  align-items: center;
 }
 .shift.bk-full .shift-icon {
   filter: none;
-  font-size: 0.75rem;
-}
-.shift.bk-full .shift-text {
-  font-size: 0.5rem;
+  font-size: 0.72rem;
+  line-height: 1;
 }
 
 /* ============ مفتاح علامات الحجز ============ */
@@ -468,8 +468,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   .shift .shift-icon { font-size: 0.55rem; }
   .shift.bk-day .shift-icon, .shift.bk-night .shift-icon { font-size: 0.6rem; }
   .shift .shift-text { font-size: 0.35rem; }
-  .shift.bk-full .shift-icon { font-size: 0.65rem; }
-  .shift.bk-full .shift-text { font-size: 0.45rem; }
+  .shift.bk-full .shift-icon { font-size: 0.6rem; }
 }
 
 /* ============ تلميح السلايد للتقويم ============ */
@@ -1213,9 +1212,9 @@ input[type=number] { -moz-appearance:textfield; }
         <span class="legend-label">شفت ليلي <strong>محجوز</strong></span>
       </div>
       <div class="legend-item">
-        <div class="legend-box legend-full-booked">
-          <span style="font-size:1.1rem;">🌟</span>
-          <span style="font-size:0.55rem;font-weight:700;">محجوز</span>
+        <div class="legend-box legend-full-booked" style="flex-direction:row;gap:2px;">
+          <span style="font-size:0.95rem;">☀️</span>
+          <span style="font-size:0.95rem;">🌙</span>
         </div>
         <span class="legend-label">يوم <strong>كامل محجوز</strong></span>
       </div>
@@ -1557,7 +1556,11 @@ input[type=number] { -moz-appearance:textfield; }
       cell.className='cal-day'+(past?' past':'')+(isT?' today':'');
       var ns=document.createElement('span');ns.className='day-num';ns.textContent=ar(d);cell.appendChild(ns);
       var sd=document.createElement('div');sd.className='day-shifts';
-      if(fb2){var s=document.createElement('div');s.className='shift bk-full';s.innerHTML='<span class="shift-icon">🌟</span><span class="shift-text">محجوز</span>';sd.appendChild(s);}
+      if(fb2){
+        var s=document.createElement('div');s.className='shift bk-full';
+        s.innerHTML='<span class="shift-icon">☀️</span><span class="shift-icon" style="font-size:0.65rem;margin-right:-2px;">🌙</span>';
+        sd.appendChild(s);
+      }
       else{
         var s1=document.createElement('div');s1.className='shift shift-day-slot'+(db2?' bk-day':'');s1.innerHTML='<span class="shift-icon">☀️</span>'+(db2?'<span class="shift-text">محجوز</span>':'');sd.appendChild(s1);
         var s2=document.createElement('div');s2.className='shift shift-night-slot'+(nb?' bk-night':'');s2.innerHTML='<span class="shift-icon">🌙</span>'+(nb?'<span class="shift-text">محجوز</span>':'');sd.appendChild(s2);
