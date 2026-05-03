@@ -1272,6 +1272,9 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
     <input type="text" class="price-input" id="pmName" placeholder="اسم صاحب الحجز *">
     <input type="tel" class="price-input" id="pmPhone" placeholder="رقم الجوال *" dir="ltr">
+    <div id="waHint" style="display:none;margin:-8px 0 10px;padding:8px 12px;background:rgba(37,211,102,0.08);border-right:3px solid #25D366;border-radius:8px;font-size:0.78rem;color:#1a7a40;font-weight:600;">
+      💬 تأكد إن هذا الرقم مفعّل على واتساب
+    </div>
 
     <!-- نوع الحجز: شباب / عوائل -->
     <div style="margin-bottom:12px;">
@@ -1443,7 +1446,7 @@ input[type=number] { -moz-appearance:textfield; }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBrNj75LNUT2FUxUiP01sp88xuwMfsF090",
@@ -1720,6 +1723,9 @@ input[type=number] { -moz-appearance:textfield; }
     phoneInput.addEventListener('input',function(){
       var v=arabicToEnglishDigits(phoneInput.value).replace(/[^0-9]/g,'');
       if(v!==phoneInput.value) phoneInput.value=v;
+      // تنبيه واتساب: يظهر لما الرقم يكتمل 11 رقم
+      var waHint=document.getElementById('waHint');
+      if(waHint) waHint.style.display=v.replace(/[^0-9]/g,'').length===11?'block':'none';
     });
   })();
 
@@ -1796,6 +1802,7 @@ input[type=number] { -moz-appearance:textfield; }
       return;
     }
 
+
     // تحديد عدد الأشخاص ونوع الحجز
     var typeLabel='';
     var guestsDisplay='';
@@ -1851,6 +1858,7 @@ input[type=number] { -moz-appearance:textfield; }
       document.getElementById('priceOverlay').classList.remove('open');
       document.getElementById('pmName').value='';
       document.getElementById('pmPhone').value='';
+      var waH=document.getElementById('waHint');if(waH)waH.style.display='none';
       document.getElementById('pmAdults').value='6-10';
       document.getElementById('pmYouthCount').value='5';
 
@@ -1970,6 +1978,12 @@ input[type=number] { -moz-appearance:textfield; }
       var phone3=b.phone&&b.phone!=='—'?b.phone.replace(/[^0-9]/g,''):'';
       if(phone3.startsWith('0'))phone3='964'+phone3.slice(1);
 
+      // كشف لو الرقم يحتوي على واتساب أو مشكلة
+      var rawPhone=b.phone||'';
+      var phoneHasWa=/whatsapp|واتساب|wa\.me|📱/i.test(rawPhone);
+      var phoneDigits=rawPhone.replace(/[^0-9]/g,'');
+      var phoneWarn=phoneHasWa||phoneDigits.length!==11;
+
       html+='<div class="a-row" id="row_'+i+'" style="'+rowStyle+'flex-direction:column;align-items:stretch;gap:10px;">'+
         // السطر الأول: الأيقونة + المعلومات + شارة
         '<div style="display:flex;align-items:center;gap:10px;">'+
@@ -1979,11 +1993,19 @@ input[type=number] { -moz-appearance:textfield; }
             '<div class="a-meta">'+
               '<span>'+b.displayDate+'</span>'+
               '<span>'+sl2[b.shift]+'</span>'+
-              '<span>'+b.phone+'</span>'+
+              '<span style="'+(phoneWarn?'color:#e74c3c;font-weight:700;':'')+'">'+rawPhone+(phoneWarn?' ⚠️':'')+' </span>'+
               '<span>'+b.guests+'</span>'+
             '</div>'+
           '</div>'+
           '<button class="a-del" data-fid="'+fid+'">🗑</button>'+
+        '</div>'+
+        // قسم تعديل رقم الجوال
+        '<div style="'+(phoneWarn?'background:rgba(231,76,60,0.08);border:1.5px dashed rgba(231,76,60,0.4);':'background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);')+'border-radius:10px;padding:8px 10px;">'+
+          (phoneWarn?'<div style="font-size:0.68rem;color:#c0392b;font-weight:700;margin-bottom:5px;">⚠️ راجع الرقم: '+rawPhone+'</div>':'<div style="font-size:0.68rem;color:var(--muted);font-weight:600;margin-bottom:5px;">📞 تعديل رقم الجوال</div>')+
+          '<div style="display:flex;gap:6px;align-items:center;">'+
+            '<input type="tel" id="editPhone_'+i+'" value="'+phoneDigits+'" placeholder="07822216325" dir="ltr" style="flex:1;padding:6px 10px;border:1.5px solid rgba(201,168,76,0.35);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.85rem;background:white;outline:none;text-align:left;">'+
+            '<button data-idx="'+i+'" data-fid="'+fid+'" class="btn-save-phone" style="padding:6px 12px;background:linear-gradient(135deg,var(--deep),var(--deep2));color:var(--gold-light);border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">💾 حفظ</button>'+
+          '</div>'+
         '</div>'+
         // السطر الثاني: إدخال المبالغ + زر تثبيت
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px;">'+
@@ -2041,6 +2063,27 @@ input[type=number] { -moz-appearance:textfield; }
         } catch(emailErr){ console.log('Email error:', emailErr); }
 
         window.open('https://wa.me/'+phone4+'?text='+encodeURIComponent(msg),'_blank');
+      };
+    });
+
+    // أحداث زر حفظ الرقم
+    c.querySelectorAll('.btn-save-phone').forEach(function(btn){
+      btn.onclick=async function(){
+        var idx3=parseInt(btn.getAttribute('data-idx'));
+        var fid3=btn.getAttribute('data-fid');
+        var newPhone=document.getElementById('editPhone_'+idx3).value.replace(/[^0-9]/g,'');
+        if(newPhone.length!==11){
+          toast('❌ الرقم يجب أن يكون 11 رقم بالضبط');
+          document.getElementById('editPhone_'+idx3).style.borderColor='#e74c3c';
+          setTimeout(function(){document.getElementById('editPhone_'+idx3).style.borderColor='';},2500);
+          return;
+        }
+        try{
+          await updateDoc(doc(db,'bookings',fid3),{phone:newPhone});
+          toast('✅ تم حفظ الرقم: '+newPhone);
+          btn.style.background='linear-gradient(135deg,#25D366,#128C7E)';
+          setTimeout(function(){btn.style.background='';},2000);
+        }catch(err){toast('❌ خطأ: '+err.message);}
       };
     });
 
@@ -2355,7 +2398,7 @@ input[type=number] { -moz-appearance:textfield; }
       } else {
         g.scrollBy({left:300,behavior:'smooth'});
       }
-    },3500); // كل 3.5 ثانية
+    },1000); // كل ثانية
 
     // إيقاف السلايد عند تفاعل المستخدم
     g.addEventListener('mouseenter',function(){galleryUserPaused=true;});
