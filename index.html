@@ -1274,17 +1274,18 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
 
     <!-- خيارات اليوم الكامل -->
-    <div id="fullDayOptions" style="display:none;margin-bottom:14px;">
+    <div id="fullDayOptions" style="display:none;margin:14px 0;padding:14px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1.5px solid rgba(201,168,76,0.3);border-radius:16px;">
+      <div style="text-align:center;font-size:0.8rem;font-weight:700;color:var(--deep2);margin-bottom:10px;">🌟 اختر نوع اليوم الكامل</div>
       <div style="display:flex;gap:10px;justify-content:center;">
-        <div class="price-card" id="pcFullDN" style="flex:1;max-width:180px;cursor:pointer;padding:12px 8px;">
-          <span class="pc-icon" style="font-size:1.2rem;">☀️➜🌙</span>
-          <div class="pc-label" style="font-size:0.78rem;">صباحي → مسائي</div>
-          <div class="pc-time" style="font-size:0.58rem;line-height:1.4;">١٠ص اليوم<br>↓ ٨ص اليوم التالي</div>
+        <div class="price-card" id="pcFullDN" style="flex:1;max-width:180px;cursor:pointer;padding:14px 10px;margin:0;border:2px solid rgba(201,168,76,0.3);border-radius:14px;text-align:center;background:white;transition:all 0.2s;">
+          <span style="font-size:1.5rem;display:block;margin-bottom:6px;">☀️➜🌙</span>
+          <div style="font-size:0.82rem;font-weight:700;color:var(--deep2);margin-bottom:4px;">صباحي → مسائي</div>
+          <div style="font-size:0.62rem;color:var(--muted);line-height:1.5;">١٠ص اليوم<br>↓ ٨ص اليوم التالي</div>
         </div>
-        <div class="price-card" id="pcFullND" style="flex:1;max-width:180px;cursor:pointer;padding:12px 8px;">
-          <span class="pc-icon" style="font-size:1.2rem;">🌙➜☀️</span>
-          <div class="pc-label" style="font-size:0.78rem;">مسائي → صباحي</div>
-          <div class="pc-time" style="font-size:0.58rem;line-height:1.4;">٧م اليوم<br>↓ ٥م اليوم التالي</div>
+        <div class="price-card" id="pcFullND" style="flex:1;max-width:180px;cursor:pointer;padding:14px 10px;margin:0;border:2px solid rgba(201,168,76,0.3);border-radius:14px;text-align:center;background:white;transition:all 0.2s;">
+          <span style="font-size:1.5rem;display:block;margin-bottom:6px;">🌙➜☀️</span>
+          <div style="font-size:0.82rem;font-weight:700;color:var(--deep2);margin-bottom:4px;">مسائي → صباحي</div>
+          <div style="font-size:0.62rem;color:var(--muted);line-height:1.5;">٧م اليوم<br>↓ ٥م اليوم التالي</div>
         </div>
       </div>
     </div>
@@ -1752,7 +1753,8 @@ input[type=number] { -moz-appearance:textfield; }
   };
   document.getElementById('pcFull').onclick=function(){
     if(document.getElementById('pcFull').classList.contains('price-disabled'))return;
-    document.getElementById('fullDayOptions').style.display='block';
+    var opts=document.getElementById('fullDayOptions');
+    opts.style.display=(opts.style.display==='none')?'block':'none';
     // check availability for sub-options
     var d=selDate.d,y=selDate.y,m=selDate.m;
     var k=dkey(y,m,d),bs=bForDate(k);
@@ -1763,15 +1765,27 @@ input[type=number] { -moz-appearance:textfield; }
     var nextBs=bForDate(nextK);
     var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
     var nextNightBooked=nextBs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
-    // صباحي→مسائي: يحتاج نهاري اليوم + ليلي اليوم التالي (حتى ٨ص)
-    document.getElementById('pcFullDN').className='price-card'+((db2||nextNightBooked)?' price-disabled':'');
-    // مسائي→صباحي: يحتاج مسائي اليوم + نهاري اليوم التالي (حتى ٥م)
-    document.getElementById('pcFullND').className='price-card'+((nb||nextDayBooked)?' price-disabled':'');
-    document.getElementById('pcFullDN').style.flex='1';document.getElementById('pcFullDN').style.maxWidth='180px';document.getElementById('pcFullDN').style.cursor='pointer';document.getElementById('pcFullDN').style.padding='12px 8px';
-    document.getElementById('pcFullND').style.flex='1';document.getElementById('pcFullND').style.maxWidth='180px';document.getElementById('pcFullND').style.cursor='pointer';document.getElementById('pcFullND').style.padding='12px 8px';
+    // صباحي→مسائي: يحتاج نهاري اليوم فاضي + ليلي اليوم التالي فاضي
+    var dnEl=document.getElementById('pcFullDN');
+    dnEl.className='price-card'+((db2||nextNightBooked)?' price-disabled':'');
+    // مسائي→صباحي: يحتاج مسائي اليوم فاضي + نهاري اليوم التالي فاضي
+    var ndEl=document.getElementById('pcFullND');
+    ndEl.className='price-card'+((nb||nextDayBooked)?' price-disabled':'');
   };
-  document.getElementById('pcFullDN').onclick=function(){selectShift('full_dn');};
-  document.getElementById('pcFullND').onclick=function(){selectShift('full_nd');};
+  document.getElementById('pcFullDN').onclick=function(e){
+    e.stopPropagation();
+    if(this.classList.contains('price-disabled'))return;
+    selectShift('full_dn');
+    this.style.border='2px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
+    document.getElementById('pcFullND').style.border='2px solid rgba(201,168,76,0.3)';document.getElementById('pcFullND').style.background='white';
+  };
+  document.getElementById('pcFullND').onclick=function(e){
+    e.stopPropagation();
+    if(this.classList.contains('price-disabled'))return;
+    selectShift('full_nd');
+    this.style.border='2px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
+    document.getElementById('pcFullDN').style.border='2px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
+  };
 
   // ---- تحويل الأرقام العربية إلى انكليزية ----
   function arabicToEnglishDigits(str){
