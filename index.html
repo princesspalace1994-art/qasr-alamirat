@@ -2236,8 +2236,9 @@ input[type=number] { -moz-appearance:textfield; }
   } catch(e){console.log('Prices sync error:',e);}
   
   function getPriceFor(date,shift){
+    var sh=(shift==='full_dn'||shift==='full_nd')?'full':shift;
     var d=new Date(date).getDay();
-    return customPrices[d]&&customPrices[d][shift]?customPrices[d][shift]:defaultPrices[d][shift];
+    return customPrices[d]&&customPrices[d][sh]?customPrices[d][sh]:(defaultPrices[d]&&defaultPrices[d][sh]?defaultPrices[d][sh]:0);
   }
 
   // ---- أسعار العرض في الواجهة (منفصلة عن أسعار الحجز) ----
