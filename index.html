@@ -1685,12 +1685,15 @@ input[type=number] { -moz-appearance:textfield; }
     nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_nd';});
-    var nextNightBooked=nextBs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_dn';});
-    // صباحي→مسائي محتاج: نهاري اليوم فاضي + ليلي بكرا فاضي
-    var dnAvail=!db2 && !nextNightBooked;
+    var nextDayBooked=nextBs.some(function(b){return (b.shift==='day'||b.shift==='full'||b.shift==='full_nd'||b.shift==='full_dn') && !b.isFullDayExtension;});
+    var nextNightBooked=nextBs.some(function(b){return (b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
+    // أيضاً نفحص إذا بكرا عنده امتداد يحجز الشفت
+    var nextDayExt=nextBs.some(function(b){return b.isFullDayExtension && (b.shift==='day');});
+    var nextNightExt=nextBs.some(function(b){return b.isFullDayExtension && (b.shift==='night');});
+    // صباحي→مسائي محتاج: نهاري اليوم فاضي + ليلي بكرا فاضي (ليلي بكرا = لا حجز ليلي ولا امتداد ليلي)
+    var dnAvail=!db2 && !(nextNightBooked||nextNightExt);
     // مسائي→صباحي محتاج: مسائي اليوم فاضي + نهاري بكرا فاضي
-    var ndAvail=!nb && !nextDayBooked;
+    var ndAvail=!nb && !(nextDayBooked||nextDayExt);
     document.getElementById('pcFull').className='price-card'+((!dnAvail&&!ndAvail)?' price-disabled':'');
     // إخفاء خيارات اليوم الكامل عند فتح النافذة
     document.getElementById('fullDayOptions').style.display='none';
@@ -1761,14 +1764,16 @@ input[type=number] { -moz-appearance:textfield; }
     var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
-    var nextNightBooked=nextBs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
+    var nextDayBooked=nextBs.some(function(b){return (b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
+    var nextNightBooked=nextBs.some(function(b){return (b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
+    var nextDayExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
+    var nextNightExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
     // صباحي→مسائي: يحتاج نهاري اليوم فاضي + ليلي اليوم التالي فاضي
     var dnEl=document.getElementById('pcFullDN');
-    dnEl.className='price-card'+((db2||nextNightBooked)?' price-disabled':'');
+    dnEl.className='price-card'+((db2||(nextNightBooked||nextNightExt))?' price-disabled':'');
     // مسائي→صباحي: يحتاج مسائي اليوم فاضي + نهاري اليوم التالي فاضي
     var ndEl=document.getElementById('pcFullND');
-    ndEl.className='price-card'+((nb||nextDayBooked)?' price-disabled':'');
+    ndEl.className='price-card'+((nb||(nextDayBooked||nextDayExt))?' price-disabled':'');
   };
   document.getElementById('pcFullDN').onclick=function(e){
     e.stopPropagation();
