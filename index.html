@@ -820,7 +820,7 @@ input[type=number] { -moz-appearance:textfield; }
 
 /* البطاقة الوحدة المركزية */
 #pricesShowcase {
-  max-width: 380px;
+  max-width: 300px;
   margin: 0 auto;
 }
 #pricesShowcase .price-card {
@@ -886,8 +886,8 @@ input[type=number] { -moz-appearance:textfield; }
 .price-card {
   position: relative;
   background: linear-gradient(160deg, #ffffff 0%, #fdfaf2 100%);
-  border-radius: 22px;
-  padding: 28px 22px 24px;
+  border-radius: 16px;
+  padding: 14px 14px 12px;
   border: 1px solid rgba(201,168,76,0.25);
   box-shadow: 0 8px 30px rgba(26,10,46,0.08);
   transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
@@ -931,14 +931,14 @@ input[type=number] { -moz-appearance:textfield; }
 
 .price-day-badge {
   display: inline-block;
-  padding: 6px 18px;
+  padding: 3px 12px;
   background: linear-gradient(135deg, var(--gold), var(--gold-light));
   color: var(--deep);
   border-radius: 50px;
-  font-size: 0.75rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 1px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
   box-shadow: 0 4px 12px rgba(201,168,76,0.3);
 }
 .price-card.weekend .price-day-badge {
@@ -947,10 +947,10 @@ input[type=number] { -moz-appearance:textfield; }
 
 .price-day-name {
   font-family: 'Amiri', serif;
-  font-size: 1.6rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--deep2);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   letter-spacing: 1px;
 }
 .price-card.weekend .price-day-name {
@@ -958,8 +958,8 @@ input[type=number] { -moz-appearance:textfield; }
 }
 
 .price-day-emoji {
-  font-size: 1.8rem;
-  margin-bottom: 14px;
+  font-size: 1.2rem;
+  margin-bottom: 6px;
   display: block;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
@@ -967,17 +967,17 @@ input[type=number] { -moz-appearance:textfield; }
 .price-shifts {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .price-shift {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 8px 10px;
   background: rgba(201,168,76,0.08);
-  border-radius: 14px;
+  border-radius: 10px;
   border: 1px solid rgba(201,168,76,0.15);
   transition: all 0.3s;
   position: relative;
@@ -1069,8 +1069,8 @@ input[type=number] { -moz-appearance:textfield; }
 .price-shift-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 5px;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -1078,12 +1078,12 @@ input[type=number] { -moz-appearance:textfield; }
   color: rgba(255,255,255,0.85);
 }
 .price-shift-icon {
-  font-size: 1.1rem;
+  font-size: 0.85rem;
 }
 
 .price-shift-value {
   font-family: 'Amiri', serif;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--deep2);
   white-space: nowrap;
@@ -1092,7 +1092,7 @@ input[type=number] { -moz-appearance:textfield; }
   color: var(--gold-light);
 }
 .price-shift-value .currency {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: var(--muted);
   font-weight: 500;
   margin-right: 3px;
@@ -2047,8 +2047,8 @@ input[type=number] { -moz-appearance:textfield; }
   function renderAdmin(){
     var pm={day:350000,night:400000,full:700000};
     var sn={day:'نهاري ☀️',night:'مسائي 🌙',full:'يوم كامل 🌟'};
-    var ic={day:'☀️',night:'🌙',full:'🌟'};
-    var bg={day:'rgba(26,82,118,0.1)',night:'rgba(45,22,84,0.1)',full:'rgba(201,168,76,0.15)'};
+    var ic={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️🌙',full_nd:'🌙☀️'};
+    var bg={day:'rgba(26,82,118,0.1)',night:'rgba(45,22,84,0.1)',full:'rgba(201,168,76,0.15)',full_dn:'rgba(201,168,76,0.15)',full_nd:'rgba(201,168,76,0.15)'};
     var sl2={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'صباحي→مسائي',full_nd:'مسائي→صباحي'};
     var st2={day:'١٠ص—٥م',night:'٧م—٨ص',full:'يوم كامل',full_dn:'صباحي→مسائي (١٠ص—٨ص)',full_nd:'مسائي→صباحي (٧م—٥م)'};
 
