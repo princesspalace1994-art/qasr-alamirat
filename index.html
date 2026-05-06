@@ -2057,7 +2057,7 @@ input[type=number] { -moz-appearance:textfield; }
     var tomorrow2=new Date(now);tomorrow2.setDate(tomorrow2.getDate()+1);
     var tomorrowStr=tomorrow2.getFullYear()+'-'+('0'+(tomorrow2.getMonth()+1)).slice(-2)+'-'+('0'+tomorrow2.getDate()).slice(-2);
 
-    var activeBookings=bookings.filter(function(b){return b.date>=ts;});
+    var activeBookings=bookings.filter(function(b){return b.date>=ts && !b.isFullDayExtension;});
     var total=activeBookings.length;
     var upc=activeBookings.filter(function(b){return b.date>ts;}).length;
     document.getElementById('adminStats').innerHTML=
@@ -2156,7 +2156,15 @@ input[type=number] { -moz-appearance:textfield; }
         var afterDisc=amtN-discN;
         var remaining=(afterDisc-depN).toLocaleString();
         var dayNm=dayNames[new Date(b2.date).getDay()];
-        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
+        var fullNote='';
+        if(b2.shift==='full_dn'){
+          var nxD=new Date(b2.date);nxD.setDate(nxD.getDate()+1);
+          fullNote='\n📌 من صباحي '+dayNm+' 10ص الى '+dayNames[nxD.getDay()]+' '+ar(nxD.getDate())+' '+months[nxD.getMonth()]+' 8ص';
+        } else if(b2.shift==='full_nd'){
+          var nxD=new Date(b2.date);nxD.setDate(nxD.getDate()+1);
+          fullNote='\n📌 من مسائي '+dayNm+' 7م الى '+dayNames[nxD.getDay()]+' '+ar(nxD.getDate())+' '+months[nxD.getMonth()]+' 5م';
+        }
+        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+fullNote+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
 
         // إرسال نفس رسالة التثبيت للإيميل
         try {
@@ -2204,9 +2212,25 @@ input[type=number] { -moz-appearance:textfield; }
     c.querySelectorAll('.a-del').forEach(function(btn){
       btn.onclick=function(){
         var fid2=btn.getAttribute('data-fid');
+        var rowEl=btn.closest('.a-row');
+        var idx4=parseInt(rowEl.id.replace('row_',''));
+        var b3=sorted[idx4];
         confirm2('تريد تحذف هذا الحجز؟',async function(){
-          try{await deleteDoc(doc(db,'bookings',fid2));toast('تم حذف الحجز');}
-          catch(err){toast('خطأ: '+err.message);}
+          try{
+            await deleteDoc(doc(db,'bookings',fid2));
+            // حذف الامتداد إذا يوم كامل
+            if(b3 && (b3.shift==='full_dn'||b3.shift==='full_nd')){
+              var nxD=new Date(b3.date);nxD.setDate(nxD.getDate()+1);
+              var nxK=nxD.getFullYear()+'-'+('0'+(nxD.getMonth()+1)).slice(-2)+'-'+('0'+nxD.getDate()).slice(-2);
+              var extBookings=bookings.filter(function(ex){
+                return ex.isFullDayExtension && ex.date===nxK && ex.phone===b3.phone;
+              });
+              for(var ei=0;ei<extBookings.length;ei++){
+                try{await deleteDoc(doc(db,'bookings',extBookings[ei].firestoreId));}catch(e){}
+              }
+            }
+            toast('تم حذف الحجز');
+          }catch(err){toast('خطأ: '+err.message);}
         });
       };
     });
