@@ -1274,18 +1274,16 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
 
     <!-- خيارات اليوم الكامل -->
-    <div id="fullDayOptions" style="display:none;margin:14px 0;padding:14px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1.5px solid rgba(201,168,76,0.3);border-radius:16px;">
-      <div style="text-align:center;font-size:0.8rem;font-weight:700;color:var(--deep2);margin-bottom:10px;">🌟 اختر نوع اليوم الكامل</div>
-      <div style="display:flex;gap:10px;justify-content:center;">
-        <div class="price-card" id="pcFullDN" style="flex:1;max-width:180px;cursor:pointer;padding:14px 10px;margin:0;border:2px solid rgba(201,168,76,0.3);border-radius:14px;text-align:center;background:white;transition:all 0.2s;">
-          <span style="font-size:1.5rem;display:block;margin-bottom:6px;">☀️➜🌙</span>
-          <div style="font-size:0.82rem;font-weight:700;color:var(--deep2);margin-bottom:4px;">صباحي → مسائي</div>
-          <div style="font-size:0.62rem;color:var(--muted);line-height:1.5;">١٠ص اليوم<br>↓ ٨ص اليوم التالي</div>
+    <div id="fullDayOptions" style="display:none;margin:8px 0;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
+      <div style="text-align:center;font-size:0.7rem;font-weight:700;color:var(--deep2);margin-bottom:6px;">اختر نوع اليوم الكامل</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <div class="price-card" id="pcFullDN" style="flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--deep2);margin-bottom:3px;">صباحي - مسائي</div>
+          <div style="font-size:0.6rem;color:var(--muted);line-height:1.5;">10ص اليوم - 8ص اليوم التالي</div>
         </div>
-        <div class="price-card" id="pcFullND" style="flex:1;max-width:180px;cursor:pointer;padding:14px 10px;margin:0;border:2px solid rgba(201,168,76,0.3);border-radius:14px;text-align:center;background:white;transition:all 0.2s;">
-          <span style="font-size:1.5rem;display:block;margin-bottom:6px;">🌙➜☀️</span>
-          <div style="font-size:0.82rem;font-weight:700;color:var(--deep2);margin-bottom:4px;">مسائي → صباحي</div>
-          <div style="font-size:0.62rem;color:var(--muted);line-height:1.5;">٧م اليوم<br>↓ ٥م اليوم التالي</div>
+        <div class="price-card" id="pcFullND" style="flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--deep2);margin-bottom:3px;">مسائي - صباحي</div>
+          <div style="font-size:0.6rem;color:var(--muted);line-height:1.5;">7م اليوم - 5م اليوم التالي</div>
         </div>
       </div>
     </div>
@@ -1776,15 +1774,15 @@ input[type=number] { -moz-appearance:textfield; }
     e.stopPropagation();
     if(this.classList.contains('price-disabled'))return;
     selectShift('full_dn');
-    this.style.border='2px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
-    document.getElementById('pcFullND').style.border='2px solid rgba(201,168,76,0.3)';document.getElementById('pcFullND').style.background='white';
+    this.style.border='1.5px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
+    document.getElementById('pcFullND').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullND').style.background='white';
   };
   document.getElementById('pcFullND').onclick=function(e){
     e.stopPropagation();
     if(this.classList.contains('price-disabled'))return;
     selectShift('full_nd');
-    this.style.border='2px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
-    document.getElementById('pcFullDN').style.border='2px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
+    this.style.border='1.5px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
+    document.getElementById('pcFullDN').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
   };
 
   // ---- تحويل الأرقام العربية إلى انكليزية ----
