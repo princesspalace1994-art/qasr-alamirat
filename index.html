@@ -1568,8 +1568,8 @@ input[type=number] { -moz-appearance:textfield; }
     for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
     for(var d=1;d<=dim;d++){
       var k=dkey(y,m,d),bs=bForDate(k);
-      var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn';});
-      var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_nd';});
+      var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
+      var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
       var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
@@ -1674,26 +1674,32 @@ input[type=number] { -moz-appearance:textfield; }
   function openPriceModal(d,y,m){
     selDate={d:d,y:y,m:m};selShift=null;
     var k=dkey(y,m,d),bs=bForDate(k);
-    var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn';});
-    var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_nd';});
+    // فحص الشفتات المحجوزة لليوم المختار (حجوزات حقيقية + امتدادات)
+    var dayTaken=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn';});
+    var dayTakenExt=bs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
+    var nightTaken=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
+    var nightTakenExt=bs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
+    var db2=dayTaken||dayTakenExt;
+    var nb=nightTaken||nightTakenExt;
     var cd=new Date(y,m,d);
     document.getElementById('priceModalDate').textContent=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
     document.getElementById('pcNight').className='price-card'+(nb?' price-disabled':'');
-    // يوم كامل: لازم على الأقل واحد من الخيارين متاح
+    // يوم كامل: نفحص اليوم التالي
     var nextDate=new Date(y,m,d);
     nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    var nextDayBooked=nextBs.some(function(b){return (b.shift==='day'||b.shift==='full'||b.shift==='full_nd'||b.shift==='full_dn') && !b.isFullDayExtension;});
-    var nextNightBooked=nextBs.some(function(b){return (b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
-    // أيضاً نفحص إذا بكرا عنده امتداد يحجز الشفت
-    var nextDayExt=nextBs.some(function(b){return b.isFullDayExtension && (b.shift==='day');});
-    var nextNightExt=nextBs.some(function(b){return b.isFullDayExtension && (b.shift==='night');});
-    // صباحي→مسائي محتاج: نهاري اليوم فاضي + ليلي بكرا فاضي (ليلي بكرا = لا حجز ليلي ولا امتداد ليلي)
-    var dnAvail=!db2 && !(nextNightBooked||nextNightExt);
-    // مسائي→صباحي محتاج: مسائي اليوم فاضي + نهاري بكرا فاضي
-    var ndAvail=!nb && !(nextDayBooked||nextDayExt);
+    // نهاري بكرا محجوز؟
+    var nextDayTaken=nextBs.some(function(b){return b.shift==='day'||b.shift==='full_dn';});
+    var nextDayTakenExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
+    // ليلي بكرا محجوز؟
+    var nextNightTaken=nextBs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
+    var nextNightTakenExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
+    // صباحي→مسائي: يحتاج نهاري اليوم فاضي + مسائي اليوم فاضي (لأنه يمتد لليل) + ليلي بكرا فاضي
+    var dnAvail=!db2 && !nb && !(nextNightTaken||nextNightTakenExt);
+    // مسائي→صباحي: يحتاج مسائي اليوم فاضي + نهاري بكرا فاضي
+    var ndAvail=!nb && !(nextDayTaken||nextDayTakenExt);
     document.getElementById('pcFull').className='price-card'+((!dnAvail&&!ndAvail)?' price-disabled':'');
     // إخفاء خيارات اليوم الكامل عند فتح النافذة
     document.getElementById('fullDayOptions').style.display='none';
@@ -1756,24 +1762,21 @@ input[type=number] { -moz-appearance:textfield; }
     if(document.getElementById('pcFull').classList.contains('price-disabled'))return;
     var opts=document.getElementById('fullDayOptions');
     opts.style.display=(opts.style.display==='none')?'block':'none';
-    // check availability for sub-options
     var d=selDate.d,y=selDate.y,m=selDate.m;
     var k=dkey(y,m,d),bs=bForDate(k);
-    var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
-    var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
+    var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
+    var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
     var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    var nextDayBooked=nextBs.some(function(b){return (b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
-    var nextNightBooked=nextBs.some(function(b){return (b.shift==='night'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd') && !b.isFullDayExtension;});
-    var nextDayExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
-    var nextNightExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
-    // صباحي→مسائي: يحتاج نهاري اليوم فاضي + ليلي اليوم التالي فاضي
+    var nextDayTaken=nextBs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
+    var nextNightTaken=nextBs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
+    // صباحي→مسائي: نهاري اليوم فاضي + مسائي اليوم فاضي + ليلي بكرا فاضي
     var dnEl=document.getElementById('pcFullDN');
-    dnEl.className='price-card'+((db2||(nextNightBooked||nextNightExt))?' price-disabled':'');
-    // مسائي→صباحي: يحتاج مسائي اليوم فاضي + نهاري اليوم التالي فاضي
+    dnEl.className='price-card'+((db2||nb||nextNightTaken)?' price-disabled':'');
+    // مسائي→صباحي: مسائي اليوم فاضي + نهاري بكرا فاضي
     var ndEl=document.getElementById('pcFullND');
-    ndEl.className='price-card'+((nb||(nextDayBooked||nextDayExt))?' price-disabled':'');
+    ndEl.className='price-card'+((nb||nextDayTaken)?' price-disabled':'');
   };
   document.getElementById('pcFullDN').onclick=function(e){
     e.stopPropagation();
