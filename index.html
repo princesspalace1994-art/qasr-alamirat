@@ -1429,6 +1429,7 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </details>
       <div class="admin-stats" id="adminStats"></div>
+      <button id="btnCleanOrphans" onclick="cleanOrphanExtensions()" style="display:block;margin:8px auto;padding:6px 14px;background:#e74c3c;color:white;border:none;border-radius:8px;font-size:0.72rem;font-family:Tajawal,sans-serif;cursor:pointer;font-weight:700;">🧹 مسح حجوزات الامتداد اليتيمة</button>
       <div class="a-sec-title">قائمة الحجوزات</div>
       <div class="a-bookings" id="adminBookings"></div>
     </div>
@@ -1738,18 +1739,11 @@ input[type=number] { -moz-appearance:textfield; }
     if(document.getElementById('pcFull').classList.contains('price-disabled'))return;
     var opts=document.getElementById('fullDayOptions');
     opts.style.display=(opts.style.display==='none')?'block':'none';
-    // فحص توفر اليوم التالي للخيار مسائي-صباحي فقط
-    var d=selDate.d,y=selDate.y,m=selDate.m;
-    var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
-    var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
-    var nextBs=bForDate(nextK);
-    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full';});
-    // مسائي-صباحي: يقفل فقط إذا نهاري بكرا محجوز (حجز حقيقي مو امتداد)
-    document.getElementById('pcFullND').className='price-card'+(nextDayBooked?' price-disabled':'');
-    document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;'+(nextDayBooked?'opacity:0.5;cursor:not-allowed;':'');
-    // صباحي-مسائي: دائماً مفعل إذا اليوم نفسه فاضي
+    // الخيارين دائماً مفعلين إذا اليوم نفسه فاضي (وصلنا لهنا يعني فاضي)
     document.getElementById('pcFullDN').className='price-card';
     document.getElementById('pcFullDN').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;';
+    document.getElementById('pcFullND').className='price-card';
+    document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;';
   };
   document.getElementById('pcFullDN').onclick=function(e){
     e.stopPropagation();
@@ -1915,24 +1909,6 @@ input[type=number] { -moz-appearance:textfield; }
         createdAt:new Date().toISOString()
       });
 
-      // يوم كامل: حجز الشفت المقابل لليوم التالي
-      if(selShift==='full_dn'||selShift==='full_nd'){
-        var nextDate=new Date(y,m,d);
-        nextDate.setDate(nextDate.getDate()+1);
-        var ny=nextDate.getFullYear(),nm=nextDate.getMonth(),nd=nextDate.getDate();
-        var ndd=ar(nd)+' '+months[nm]+' '+ar(ny);
-        var nextShift=(selShift==='full_dn')?'night':'day';
-        await addDoc(collection(db,'bookings'),{
-          date:dkey(ny,nm,nd), displayDate:ndd, shift:nextShift,
-          name:name+' (امتداد يوم كامل)',
-          phone:phoneClean, guests:guestsDisplay,
-          bookingType:currentBookingType,
-          extraAmount:0, totalPrice:0,
-          isFullDayExtension:true,
-          createdAt:new Date().toISOString()
-        });
-      }
-
       document.getElementById('priceOverlay').classList.remove('open');
       document.getElementById('pmName').value='';
       document.getElementById('pmPhone').value='';
@@ -2013,6 +1989,19 @@ input[type=number] { -moz-appearance:textfield; }
   }
   document.getElementById('btnAdminLogin').onclick=doLogin;
   document.getElementById('adminPass').onkeydown=function(e){if(e.key==='Enter')doLogin();};
+
+  // مسح حجوزات الامتداد اليتيمة (اللي ما عندها حجز أصلي)
+  window.cleanOrphanExtensions=async function(){
+    var orphans=bookings.filter(function(b){return b.isFullDayExtension;});
+    if(!orphans.length){toast('ما اكو حجوزات امتداد');return;}
+    confirm2('تريد تمسح '+orphans.length+' حجز امتداد؟',async function(){
+      var count=0;
+      for(var i=0;i<orphans.length;i++){
+        try{await deleteDoc(doc(db,'bookings',orphans[i].firestoreId));count++;}catch(e){}
+      }
+      toast('تم مسح '+count+' حجز امتداد');
+    });
+  };
 
   function renderAdmin(){
     var pm={day:350000,night:400000,full:700000};
