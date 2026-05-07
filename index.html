@@ -1760,10 +1760,8 @@ input[type=number] { -moz-appearance:textfield; }
   };
   document.getElementById('pcFullND').onclick=function(e){
     e.stopPropagation();
-    console.log('🟡 pcFullND clicked, disabled='+this.classList.contains('price-disabled'));
     if(this.classList.contains('price-disabled'))return;
     selectShift('full_nd');
-    console.log('🟢 selShift set to: '+selShift);
     this.style.border='1.5px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
     document.getElementById('pcFullDN').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
   };
@@ -1907,7 +1905,6 @@ input[type=number] { -moz-appearance:textfield; }
 
     try {
       var savedDate=dkey(y,m,d);
-      console.log('🔵 SAVING BOOKING: date='+savedDate+' shift='+selShift+' name='+name);
       await addDoc(collection(db,'bookings'),{
         date:dkey(y,m,d), displayDate:dd, shift:selShift,
         name:name, phone:phoneClean,
@@ -1926,7 +1923,6 @@ input[type=number] { -moz-appearance:textfield; }
         var ny=nextDate.getFullYear(),nm=nextDate.getMonth(),nd=nextDate.getDate();
         var ndd=ar(nd)+' '+months[nm]+' '+ar(ny);
         var extDate=dkey(ny,nm,nd);
-        toast('⏳ جاري حفظ امتداد بكرا '+extDate);
         await addDoc(collection(db,'bookings'),{
           date:extDate, displayDate:ndd, shift:'day',
           name:name+' (امتداد مسائي-صباحي)',
@@ -1936,7 +1932,6 @@ input[type=number] { -moz-appearance:textfield; }
           isFullDayExtension:true,
           createdAt:new Date().toISOString()
         });
-        toast('✅ تم حفظ امتداد '+extDate);
       }
 
       document.getElementById('priceOverlay').classList.remove('open');
