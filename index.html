@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>منتجع قصر الاميرات - الحجز</title>
+<title>منتجع قصر الاميرات - v7</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1898,6 +1898,8 @@ input[type=number] { -moz-appearance:textfield; }
     var sp={day:basePrice.toLocaleString(),night:basePrice.toLocaleString(),full:basePrice.toLocaleString()};
 
     try {
+      var savedDate=dkey(y,m,d);
+      console.log('🔵 SAVING BOOKING: date='+savedDate+' shift='+selShift+' name='+name);
       await addDoc(collection(db,'bookings'),{
         date:dkey(y,m,d), displayDate:dd, shift:selShift,
         name:name, phone:phoneClean,
