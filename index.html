@@ -886,8 +886,8 @@ input[type=number] { -moz-appearance:textfield; }
 .price-card {
   position: relative;
   background: linear-gradient(160deg, #ffffff 0%, #fdfaf2 100%);
-  border-radius: 16px;
-  padding: 14px 14px 12px;
+  border-radius: 22px;
+  padding: 28px 22px 24px;
   border: 1px solid rgba(201,168,76,0.25);
   box-shadow: 0 8px 30px rgba(26,10,46,0.08);
   transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
@@ -950,7 +950,7 @@ input[type=number] { -moz-appearance:textfield; }
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--deep2);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   letter-spacing: 1px;
 }
 .price-card.weekend .price-day-name {
@@ -977,7 +977,7 @@ input[type=number] { -moz-appearance:textfield; }
   justify-content: space-between;
   padding: 8px 10px;
   background: rgba(201,168,76,0.08);
-  border-radius: 10px;
+  border-radius: 14px;
   border: 1px solid rgba(201,168,76,0.15);
   transition: all 0.3s;
   position: relative;
@@ -1092,7 +1092,7 @@ input[type=number] { -moz-appearance:textfield; }
   color: var(--gold-light);
 }
 .price-shift-value .currency {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: var(--muted);
   font-weight: 500;
   margin-right: 3px;
@@ -1154,7 +1154,7 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="legend">
     <div class="legend-item"><span class="legend-dot" style="background:#1A5276"></span><span>نهاري محجوز</span></div>
     <div class="legend-item"><span class="legend-dot" style="background:#2D1654"></span><span>مسائي محجوز</span></div>
-    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span><span>يوم كامل (٧م—٥م)</span></div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span><span>يوم كامل</span></div>
     <div class="legend-item"><span class="legend-dot" style="background:#ccc"></span><span>متاح</span></div>
   </div>
 </header>
@@ -1162,13 +1162,7 @@ input[type=number] { -moz-appearance:textfield; }
 <div class="fb-status connecting" id="fbStatus">⏳ جاري الاتصال...</div>
 
 <main>
-  <!-- نافذة عرض صورة كبيرة -->
-  <div id="imgViewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;">
-    <img id="imgViewerSrc" style="max-width:95%;max-height:95%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-    <button onclick="document.getElementById('imgViewer').style.display='none';" style="position:absolute;top:20px;left:20px;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;">✕</button>
-  </div>
-
-  <!-- ============ قسم الأسعار (مصغّر) ============ -->
+  <!-- ============ قسم الأسعار ============ -->
   <div class="prices-showcase" style="margin-bottom:10px;padding:10px 16px 14px;">
     <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px;">قائمة الأسعار</h2>
     <p class="prices-subtitle" style="font-size:0.72rem;margin-bottom:8px;">اختر نوع اليوم لعرض الأسعار</p>
@@ -1183,6 +1177,12 @@ input[type=number] { -moz-appearance:textfield; }
       </button>
     </div>
     <div id="pricesShowcase"></div>
+  </div>
+
+  <!-- نافذة عرض صورة كبيرة -->
+  <div id="imgViewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;">
+    <img id="imgViewerSrc" style="max-width:95%;max-height:95%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <button onclick="document.getElementById('imgViewer').style.display='none';" style="position:absolute;top:20px;left:20px;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;">✕</button>
   </div>
 
   <h2 class="section-title" style="font-size:1.1rem;margin-bottom:6px;">التقويم التفاعلي</h2>
@@ -1568,8 +1568,8 @@ input[type=number] { -moz-appearance:textfield; }
     for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
     for(var d=1;d<=dim;d++){
       var k=dkey(y,m,d),bs=bForDate(k);
-      var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
-      var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
+      var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full';});
+      var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full';});
       var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
@@ -1674,35 +1674,13 @@ input[type=number] { -moz-appearance:textfield; }
   function openPriceModal(d,y,m){
     selDate={d:d,y:y,m:m};selShift=null;
     var k=dkey(y,m,d),bs=bForDate(k);
-    // فحص الشفتات المحجوزة لليوم المختار (حجوزات حقيقية + امتدادات)
-    var dayTaken=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn';});
-    var dayTakenExt=bs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
-    var nightTaken=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
-    var nightTakenExt=bs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
-    var db2=dayTaken||dayTakenExt;
-    var nb=nightTaken||nightTakenExt;
+    var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full';});
+    var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full';});
     var cd=new Date(y,m,d);
     document.getElementById('priceModalDate').textContent=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
     document.getElementById('pcNight').className='price-card'+(nb?' price-disabled':'');
-    // يوم كامل: نفحص اليوم التالي
-    var nextDate=new Date(y,m,d);
-    nextDate.setDate(nextDate.getDate()+1);
-    var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
-    var nextBs=bForDate(nextK);
-    // نهاري بكرا محجوز؟
-    var nextDayTaken=nextBs.some(function(b){return b.shift==='day'||b.shift==='full_dn';});
-    var nextDayTakenExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='day';});
-    // ليلي بكرا محجوز؟
-    var nextNightTaken=nextBs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
-    var nextNightTakenExt=nextBs.some(function(b){return b.isFullDayExtension && b.shift==='night';});
-    // صباحي→مسائي: يحتاج نهاري اليوم فاضي + مسائي اليوم فاضي (لأنه يمتد لليل) + ليلي بكرا فاضي
-    var dnAvail=!db2 && !nb && !(nextNightTaken||nextNightTakenExt);
-    // مسائي→صباحي: يحتاج مسائي اليوم فاضي + نهاري بكرا فاضي
-    var ndAvail=!nb && !(nextDayTaken||nextDayTakenExt);
-    document.getElementById('pcFull').className='price-card'+((!dnAvail&&!ndAvail)?' price-disabled':'');
-    // إخفاء خيارات اليوم الكامل عند فتح النافذة
-    document.getElementById('fullDayOptions').style.display='none';
+    document.getElementById('pcFull').className='price-card'+((db2||nb)?' price-disabled':'');
     
     // تحديث الأسعار حسب اليوم
     var dayKey=cd.getDay();
@@ -1739,15 +1717,11 @@ input[type=number] { -moz-appearance:textfield; }
     var el=document.getElementById(map[sh]);
     if(el && el.classList.contains('price-disabled'))return;
     selShift=sh;
-    // clear all selections
     ['pcDay','pcNight','pcFull','pcFullDN','pcFullND'].forEach(function(id){
       var e=document.getElementById(id);if(e)e.classList.remove('price-selected');
     });
     if(el) el.classList.add('price-selected');
-    // show/hide full day sub-options
-    if(sh==='full_dn'||sh==='full_nd'){
-      document.getElementById('pcFull').classList.add('price-selected');
-    }
+    if(sh==='full_dn'||sh==='full_nd') document.getElementById('pcFull').classList.add('price-selected');
   }
 
   document.getElementById('pcDay').onclick=function(){
@@ -1762,21 +1736,18 @@ input[type=number] { -moz-appearance:textfield; }
     if(document.getElementById('pcFull').classList.contains('price-disabled'))return;
     var opts=document.getElementById('fullDayOptions');
     opts.style.display=(opts.style.display==='none')?'block':'none';
+    // فحص توفر اليوم التالي للخيار مسائي-صباحي فقط
     var d=selDate.d,y=selDate.y,m=selDate.m;
-    var k=dkey(y,m,d),bs=bForDate(k);
-    var db2=bs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
-    var nb=bs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
     var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    var nextDayTaken=nextBs.some(function(b){return b.shift==='day'||b.shift==='full_dn'||(b.isFullDayExtension&&b.shift==='day');});
-    var nextNightTaken=nextBs.some(function(b){return b.shift==='night'||b.shift==='full_nd'||(b.isFullDayExtension&&b.shift==='night');});
-    // صباحي→مسائي: نهاري اليوم فاضي + مسائي اليوم فاضي + ليلي بكرا فاضي
-    var dnEl=document.getElementById('pcFullDN');
-    dnEl.className='price-card'+((db2||nb||nextNightTaken)?' price-disabled':'');
-    // مسائي→صباحي: مسائي اليوم فاضي + نهاري بكرا فاضي
-    var ndEl=document.getElementById('pcFullND');
-    ndEl.className='price-card'+((nb||nextDayTaken)?' price-disabled':'');
+    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full';});
+    // مسائي-صباحي: يقفل فقط إذا نهاري بكرا محجوز (حجز حقيقي مو امتداد)
+    document.getElementById('pcFullND').className='price-card'+(nextDayBooked?' price-disabled':'');
+    document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;'+(nextDayBooked?'opacity:0.5;cursor:not-allowed;':'');
+    // صباحي-مسائي: دائماً مفعل إذا اليوم نفسه فاضي
+    document.getElementById('pcFullDN').className='price-card';
+    document.getElementById('pcFullDN').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;';
   };
   document.getElementById('pcFullDN').onclick=function(e){
     e.stopPropagation();
@@ -1919,9 +1890,9 @@ input[type=number] { -moz-appearance:textfield; }
 
     var d=selDate.d,y=selDate.y,m=selDate.m;
     var dd=ar(d)+' '+months[m]+' '+ar(y);
-    var sl={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'يوم كامل (صباحي→مسائي)',full_nd:'يوم كامل (مسائي→صباحي)'};
-    var se={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️➜🌙',full_nd:'🌙➜☀️'};
-    var st={day:'١٠ص—٥م',night:'٧م—٨ص',full:'٧م — ٥م اليوم التالي',full_dn:'١٠ص اليوم — ٨ص اليوم التالي',full_nd:'٧م اليوم — ٥م اليوم التالي'};
+    var sl={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'يوم كامل (صباحي-مسائي)',full_nd:'يوم كامل (مسائي-صباحي)'};
+    var se={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️🌙',full_nd:'🌙☀️'};
+    var st={day:'١٠ص—٥م',night:'٧م—٨ص',full:'٢٤ ساعة',full_dn:'10ص اليوم - 8ص اليوم التالي',full_nd:'7م اليوم - 5م اليوم التالي'};
     var dKey=new Date(dkey(y,m,d)).getDay();
     var dynPrices=customPrices[dKey]||defaultPrices[dKey];
     // حساب السعر الأساسي + الإضافي
@@ -1948,21 +1919,14 @@ input[type=number] { -moz-appearance:textfield; }
         nextDate.setDate(nextDate.getDate()+1);
         var ny=nextDate.getFullYear(),nm=nextDate.getMonth(),nd=nextDate.getDate();
         var ndd=ar(nd)+' '+months[nm]+' '+ar(ny);
-        // صباحي→مسائي: نحجز ليلي اليوم التالي (لأنه يطلع ٨ص)
-        // مسائي→صباحي: نحجز نهاري اليوم التالي (لأنه يطلع ٥م)
         var nextShift=(selShift==='full_dn')?'night':'day';
-        var extLabel=(selShift==='full_dn')?'(امتداد صباحي→مسائي)':'(امتداد مسائي→صباحي)';
         await addDoc(collection(db,'bookings'),{
           date:dkey(ny,nm,nd), displayDate:ndd, shift:nextShift,
-          name:name+' '+extLabel,
-          phone:phoneClean,
-          guests:guestsDisplay,
+          name:name+' (امتداد يوم كامل)',
+          phone:phoneClean, guests:guestsDisplay,
           bookingType:currentBookingType,
-          youthCount:currentBookingType==='youth'?youthCount:null,
-          extraAmount:0,
-          totalPrice:0,
+          extraAmount:0, totalPrice:0,
           isFullDayExtension:true,
-          parentShift:selShift,
           createdAt:new Date().toISOString()
         });
       }
@@ -1980,18 +1944,14 @@ input[type=number] { -moz-appearance:textfield; }
       if(extraAmount>0){
         priceSection+='\n➕ إضافي ('+(youthCount-YOUTH_FREE_LIMIT)+' شخص × 10,000): '+extraAmount.toLocaleString()+' د.ع';
         priceSection+='\n💎 الإجمالي: '+totalPrice.toLocaleString()+' د.ع';
+      var fullDayNote="";
+      if(selShift==="full_dn"){
+        var nxD=new Date(y,m,d);nxD.setDate(nxD.getDate()+1);
+        fullDayNote="\n📌 صباحي "+dayName+" 10ص - "+days[nxD.getDay()]+" "+ar(nxD.getDate())+"/"+ar(nxD.getMonth()+1)+" 8ص";
+      } else if(selShift==="full_nd"){
+        var nxD=new Date(y,m,d);nxD.setDate(nxD.getDate()+1);
+        fullDayNote="\n📌 مسائي "+dayName+" 7م - "+days[nxD.getDay()]+" "+ar(nxD.getDate())+"/"+ar(nxD.getMonth()+1)+" 5م";
       }
-      var fullDayNote='';
-      if(selShift==='full_dn'){
-        var nxD=new Date(y,m,d);nxD.setDate(nxD.getDate()+1);
-        var nxDayName=days[nxD.getDay()];
-        var nxDD=ar(nxD.getDate())+' '+months[nxD.getMonth()]+' '+ar(nxD.getFullYear());
-        fullDayNote='\n📌 يوم كامل: صباحي '+dayName+' ١٠ص → مسائي '+nxDayName+' '+nxDD+' ٨ص';
-      } else if(selShift==='full_nd'){
-        var nxD=new Date(y,m,d);nxD.setDate(nxD.getDate()+1);
-        var nxDayName=days[nxD.getDay()];
-        var nxDD=ar(nxD.getDate())+' '+months[nxD.getMonth()]+' '+ar(nxD.getFullYear());
-        fullDayNote='\n📌 يوم كامل: مسائي '+dayName+' ٧م → صباحي '+nxDayName+' '+nxDD+' ٥م';
       }
       var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')'+fullDayNote+'\n🎯 نوع الحجز: '+typeLabel+'\n👥 عدد الأشخاص: '+guestsDisplay+'\n'+priceSection+'\n📞 الجوال: '+phoneClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
 
@@ -2057,8 +2017,8 @@ input[type=number] { -moz-appearance:textfield; }
     var sn={day:'نهاري ☀️',night:'مسائي 🌙',full:'يوم كامل 🌟'};
     var ic={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️🌙',full_nd:'🌙☀️'};
     var bg={day:'rgba(26,82,118,0.1)',night:'rgba(45,22,84,0.1)',full:'rgba(201,168,76,0.15)',full_dn:'rgba(201,168,76,0.15)',full_nd:'rgba(201,168,76,0.15)'};
-    var sl2={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'صباحي→مسائي',full_nd:'مسائي→صباحي'};
-    var st2={day:'١٠ص—٥م',night:'٧م—٨ص',full:'يوم كامل',full_dn:'صباحي→مسائي (١٠ص—٨ص)',full_nd:'مسائي→صباحي (٧م—٥م)'};
+    var sl2={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'صباحي-مسائي',full_nd:'مسائي-صباحي'};
+    var st2={day:'١٠ص—٥م',night:'٧م—٨ص',full:'٢٤ ساعة',full_dn:'10ص-8ص',full_nd:'7م-5م'};
 
     var now=new Date();
     var ts=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2)+'-'+('0'+now.getDate()).slice(-2);
@@ -2164,15 +2124,10 @@ input[type=number] { -moz-appearance:textfield; }
         var afterDisc=amtN-discN;
         var remaining=(afterDisc-depN).toLocaleString();
         var dayNm=dayNames[new Date(b2.date).getDay()];
-        var fullNote='';
-        if(b2.shift==='full_dn'){
-          var nxD=new Date(b2.date);nxD.setDate(nxD.getDate()+1);
-          fullNote='\n📌 من صباحي '+dayNm+' 10ص الى '+dayNames[nxD.getDay()]+' '+ar(nxD.getDate())+' '+months[nxD.getMonth()]+' 8ص';
-        } else if(b2.shift==='full_nd'){
-          var nxD=new Date(b2.date);nxD.setDate(nxD.getDate()+1);
-          fullNote='\n📌 من مسائي '+dayNm+' 7م الى '+dayNames[nxD.getDay()]+' '+ar(nxD.getDate())+' '+months[nxD.getMonth()]+' 5م';
-        }
-        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+fullNote+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
+        var cfn="";
+        if(b2.shift==="full_dn"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 صباحي "+dayNm+" 10ص - "+dayNames[nx.getDay()]+" 8ص";}
+        else if(b2.shift==="full_nd"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 مسائي "+dayNm+" 7م - "+dayNames[nx.getDay()]+" 5م";}
+        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
 
         // إرسال نفس رسالة التثبيت للإيميل
         try {
@@ -2220,25 +2175,9 @@ input[type=number] { -moz-appearance:textfield; }
     c.querySelectorAll('.a-del').forEach(function(btn){
       btn.onclick=function(){
         var fid2=btn.getAttribute('data-fid');
-        var rowEl=btn.closest('.a-row');
-        var idx4=parseInt(rowEl.id.replace('row_',''));
-        var b3=sorted[idx4];
         confirm2('تريد تحذف هذا الحجز؟',async function(){
-          try{
-            await deleteDoc(doc(db,'bookings',fid2));
-            // حذف الامتداد إذا يوم كامل
-            if(b3 && (b3.shift==='full_dn'||b3.shift==='full_nd')){
-              var nxD=new Date(b3.date);nxD.setDate(nxD.getDate()+1);
-              var nxK=nxD.getFullYear()+'-'+('0'+(nxD.getMonth()+1)).slice(-2)+'-'+('0'+nxD.getDate()).slice(-2);
-              var extBookings=bookings.filter(function(ex){
-                return ex.isFullDayExtension && ex.date===nxK && ex.phone===b3.phone;
-              });
-              for(var ei=0;ei<extBookings.length;ei++){
-                try{await deleteDoc(doc(db,'bookings',extBookings[ei].firestoreId));}catch(e){}
-              }
-            }
-            toast('تم حذف الحجز');
-          }catch(err){toast('خطأ: '+err.message);}
+          try{await deleteDoc(doc(db,'bookings',fid2));toast('تم حذف الحجز');}
+          catch(err){toast('خطأ: '+err.message);}
         });
       };
     });
@@ -2544,7 +2483,7 @@ input[type=number] { -moz-appearance:textfield; }
       } else {
         g.scrollBy({left:300,behavior:'smooth'});
       }
-    },500); // كل نصف ثانية
+    },500); // كل ثانية
 
     // إيقاف السلايد عند تفاعل المستخدم
     g.addEventListener('mouseenter',function(){galleryUserPaused=true;});
