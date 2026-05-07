@@ -1569,9 +1569,9 @@ input[type=number] { -moz-appearance:textfield; }
     for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
     for(var d=1;d<=dim;d++){
       var k=dkey(y,m,d),bs=bForDate(k);
-      var hasFullDay=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
-      var db2=hasFullDay||bs.some(function(b){return b.shift==='day';});
-      var nb=hasFullDay||bs.some(function(b){return b.shift==='night';});
+      var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
+      var db2=hasFullBoth||bs.some(function(b){return b.shift==='day';});
+      var nb=hasFullBoth||bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
       var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
@@ -1676,9 +1676,9 @@ input[type=number] { -moz-appearance:textfield; }
   function openPriceModal(d,y,m){
     selDate={d:d,y:y,m:m};selShift=null;
     var k=dkey(y,m,d),bs=bForDate(k);
-    var hasFullDay=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
-    var db2=hasFullDay||bs.some(function(b){return b.shift==='day';});
-    var nb=hasFullDay||bs.some(function(b){return b.shift==='night';});
+    var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
+    var db2=hasFullBoth||bs.some(function(b){return b.shift==='day';});
+    var nb=hasFullBoth||bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
     var cd=new Date(y,m,d);
     document.getElementById('priceModalDate').textContent=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
