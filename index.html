@@ -1739,11 +1739,17 @@ input[type=number] { -moz-appearance:textfield; }
     if(document.getElementById('pcFull').classList.contains('price-disabled'))return;
     var opts=document.getElementById('fullDayOptions');
     opts.style.display=(opts.style.display==='none')?'block':'none';
-    // الخيارين دائماً مفعلين إذا اليوم نفسه فاضي (وصلنا لهنا يعني فاضي)
+    // صباحي-مسائي: دائماً مفعل (يطلع 8ص قبل الشفت النهاري)
     document.getElementById('pcFullDN').className='price-card';
     document.getElementById('pcFullDN').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;';
-    document.getElementById('pcFullND').className='price-card';
-    document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;';
+    // مسائي-صباحي: يقفل إذا نهاري بكرا محجوز
+    var d=selDate.d,y=selDate.y,m=selDate.m;
+    var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
+    var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
+    var nextBs=bForDate(nextK);
+    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
+    document.getElementById('pcFullND').className='price-card'+(nextDayBooked?' price-disabled':'');
+    document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;'+(nextDayBooked?'opacity:0.5;cursor:not-allowed;':'');
   };
   document.getElementById('pcFullDN').onclick=function(e){
     e.stopPropagation();
@@ -1754,8 +1760,10 @@ input[type=number] { -moz-appearance:textfield; }
   };
   document.getElementById('pcFullND').onclick=function(e){
     e.stopPropagation();
+    console.log('🟡 pcFullND clicked, disabled='+this.classList.contains('price-disabled'));
     if(this.classList.contains('price-disabled'))return;
     selectShift('full_nd');
+    console.log('🟢 selShift set to: '+selShift);
     this.style.border='1.5px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
     document.getElementById('pcFullDN').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
   };
@@ -1910,6 +1918,24 @@ input[type=number] { -moz-appearance:textfield; }
         totalPrice:totalPrice,
         createdAt:new Date().toISOString()
       });
+
+      // مسائي-صباحي فقط: يحجز نهاري اليوم التالي (7م اليوم → 5م بكرا)
+      if(selShift==='full_nd'){
+        var nextDate=new Date(y,m,d);
+        nextDate.setDate(nextDate.getDate()+1);
+        var ny=nextDate.getFullYear(),nm=nextDate.getMonth(),nd=nextDate.getDate();
+        var ndd=ar(nd)+' '+months[nm]+' '+ar(ny);
+        console.log('🔵 SAVING EXTENSION: date='+dkey(ny,nm,nd)+' shift=day');
+        await addDoc(collection(db,'bookings'),{
+          date:dkey(ny,nm,nd), displayDate:ndd, shift:'day',
+          name:name+' (امتداد مسائي-صباحي)',
+          phone:phoneClean, guests:guestsDisplay,
+          bookingType:currentBookingType,
+          extraAmount:0, totalPrice:0,
+          isFullDayExtension:true,
+          createdAt:new Date().toISOString()
+        });
+      }
 
       document.getElementById('priceOverlay').classList.remove('open');
       document.getElementById('pmName').value='';
