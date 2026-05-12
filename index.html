@@ -1972,10 +1972,12 @@ input[type=number] { -moz-appearance:textfield; }
         emailjs.send('qaser_service','template_ger17n8',{
           name: name,
           date: dayName+' '+dd,
-          shift: se[selShift]+' '+sl[selShift]+' ('+st[selShift]+')',
+          shift: se[selShift]+' '+sl[selShift]+' ('+st[selShift]+')' + (fullDayNote?' '+fullDayNote:''),
+          booking_type: typeLabel,
           phone: phoneClean,
           guests: guestsDisplay,
           price: totalPrice.toLocaleString()+' د.ع',
+          extra_amount: extraAmount>0 ? extraAmount.toLocaleString()+' د.ع' : '0',
           full_message: msg
         }).then(function(response){
           console.log('✅ Email sent successfully:', response);
@@ -2162,10 +2164,15 @@ input[type=number] { -moz-appearance:textfield; }
           emailjs.send('qaser_service','template_ger17n8',{
             name: b2.name+' (✅ تثبيت حجز)',
             date: dayNm+' '+b2.displayDate,
-            shift: ic[b2.shift]+' '+sl2[b2.shift]+' ('+st2[b2.shift]+')',
+            shift: (ic[b2.shift]||'🌟')+' '+(sl2[b2.shift]||b2.shift)+' ('+(st2[b2.shift]||'')+')' + (cfn?' '+cfn:''),
+            booking_type: bTypeLabel,
             phone: b2.phone,
             guests: b2.guests,
-            price: afterDisc.toLocaleString()+' د.ع',
+            price: amtN.toLocaleString()+' د.ع',
+            discount: discN.toLocaleString()+' د.ع',
+            after_discount: afterDisc.toLocaleString()+' د.ع',
+            deposit: depN.toLocaleString()+' د.ع',
+            remaining: remaining+' د.ع',
             full_message: msg
           }).then(function(response){
             console.log('✅ Confirmation email sent:', response);
