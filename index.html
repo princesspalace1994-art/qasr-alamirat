@@ -1323,7 +1323,7 @@ input[type=number] { -moz-appearance:textfield; }
     <!-- إدخال عدد الأشخاص للشباب (مخفي بالافتراضي) -->
     <div style="margin-bottom:12px;display:none;" id="youthCountWrap">
       <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">🧑‍🤝‍🧑 عدد الأشخاص (الحد الأقصى 25، فوق ذلك إضافي 10,000 د.ع/شخص) *</label>
-      <input type="number" id="pmYouthCount" class="price-input" min="1" max="50" value="5" style="margin-bottom:0;">
+      <input type="text" inputmode="numeric" id="pmYouthCount" class="price-input" value="5" style="margin-bottom:0;" dir="ltr">
       <div id="youthExtraInfo" style="margin-top:8px;font-size:0.8rem;color:var(--muted);display:none;background:rgba(201,168,76,0.08);padding:8px 12px;border-radius:8px;border:1px dashed rgba(201,168,76,0.3);">
         <strong style="color:var(--gold);">ℹ️ تنبيه:</strong> <span id="youthExtraText"></span>
       </div>
@@ -1782,9 +1782,18 @@ input[type=number] { -moz-appearance:textfield; }
     phoneInput.addEventListener('input',function(){
       var v=arabicToEnglishDigits(phoneInput.value).replace(/[^0-9]/g,'');
       if(v!==phoneInput.value) phoneInput.value=v;
-      // تنبيه واتساب: يظهر لما الرقم يكتمل 11 رقم
       var waHint=document.getElementById('waHint');
       if(waHint) waHint.style.display=v.replace(/[^0-9]/g,'').length===11?'block':'none';
+    });
+  })();
+
+  // ---- تحويل تلقائي للأرقام في حقل عدد الأشخاص ----
+  (function(){
+    var youthInput=document.getElementById('pmYouthCount');
+    if(!youthInput) return;
+    youthInput.addEventListener('input',function(){
+      var v=arabicToEnglishDigits(youthInput.value).replace(/[^0-9]/g,'');
+      if(v!==youthInput.value) youthInput.value=v;
     });
   })();
 
@@ -2142,10 +2151,11 @@ input[type=number] { -moz-appearance:textfield; }
         var afterDisc=amtN-discN;
         var remaining=(afterDisc-depN).toLocaleString();
         var dayNm=dayNames[new Date(b2.date).getDay()];
+        var bTypeLabel=b2.bookingType==='youth'?'شباب':'عوائل';
         var cfn="";
         if(b2.shift==="full_dn"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 صباحي "+dayNm+" 10ص - "+dayNames[nx.getDay()]+" 8ص";}
         else if(b2.shift==="full_nd"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 مسائي "+dayNm+" 7م - "+dayNames[nx.getDay()]+" 6م";}
-        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
+        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n🎯 نوع الحجز: '+bTypeLabel+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
 
         // إرسال نفس رسالة التثبيت للإيميل
         try {
@@ -2262,27 +2272,25 @@ input[type=number] { -moz-appearance:textfield; }
     var weekendClass=card.isWeekend?' weekend':'';
     var badgeHtml=card.isWeekend?'<div class="price-day-badge">'+card.badge+'</div>':'';
     c.innerHTML=
-      '<div class="price-card'+weekendClass+'">'
-      +badgeHtml
-      +'<span class="price-day-emoji">'+card.emoji+'</span>'
-      +'<div class="price-day-name">'+card.name+'</div>'
-      +'<div class="price-shifts">'
-        +'<div class="price-shift price-shift-clickable" data-shift="day">'
-          +'<div class="price-shift-label"><span class="price-shift-icon">☀️</span><span>الشفت النهاري</span></div>'
-          +'<div class="price-shift-value">'+p.day.toLocaleString()+'<span class="currency"> د.ع</span></div>'
-          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
+      '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">'
+        +'<div class="price-shift price-shift-clickable" data-shift="day" style="flex:1;min-width:90px;max-width:140px;padding:8px 6px;border-radius:10px;text-align:center;cursor:pointer;background:'+(card.isWeekend?'rgba(201,168,76,0.15)':'rgba(26,82,118,0.06)')+';border:1px solid '+(card.isWeekend?'rgba(201,168,76,0.3)':'rgba(26,82,118,0.15)')+';transition:all 0.2s;">'
+          +'<div style="font-size:1rem;margin-bottom:2px;">☀️</div>'
+          +'<div style="font-size:0.65rem;font-weight:700;color:'+(card.isWeekend?'var(--gold)':'var(--deep2)')+';">نهاري</div>'
+          +'<div style="font-size:0.82rem;font-weight:800;color:'+(card.isWeekend?'var(--gold-light)':'var(--deep2)')+';margin-top:2px;">'+p.day.toLocaleString()+'</div>'
+          +'<div style="font-size:0.5rem;color:var(--muted);">د.ع</div>'
         +'</div>'
-        +'<div class="price-shift price-shift-clickable" data-shift="night">'
-          +'<div class="price-shift-label"><span class="price-shift-icon">🌙</span><span>الشفت الليلي</span></div>'
-          +'<div class="price-shift-value">'+p.night.toLocaleString()+'<span class="currency"> د.ع</span></div>'
-          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
+        +'<div class="price-shift price-shift-clickable" data-shift="night" style="flex:1;min-width:90px;max-width:140px;padding:8px 6px;border-radius:10px;text-align:center;cursor:pointer;background:'+(card.isWeekend?'rgba(45,22,84,0.15)':'rgba(45,22,84,0.06)')+';border:1px solid '+(card.isWeekend?'rgba(201,168,76,0.3)':'rgba(45,22,84,0.15)')+';transition:all 0.2s;">'
+          +'<div style="font-size:1rem;margin-bottom:2px;">🌙</div>'
+          +'<div style="font-size:0.65rem;font-weight:700;color:'+(card.isWeekend?'var(--gold)':'var(--deep2)')+';">مسائي</div>'
+          +'<div style="font-size:0.82rem;font-weight:800;color:'+(card.isWeekend?'var(--gold-light)':'var(--deep2)')+';margin-top:2px;">'+p.night.toLocaleString()+'</div>'
+          +'<div style="font-size:0.5rem;color:var(--muted);">د.ع</div>'
         +'</div>'
-        +'<div class="price-shift price-shift-full price-shift-clickable" data-shift="full">'
-          +'<div class="price-shift-label"><span class="price-shift-icon">🌟</span><span>الشفت الكامل</span></div>'
-          +'<div class="price-shift-value">'+p.full.toLocaleString()+'<span class="currency"> د.ع</span></div>'
-          +'<div class="price-shift-cta">اضغط لاختيار التاريخ ←</div>'
+        +'<div class="price-shift price-shift-full price-shift-clickable" data-shift="full" style="flex:1;min-width:90px;max-width:140px;padding:8px 6px;border-radius:10px;text-align:center;cursor:pointer;background:'+(card.isWeekend?'rgba(201,168,76,0.2)':'rgba(201,168,76,0.08)')+';border:1px solid rgba(201,168,76,0.3);transition:all 0.2s;">'
+          +'<div style="font-size:1rem;margin-bottom:2px;">🌟</div>'
+          +'<div style="font-size:0.65rem;font-weight:700;color:'+(card.isWeekend?'var(--gold-light)':'#8B6914')+';">كامل</div>'
+          +'<div style="font-size:0.82rem;font-weight:800;color:'+(card.isWeekend?'var(--gold-light)':'#8B6914')+';margin-top:2px;">'+p.full.toLocaleString()+'</div>'
+          +'<div style="font-size:0.5rem;color:var(--muted);">د.ع</div>'
         +'</div>'
-      +'</div>'
       +'</div>';
     // ربط الشفتات بالنزول للتقويم
     var clickables=c.querySelectorAll('.price-shift-clickable');
