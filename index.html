@@ -1293,6 +1293,18 @@ input[type=number] { -moz-appearance:textfield; }
       💬 تأكد إن هذا الرقم مفعّل على واتساب
     </div>
 
+    <!-- اختيار الشفت من النموذج -->
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">🕐 الشفت *</label>
+      <select id="pmShiftSelect" class="price-input" style="margin-bottom:0;cursor:pointer;">
+        <option value="">-- اختر الشفت --</option>
+        <option value="day">☀️ نهاري (10ص — 6م)</option>
+        <option value="night">🌙 مسائي (7م — 8ص)</option>
+        <option value="full_dn">🌟 كامل: صباحي - مسائي (10ص — 8ص اليوم التالي)</option>
+        <option value="full_nd">🌟 كامل: مسائي - صباحي (7م — 6م اليوم التالي)</option>
+      </select>
+    </div>
+
     <!-- نوع الحجز: شباب / عوائل -->
     <div style="margin-bottom:12px;">
       <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:8px;font-weight:600;">🎯 نوع الحجز *</label>
@@ -1581,7 +1593,7 @@ input[type=number] { -moz-appearance:textfield; }
       var sd=document.createElement('div');sd.className='day-shifts';
       if(fb2){
         var s=document.createElement('div');s.className='shift bk-full';
-        s.innerHTML='<span class="shift-icon">☀️</span><span class="shift-icon" style="font-size:0.65rem;margin-right:-2px;">🌙</span>';
+        s.innerHTML='<span class="shift-icon">☀️</span><span class="shift-icon" style="font-size:0.65rem;margin-right:-2px;">🌙</span><span class="shift-text">محجوز</span>';
         sd.appendChild(s);
       }
       else{
@@ -1684,6 +1696,13 @@ input[type=number] { -moz-appearance:textfield; }
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
     document.getElementById('pcNight').className='price-card'+(nb?' price-disabled':'');
     document.getElementById('pcFull').className='price-card'+((db2||nb)?' price-disabled':'');
+    // sync dropdown
+    var dd=document.getElementById('pmShiftSelect');
+    dd.value='';
+    dd.options[1].disabled=db2;
+    dd.options[2].disabled=nb;
+    dd.options[3].disabled=(db2||nb);
+    dd.options[4].disabled=(db2||nb);
     
     // تحديث الأسعار حسب اليوم
     var dayKey=cd.getDay();
@@ -1725,6 +1744,9 @@ input[type=number] { -moz-appearance:textfield; }
     });
     if(el) el.classList.add('price-selected');
     if(sh==='full_dn'||sh==='full_nd') document.getElementById('pcFull').classList.add('price-selected');
+    // sync dropdown
+    var dd=document.getElementById('pmShiftSelect');
+    if(dd && dd.value!==sh) dd.value=sh;
   }
 
   document.getElementById('pcDay').onclick=function(){
@@ -1764,6 +1786,26 @@ input[type=number] { -moz-appearance:textfield; }
     selectShift('full_nd');
     this.style.border='1.5px solid var(--gold)';this.style.background='rgba(201,168,76,0.1)';
     document.getElementById('pcFullDN').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
+  };
+
+  // ---- اختيار الشفت من القائمة المنسدلة ----
+  document.getElementById('pmShiftSelect').onchange=function(){
+    var v=this.value;
+    if(!v)return;
+    if(v==='full_dn'||v==='full_nd'){
+      document.getElementById('fullDayOptions').style.display='block';
+    } else {
+      document.getElementById('fullDayOptions').style.display='none';
+    }
+    selectShift(v);
+    // highlight sub-option
+    if(v==='full_dn'){
+      document.getElementById('pcFullDN').style.border='1.5px solid var(--gold)';document.getElementById('pcFullDN').style.background='rgba(201,168,76,0.1)';
+      document.getElementById('pcFullND').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullND').style.background='white';
+    } else if(v==='full_nd'){
+      document.getElementById('pcFullND').style.border='1.5px solid var(--gold)';document.getElementById('pcFullND').style.background='rgba(201,168,76,0.1)';
+      document.getElementById('pcFullDN').style.border='1.5px solid rgba(201,168,76,0.3)';document.getElementById('pcFullDN').style.background='white';
+    }
   };
 
   // ---- تحويل الأرقام العربية إلى انكليزية ----
