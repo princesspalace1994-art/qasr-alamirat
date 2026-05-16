@@ -304,6 +304,20 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   font-weight: 700;
   line-height: 1;
 }
+.shift-icon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.shift-inner-text {
+  font-size: 0.32rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  margin-top: -1px;
+}
 .shift.bk-day {
   background: linear-gradient(135deg, #1A5276, #2874A6);
   color: white;
@@ -1274,8 +1288,9 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
 
     <!-- خيارات اليوم الكامل -->
-    <div id="fullDayOptions" style="display:none;margin:8px 0;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
-      <div style="text-align:center;font-size:0.7rem;font-weight:700;color:var(--deep2);margin-bottom:6px;">اختر نوع اليوم الكامل</div>
+    <div id="fullDayOptions" style="display:none;margin:8px 0;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.25);border-radius:12px;position:relative;">
+      <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid rgba(201,168,76,0.25);"></div>
+      <div style="text-align:center;font-size:0.7rem;font-weight:700;color:var(--deep2);margin-bottom:6px;">⬇️ اختر نوع اليوم الكامل</div>
       <div style="display:flex;gap:8px;justify-content:center;">
         <div class="price-card" id="pcFullDN" style="flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;">
           <div style="font-size:0.75rem;font-weight:700;color:var(--deep2);margin-bottom:3px;">صباحي - مسائي</div>
@@ -1593,12 +1608,16 @@ input[type=number] { -moz-appearance:textfield; }
       var sd=document.createElement('div');sd.className='day-shifts';
       if(fb2){
         var s=document.createElement('div');s.className='shift bk-full';
-        s.innerHTML='<span class="shift-icon">☀️</span><span class="shift-icon" style="font-size:0.65rem;margin-right:-2px;">🌙</span><span class="shift-text">محجوز</span>';
+        s.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">☀️</span><span class="shift-inner-text">محجوز</span></span><span class="shift-icon-wrap"><span class="shift-icon" style="font-size:0.65rem;">🌙</span><span class="shift-inner-text">محجوز</span></span>';
         sd.appendChild(s);
       }
       else{
-        var s1=document.createElement('div');s1.className='shift shift-day-slot'+(db2?' bk-day':'');s1.innerHTML='<span class="shift-icon">☀️</span>'+(db2?'<span class="shift-text">محجوز</span>':'');sd.appendChild(s1);
-        var s2=document.createElement('div');s2.className='shift shift-night-slot'+(nb?' bk-night':'');s2.innerHTML='<span class="shift-icon">🌙</span>'+(nb?'<span class="shift-text">محجوز</span>':'');sd.appendChild(s2);
+        var s1=document.createElement('div');s1.className='shift shift-day-slot'+(db2?' bk-day':'');
+        s1.innerHTML=db2?'<span class="shift-icon-wrap"><span class="shift-icon">☀️</span><span class="shift-inner-text">محجوز</span></span>':'<span class="shift-icon">☀️</span>';
+        sd.appendChild(s1);
+        var s2=document.createElement('div');s2.className='shift shift-night-slot'+(nb?' bk-night':'');
+        s2.innerHTML=nb?'<span class="shift-icon-wrap"><span class="shift-icon">🌙</span><span class="shift-inner-text">محجوز</span></span>':'<span class="shift-icon">🌙</span>';
+        sd.appendChild(s2);
       }
       cell.appendChild(sd);
       if(!past){(function(dd,yy,mm){cell.onclick=function(){openPriceModal(dd,yy,mm);};})(d,y,m);}
