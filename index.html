@@ -1202,29 +1202,85 @@ input[type=number] { -moz-appearance:textfield; }
 
 <!-- شاشة الانتظار - تمنع التفاعل قبل تحميل الحجوزات -->
 <div id="loadingScreen" style="
-  position:fixed;
-  inset:0;
-  z-index:99999;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#1A0A2E 0%,#2D1654 50%,#3D1F7A 100%);
-  color:#FAF6EE;
-  font-family:'Tajawal',sans-serif;
-  transition:opacity 0.5s ease, visibility 0.5s ease;
+  position:fixed;inset:0;z-index:99999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:#0D0520;color:#FAF6EE;font-family:'Tajawal',sans-serif;
+  transition:opacity 0.6s ease, visibility 0.6s ease;overflow:hidden;
 ">
-  <div style="font-size:4rem;margin-bottom:16px;animation:loadPulse 1.5s ease-in-out infinite;">👑</div>
-  <div style="font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:#E8C97A;margin-bottom:8px;">منتجع قصر الاميرات</div>
-  <div id="loadingText" style="font-size:0.95rem;color:rgba(250,246,238,0.7);margin-bottom:24px;">جاري تحميل الحجوزات...</div>
-  <div style="width:180px;height:4px;background:rgba(201,168,76,0.2);border-radius:10px;overflow:hidden;">
-    <div id="loadingBar" style="width:0%;height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);border-radius:10px;transition:width 0.4s ease;"></div>
+  <!-- خلفية متحركة -->
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0D0520 0%,#1A0A2E 25%,#2D1654 50%,#1A0A2E 75%,#0D0520 100%);background-size:400% 400%;animation:gradShift 8s ease infinite;"></div>
+  <!-- نجوم متحركة -->
+  <div style="position:absolute;inset:0;overflow:hidden;" id="starsContainer"></div>
+  <!-- دوائر ذهبية عائمة -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(201,168,76,0.08);top:10%;right:-5%;animation:floatOrb 12s ease-in-out infinite;"></div>
+    <div style="position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(201,168,76,0.06);bottom:15%;left:-3%;animation:floatOrb 10s ease-in-out infinite 2s;"></div>
+    <div style="position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.04),transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 14s ease-in-out infinite 4s;"></div>
   </div>
-
+  <!-- المحتوى -->
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <!-- التاج مع هالة -->
+    <div style="position:relative;margin-bottom:20px;">
+      <div style="position:absolute;inset:-20px;background:radial-gradient(circle,rgba(201,168,76,0.25),transparent 70%);border-radius:50%;animation:crownGlow 2s ease-in-out infinite;"></div>
+      <div style="font-size:4.5rem;animation:crownFloat 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,0.5));">👑</div>
+    </div>
+    <!-- اسم المنتجع مع تأثير لمعان -->
+    <div style="position:relative;font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:#E8C97A;margin-bottom:6px;overflow:hidden;">
+      منتجع قصر الاميرات
+      <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 3s ease-in-out infinite;"></div>
+    </div>
+    <!-- خط ذهبي مزخرف -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#C9A84C);"></div>
+      <div style="width:6px;height:6px;background:#C9A84C;transform:rotate(45deg);"></div>
+      <div style="width:40px;height:1px;background:linear-gradient(270deg,transparent,#C9A84C);"></div>
+    </div>
+    <!-- نص التحميل -->
+    <div id="loadingText" style="font-size:0.95rem;color:rgba(250,246,238,0.6);margin-bottom:28px;animation:textFade 2s ease-in-out infinite;">جاري تحميل الحجوزات...</div>
+    <!-- شريط التحميل المتوهج -->
+    <div style="position:relative;width:200px;height:3px;background:rgba(201,168,76,0.1);border-radius:10px;overflow:visible;">
+      <div id="loadingBar" style="width:0%;height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A,#C9A84C);border-radius:10px;transition:width 0.4s ease;box-shadow:0 0 10px rgba(201,168,76,0.5),0 0 20px rgba(201,168,76,0.2);"></div>
+    </div>
+  </div>
   <style>
-    @keyframes loadPulse{
-      0%,100%{transform:scale(1);opacity:0.9;}
-      50%{transform:scale(1.12);opacity:1;}
+    @keyframes gradShift{
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
+    @keyframes floatOrb{
+      0%,100%{transform:translateY(0) rotate(0deg);opacity:0.6;}
+      50%{transform:translateY(-30px) rotate(180deg);opacity:1;}
+    }
+    @keyframes crownFloat{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-8px);}
+    }
+    @keyframes crownGlow{
+      0%,100%{transform:scale(1);opacity:0.5;}
+      50%{transform:scale(1.15);opacity:0.9;}
+    }
+    @keyframes shimmer{
+      0%{left:-100%;}
+      100%{left:200%;}
+    }
+    @keyframes textFade{
+      0%,100%{opacity:0.5;}
+      50%{opacity:1;}
+    }
+    .ls-star{
+      position:absolute;
+      width:2px;height:2px;
+      background:#FAF6EE;
+      border-radius:50%;
+    }
+    @keyframes twinkle{
+      0%,100%{opacity:0.1;transform:scale(0.8);}
+      50%{opacity:0.9;transform:scale(1.2);}
+    }
+    @keyframes shootingStar{
+      0%{transform:translateX(0) translateY(0);opacity:1;}
+      100%{transform:translateX(-200px) translateY(200px);opacity:0;}
     }
   </style>
 </div>
@@ -1673,6 +1729,29 @@ input[type=number] { -moz-appearance:textfield; }
   var loadingBar=document.getElementById('loadingBar');
   var loadingText=document.getElementById('loadingText');
 
+  // ---- نجوم شاشة الانتظار ----
+  (function(){
+    var sc=document.getElementById('starsContainer');
+    if(!sc) return;
+    for(var i=0;i<50;i++){
+      var s=document.createElement('div');
+      s.className='ls-star';
+      s.style.left=Math.random()*100+'%';
+      s.style.top=Math.random()*100+'%';
+      s.style.width=s.style.height=(Math.random()*2+1)+'px';
+      s.style.animation='twinkle '+(Math.random()*3+2)+'s ease-in-out infinite '+(Math.random()*3)+'s';
+      sc.appendChild(s);
+    }
+    // شهاب عشوائي كل 4 ثواني
+    setInterval(function(){
+      if(loadingScreen.style.display==='none') return;
+      var sh=document.createElement('div');
+      sh.style.cssText='position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;box-shadow:0 0 6px 2px rgba(201,168,76,0.6),-40px -5px 0 0 rgba(255,255,255,0.3),-20px -2px 0 0 rgba(255,255,255,0.2);top:'+(Math.random()*40)+'%;right:'+(Math.random()*30+10)+'%;animation:shootingStar 1s linear forwards;';
+      sc.appendChild(sh);
+      setTimeout(function(){sh.remove();},1200);
+    },4000);
+  })();
+
 
   function hideLoadingScreen(){
     if(!loadingScreen) return;
@@ -1758,7 +1837,7 @@ input[type=number] { -moz-appearance:textfield; }
 
         isFirstLoad=false;
         bookingsReady=true;
-        if(fbStatus){fbStatus.className='fb-status connected';fbStatus.textContent='🟢 متصل — '+ar(bookings.length)+' حجز محمل';}
+        if(fbStatus){fbStatus.className='fb-status connected';fbStatus.innerHTML='🟢 السيرفر متصل <span style="opacity:0.6;font-size:0.7em">— جميع الحجوزات ظاهرة</span>';}
 
         // إغلاق شاشة الانتظار
         hideLoadingScreen();
