@@ -1200,6 +1200,35 @@ input[type=number] { -moz-appearance:textfield; }
 </head>
 <body>
 
+<!-- شاشة الانتظار - تمنع التفاعل قبل تحميل الحجوزات -->
+<div id="loadingScreen" style="
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#1A0A2E 0%,#2D1654 50%,#3D1F7A 100%);
+  color:#FAF6EE;
+  font-family:'Tajawal',sans-serif;
+  transition:opacity 0.5s ease, visibility 0.5s ease;
+">
+  <div style="font-size:4rem;margin-bottom:16px;animation:loadPulse 1.5s ease-in-out infinite;">👑</div>
+  <div style="font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:#E8C97A;margin-bottom:8px;">منتجع قصر الاميرات</div>
+  <div id="loadingText" style="font-size:0.95rem;color:rgba(250,246,238,0.7);margin-bottom:24px;">جاري تحميل الحجوزات...</div>
+  <div style="width:180px;height:4px;background:rgba(201,168,76,0.2);border-radius:10px;overflow:hidden;">
+    <div id="loadingBar" style="width:0%;height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);border-radius:10px;transition:width 0.4s ease;"></div>
+  </div>
+
+  <style>
+    @keyframes loadPulse{
+      0%,100%{transform:scale(1);opacity:0.9;}
+      50%{transform:scale(1.12);opacity:1;}
+    }
+  </style>
+</div>
+
 <header>
   <div class="hero-photo"></div>
   <div class="header-inner">
@@ -1468,11 +1497,79 @@ input[type=number] { -moz-appearance:textfield; }
           🖼️ إدارة معرض الصور
         </summary>
         <div style="margin-top:14px;">
+
+          <!-- منطقة السحب والإفلات -->
+          <div id="dropZone" style="
+            border:2.5px dashed rgba(201,168,76,0.5);
+            border-radius:16px;
+            padding:28px 20px;
+            text-align:center;
+            background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(201,168,76,0.01));
+            cursor:pointer;
+            transition:all 0.3s ease;
+            margin-bottom:14px;
+            position:relative;
+            overflow:hidden;
+          ">
+            <input type="file" id="fileInput" multiple accept="image/*" style="display:none;">
+            <div id="dropContent">
+              <div style="font-size:2.8rem;margin-bottom:8px;opacity:0.7;">📸</div>
+              <div style="font-size:1rem;font-weight:700;color:var(--deep2);margin-bottom:6px;">اسحب الصور هنا أو اضغط للاختيار</div>
+              <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">يدعم JPG, PNG, GIF, WebP — يمكنك اختيار عدة صور مرة واحدة</div>
+              <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border-radius:8px;font-size:0.85rem;font-weight:700;">
+                📁 اختر صور
+              </div>
+            </div>
+          </div>
+
+          <!-- معاينة الصور قبل الرفع -->
+          <div id="uploadPreview" style="display:none;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="font-size:0.85rem;font-weight:700;color:var(--deep2);">📋 معاينة الصور (<span id="previewCount">0</span>)</div>
+              <button id="btnClearPreview" style="padding:4px 12px;background:#e74c3c;color:white;border:none;border-radius:6px;font-family:Tajawal,sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;">🗑️ إلغاء الكل</button>
+            </div>
+            <div id="previewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;"></div>
+            <button id="btnUploadFiles" style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:10px;font-family:Tajawal,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+              ☁️ رفع الصور
+            </button>
+          </div>
+
+          <!-- شريط التقدم -->
+          <div id="uploadProgress" style="display:none;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:0.8rem;font-weight:700;color:var(--deep2);">⏳ جاري الرفع...</span>
+              <span id="progressText" style="font-size:0.78rem;color:var(--muted);">0 / 0</span>
+            </div>
+            <div style="background:rgba(201,168,76,0.15);border-radius:10px;height:10px;overflow:hidden;">
+              <div id="progressBar" style="width:0%;height:100%;background:linear-gradient(90deg,#1D6F42,#2E8B57);border-radius:10px;transition:width 0.4s ease;"></div>
+            </div>
+          </div>
+
+          <!-- فاصل -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:4px;">
+            <div style="flex:1;height:1px;background:rgba(201,168,76,0.25);"></div>
+            <span style="font-size:0.72rem;color:var(--muted);font-weight:600;">أو الصق روابط يدوياً</span>
+            <div style="flex:1;height:1px;background:rgba(201,168,76,0.25);"></div>
+          </div>
+
+          <!-- إضافة يدوية بالروابط -->
           <div style="display:flex;gap:8px;margin-bottom:12px;">
             <textarea id="newImgUrl" placeholder="الصق روابط الصور هنا (يقبل أكثر من رابط)..." style="flex:1;padding:10px 12px;border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;background:#FAF6EE;outline:none;direction:ltr;min-height:60px;resize:vertical;"></textarea>
             <button id="btnAddImg" style="padding:10px 18px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;">+ إضافة</button>
           </div>
-          <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">💡 ارفع صورك على imgbb.com وانسخ كود HTML من خانة "HTML full linked" — راح يستخرج كل الصور تلقائياً</p>
+
+          <!-- حقل مفتاح API -->
+          <details style="margin-bottom:12px;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:8px 12px;background:#FAF6EE;">
+            <summary style="cursor:pointer;font-size:0.78rem;color:var(--muted);font-weight:600;">⚙️ إعدادات الرفع (مفتاح ImgBB API)</summary>
+            <div style="margin-top:8px;">
+              <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;line-height:1.5;">💡 احصل على مفتاح مجاني من <a href="https://api.imgbb.com/" target="_blank" style="color:var(--gold);font-weight:700;">api.imgbb.com</a></div>
+              <div style="display:flex;gap:6px;">
+                <input type="text" id="imgbbApiKey" placeholder="الصق مفتاح API هنا..." dir="ltr" style="flex:1;padding:8px 10px;border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;background:white;outline:none;">
+                <button id="btnSaveApiKey" style="padding:8px 14px;background:linear-gradient(135deg,var(--deep),var(--deep2));color:var(--gold-light);border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">💾 حفظ</button>
+              </div>
+            </div>
+          </details>
+
           <div id="imgsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;"></div>
         </div>
       </details>
@@ -1557,7 +1654,7 @@ input[type=number] { -moz-appearance:textfield; }
   // تهيئة EmailJS
   emailjs.init('KzFRo-6IfN44qilNK');
 
-  var bookings=[], curDate=new Date(), selDate=null, selShift=null, adminIn=false, pendingOk=null, isFirstLoad=true;
+  var bookings=[], curDate=new Date(), selDate=null, selShift=null, adminIn=false, pendingOk=null, isFirstLoad=true, bookingsReady=false;
   var todayD=new Date(); todayD.setHours(0,0,0,0);
   var months=['شهر الأول','شهر الثاني','شهر الثالث','شهر الرابع','شهر الخامس','شهر السادس','شهر السابع','شهر الثامن','شهر التاسع','شهر العاشر','شهر الحادي عشر','شهر الثاني عشر'];
   var days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -1570,6 +1667,51 @@ input[type=number] { -moz-appearance:textfield; }
 
   document.getElementById('btnConfirmYes').onclick=function(){document.getElementById('confirmOv').classList.remove('show');if(pendingOk){pendingOk();pendingOk=null;}};
   document.getElementById('btnConfirmNo').onclick=function(){document.getElementById('confirmOv').classList.remove('show');pendingOk=null;};
+
+  // ---- شاشة الانتظار ----
+  var loadingScreen=document.getElementById('loadingScreen');
+  var loadingBar=document.getElementById('loadingBar');
+  var loadingText=document.getElementById('loadingText');
+
+
+  function hideLoadingScreen(){
+    if(!loadingScreen) return;
+    loadingBar.style.width='100%';
+    loadingText.textContent='تم التحميل! ✓';
+    setTimeout(function(){
+      loadingScreen.style.opacity='0';
+      setTimeout(function(){
+        loadingScreen.style.display='none';
+      },500);
+    },400);
+  }
+
+  function showLoadingError(msg){
+    if(!loadingScreen) return;
+    loadingText.textContent=msg||'خطأ في الاتصال';
+    loadingText.style.color='#e74c3c';
+    // بعد 3 ثواني نغلق شاشة الانتظار حتى لو صار خطأ
+    setTimeout(function(){
+      loadingScreen.style.opacity='0';
+      setTimeout(function(){loadingScreen.style.display='none';},500);
+    },3000);
+  }
+
+  // تحريك شريط التحميل الوهمي أول ما يفتح
+  if(loadingBar){loadingBar.style.width='30%';}
+  setTimeout(function(){if(loadingBar && !bookingsReady) loadingBar.style.width='55%';},800);
+  setTimeout(function(){if(loadingBar && !bookingsReady) loadingBar.style.width='75%';},2000);
+  setTimeout(function(){
+    // حماية: لو بعد 6 ثواني ما تحملت الحجوزات، اغلق شاشة الانتظار
+    if(!bookingsReady){
+      if(loadingText) loadingText.textContent='بطيء الاتصال... جاري المحاولة';
+      if(loadingBar) loadingBar.style.width='90%';
+    }
+  },6000);
+  setTimeout(function(){
+    // إغلاق قهري بعد 12 ثانية حتى لو ما تحمل
+    if(!bookingsReady) hideLoadingScreen();
+  },12000);
 
   // Firebase
   var fbStatus=document.getElementById('fbStatus');
@@ -1615,20 +1757,27 @@ input[type=number] { -moz-appearance:textfield; }
         } catch(notifErr){ console.log('Notification block error:',notifErr); }
 
         isFirstLoad=false;
-        if(fbStatus){fbStatus.className='fb-status connected';fbStatus.textContent='🟢 متصل — الحجوزات تظهر للجميع فورياً';}
+        bookingsReady=true;
+        if(fbStatus){fbStatus.className='fb-status connected';fbStatus.textContent='🟢 متصل — '+ar(bookings.length)+' حجز محمل';}
+
+        // إغلاق شاشة الانتظار
+        hideLoadingScreen();
         renderCal();
         if(adminIn)renderAdmin();
       } catch(handlerErr){
         console.error('Snapshot handler error:',handlerErr);
         if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 خطأ بالعرض: '+handlerErr.message;}
+        showLoadingError('🔴 خطأ في تحميل الحجوزات');
       }
     },function(err){
       console.error('Firestore error:',err);
       if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 خطأ اتصال: '+err.message;}
+      showLoadingError('🔴 فشل الاتصال بالخادم');
     });
   }catch(e){
     console.error('Firebase init error:',e);
     if(fbStatus){fbStatus.className='fb-status error';fbStatus.textContent='🔴 '+e.message;}
+    showLoadingError('🔴 خطأ في الاتصال');
   }
 
   // Calendar
@@ -1753,6 +1902,11 @@ input[type=number] { -moz-appearance:textfield; }
 
   // نافذة الأسعار
   function openPriceModal(d,y,m){
+    // حماية: منع الحجز قبل تحميل الحجوزات
+    if(!bookingsReady){
+      toast('⏳ جاري تحميل الحجوزات، انتظر قليلاً...');
+      return;
+    }
     selDate={d:d,y:y,m:m};selShift=null;
     var k=dkey(y,m,d),bs=bForDate(k);
     var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
@@ -2712,6 +2866,206 @@ input[type=number] { -moz-appearance:textfield; }
       .catch(function(err){toast('❌ خطأ: '+err.message);});
     localStorage.setItem('qasr_gallery',JSON.stringify(galleryImages));
   };
+
+  // ---- نظام رفع الصور بالسحب والإفلات ----
+  var pendingFiles=[]; // الملفات المعلقة للرفع
+  var IMGBB_API_KEY=localStorage.getItem('qasr_imgbb_key')||'';
+
+  // تحميل المفتاح المحفوظ
+  (function(){
+    var keyInput=document.getElementById('imgbbApiKey');
+    if(keyInput && IMGBB_API_KEY) keyInput.value=IMGBB_API_KEY;
+    var btnSave=document.getElementById('btnSaveApiKey');
+    if(btnSave){
+      btnSave.onclick=function(){
+        var k=document.getElementById('imgbbApiKey').value.trim();
+        if(!k){toast('❌ أدخل مفتاح API');return;}
+        IMGBB_API_KEY=k;
+        localStorage.setItem('qasr_imgbb_key',k);
+        toast('✅ تم حفظ مفتاح API');
+      };
+    }
+  })();
+
+  // منطقة السحب والإفلات
+  (function(){
+    var dropZone=document.getElementById('dropZone');
+    var fileInput=document.getElementById('fileInput');
+    if(!dropZone||!fileInput) return;
+
+    // ضغطة تفتح اختيار الملفات
+    dropZone.onclick=function(){fileInput.click();};
+
+    // تغيير لون المنطقة عند السحب فوقها
+    dropZone.addEventListener('dragover',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor='var(--gold)';
+      dropZone.style.background='linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05))';
+      dropZone.style.transform='scale(1.01)';
+    });
+    dropZone.addEventListener('dragleave',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor='rgba(201,168,76,0.5)';
+      dropZone.style.background='linear-gradient(135deg,rgba(201,168,76,0.04),rgba(201,168,76,0.01))';
+      dropZone.style.transform='scale(1)';
+    });
+
+    // عند الإفلات
+    dropZone.addEventListener('drop',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor='rgba(201,168,76,0.5)';
+      dropZone.style.background='linear-gradient(135deg,rgba(201,168,76,0.04),rgba(201,168,76,0.01))';
+      dropZone.style.transform='scale(1)';
+      var files=e.dataTransfer.files;
+      if(files.length) addPendingFiles(files);
+    });
+
+    // عند اختيار ملفات
+    fileInput.addEventListener('change',function(){
+      if(fileInput.files.length) addPendingFiles(fileInput.files);
+      fileInput.value=''; // إعادة تعيين لاختيار نفس الملف
+    });
+  })();
+
+  // إضافة ملفات معلقة مع معاينة
+  function addPendingFiles(fileList){
+    var validTypes=['image/jpeg','image/png','image/gif','image/webp'];
+    for(var i=0;i<fileList.length;i++){
+      var f=fileList[i];
+      if(validTypes.indexOf(f.type)===-1) continue;
+      // منع التكرار بالاسم والحجم
+      var dup=false;
+      for(var j=0;j<pendingFiles.length;j++){
+        if(pendingFiles[j].name===f.name && pendingFiles[j].size===f.size){dup=true;break;}
+      }
+      if(!dup) pendingFiles.push(f);
+    }
+    renderPreview();
+  }
+
+  // عرض معاينة الملفات المعلقة
+  function renderPreview(){
+    var previewDiv=document.getElementById('uploadPreview');
+    var grid=document.getElementById('previewGrid');
+    var countEl=document.getElementById('previewCount');
+    if(!pendingFiles.length){
+      previewDiv.style.display='none';
+      return;
+    }
+    previewDiv.style.display='block';
+    countEl.textContent=pendingFiles.length;
+    var html='';
+    pendingFiles.forEach(function(f,idx){
+      var url=URL.createObjectURL(f);
+      var sizeMB=(f.size/1024/1024).toFixed(1);
+      html+='<div style="position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1.5px solid rgba(201,168,76,0.3);background:#f8f8f8;">'
+        +'<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;">'
+        +'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.7));padding:3px 6px;font-size:0.55rem;color:white;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.name+' ('+sizeMB+'MB)</div>'
+        +'<button onclick="removePendingFile('+idx+')" style="position:absolute;top:3px;left:3px;background:rgba(231,76,60,0.9);color:white;border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;">✕</button>'
+        +'</div>';
+    });
+    grid.innerHTML=html;
+  }
+
+  // حذف ملف من القائمة المعلقة
+  window.removePendingFile=function(idx){
+    pendingFiles.splice(idx,1);
+    renderPreview();
+  };
+
+  // زر إلغاء الكل
+  (function(){
+    var btn=document.getElementById('btnClearPreview');
+    if(btn){
+      btn.onclick=function(){
+        pendingFiles=[];
+        renderPreview();
+      };
+    }
+  })();
+
+  // رفع الملفات إلى ImgBB
+  (function(){
+    var btn=document.getElementById('btnUploadFiles');
+    if(!btn) return;
+    btn.onclick=async function(){
+      if(!pendingFiles.length){toast('❌ لا توجد صور للرفع');return;}
+      if(!IMGBB_API_KEY){toast('❌ أدخل مفتاح ImgBB API أولاً من الإعدادات بالأسفل');return;}
+
+      var progressDiv=document.getElementById('uploadProgress');
+      var progressBar=document.getElementById('progressBar');
+      var progressText=document.getElementById('progressText');
+      var total=pendingFiles.length;
+      var done=0;
+      var failed=0;
+      var newUrls=[];
+
+      progressDiv.style.display='block';
+      progressBar.style.width='0%';
+      progressText.textContent='0 / '+total;
+      btn.disabled=true;
+      btn.innerHTML='⏳ جاري الرفع...';
+
+      for(var i=0;i<pendingFiles.length;i++){
+        var f=pendingFiles[i];
+        try{
+          var formData=new FormData();
+          formData.append('image',f);
+          formData.append('key',IMGBB_API_KEY);
+
+          var resp=await fetch('https://api.imgbb.com/1/upload',{
+            method:'POST',
+            body:formData
+          });
+          var data=await resp.json();
+
+          if(data.success && data.data && data.data.url){
+            // نستخدم الرابط المباشر بصيغة i.ibb.co إذا متوفر
+            var imgUrl=data.data.display_url||data.data.url;
+            newUrls.push(imgUrl);
+            done++;
+          } else {
+            failed++;
+            console.error('ImgBB upload failed for:',f.name, data);
+          }
+        }catch(err){
+          failed++;
+          console.error('Upload error for:',f.name, err);
+        }
+        // تحديث شريط التقدم
+        var pct=Math.round(((i+1)/total)*100);
+        progressBar.style.width=pct+'%';
+        progressText.textContent=(i+1)+' / '+total;
+      }
+
+      // إضافة الروابط الجديدة للمعرض
+      if(newUrls.length){
+        newUrls.forEach(function(u){
+          if(galleryImages.indexOf(u)===-1) galleryImages.push(u);
+        });
+        try{
+          await setDoc(doc(db,'settings',galleryDocId),{images:galleryImages});
+        }catch(e){}
+        localStorage.setItem('qasr_gallery',JSON.stringify(galleryImages));
+      }
+
+      // إعادة تعيين الواجهة
+      pendingFiles=[];
+      renderPreview();
+      progressDiv.style.display='none';
+      btn.disabled=false;
+      btn.innerHTML='☁️ رفع الصور';
+
+      if(failed===0){
+        toast('✅ تم رفع '+done+' صورة بنجاح!');
+      } else {
+        toast('⚠️ تم رفع '+done+' صورة، فشل '+failed+' صورة');
+      }
+    };
+  })();
 
   renderGallery();
 
