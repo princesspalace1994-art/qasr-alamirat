@@ -2,12 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<meta property="fb:app_id" content="">
-<style>
-/* إصلاح متصفح فيسبوك الداخلي */
-html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -95,7 +90,7 @@ header::before { content:''; position:absolute; inset:0; background:url("data:im
 .fb-status.connected { background:rgba(40,167,69,0.12); color:#155724; }
 .fb-status.error { background:rgba(220,53,69,0.12); color:#721c24; }
 
-main { max-width:1200px; margin:0 auto; padding:15px 20px 80px; overflow-x:hidden; }
+main { max-width:1200px; margin:0 auto; padding:15px 20px 80px; }
 .section-title { font-family:'Amiri',serif; font-size:1.4rem; color:var(--deep2); text-align:center; margin-bottom:15px; }
 .section-title::after { content:''; display:block; width:60px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:6px auto 0; }
 
@@ -121,10 +116,8 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
     inset 0 0 0 1px rgba(255,255,255,0.5);
   border: 1px solid rgba(201,168,76,0.25);
   margin-bottom: 30px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 100%;
-  width: calc(100% + 20px);
+  margin-left: -40px;
+  margin-right: -40px;
   overflow: hidden;
 }
 .calendar-wrapper::before {
@@ -254,7 +247,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .cal-day {
   position: relative;
   border-radius: 14px;
-  min-height: 100px;
+  min-height: 110px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   background: linear-gradient(160deg, #ffffff 0%, #faf6ee 100%);
@@ -403,39 +396,6 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
   font-size: 0.72rem;
   line-height: 1;
 }
-/* ============ حجوزات معلقة (جاري الطلب) ============ */
-.shift.bk-day-pending {
-  background: repeating-linear-gradient(135deg, rgba(255,152,0,0.7), rgba(255,152,0,0.7) 4px, rgba(255,193,7,0.5) 4px, rgba(255,193,7,0.5) 8px);
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  animation: pendingPulse 2s ease-in-out infinite;
-}
-.shift.bk-day-pending .shift-icon { filter: none; font-size: 0.7rem; }
-.shift.bk-night-pending {
-  background: repeating-linear-gradient(135deg, rgba(255,111,0,0.8), rgba(255,111,0,0.8) 4px, rgba(255,152,0,0.6) 4px, rgba(255,152,0,0.6) 8px);
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  animation: pendingPulse 2s ease-in-out infinite;
-}
-.shift.bk-night-pending .shift-icon { filter: none; font-size: 0.7rem; }
-.shift.bk-full-pending {
-  background: repeating-linear-gradient(90deg, rgba(255,152,0,0.7), rgba(255,152,0,0.7) 4px, rgba(255,193,7,0.5) 4px, rgba(255,193,7,0.5) 8px);
-  color: white;
-  font-weight: 700;
-  flex: 2;
-  letter-spacing: 0.3px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-  flex-direction: row;
-  gap: 1px;
-  justify-content: center;
-  align-items: center;
-  animation: pendingPulse 2s ease-in-out infinite;
-}
-.shift.bk-full-pending .shift-icon { filter: none; font-size: 0.72rem; line-height: 1; }
-@keyframes pendingPulse {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
-}
 
 /* ============ مفتاح علامات الحجز ============ */
 .cal-legend {
@@ -551,42 +511,21 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 
 /* تجاوب الجوال */
 @media (max-width: 600px) {
-  .calendar-wrapper { padding: 16px 8px 14px; border-radius: 18px; margin-left: auto; margin-right: auto; width: 100%; max-width: 100%; }
-  .cal-month { font-size: 1.2rem; }
-  .cal-month::before, .cal-month::after { margin: 0 4px; font-size: 0.45rem; }
-  .cal-btn { width: 34px; height: 34px; font-size: 1rem; padding: 0; }
-  .cal-grid { gap: 4px; }
-  .cal-day { min-height: 72px; border-radius: 10px; }
-  .cal-header { font-size: 0.65rem; padding: 6px 0 8px; border-radius: 7px; }
-  .cal-header::after { width: 10px; }
-  .day-num { font-size: 0.9rem; top: 5px; right: 6px; }
-  .cal-day.today .day-num { width: 22px; height: 22px; font-size: 0.72rem; }
-  .day-shifts { height: 20px; }
-  .shift .shift-icon { font-size: 0.5rem; }
-  .shift.bk-day .shift-icon, .shift.bk-night .shift-icon { font-size: 0.52rem; }
-  .shift .shift-text { font-size: 0.3rem; }
-  .shift.bk-full .shift-icon { font-size: 0.52rem; }
-}
-
-/* شاشات صغيرة جداً (متصفح فيسبوك) */
-@media (max-width: 420px) {
-  .calendar-wrapper { padding: 12px 6px 10px; border-radius: 14px; margin-left: 0; margin-right: 0; width: 100%; }
-  .cal-nav { margin-bottom: 14px; }
-  .cal-month { font-size: 1.05rem; }
-  .cal-month::before, .cal-month::after { margin: 0 3px; font-size: 0.4rem; }
-  .cal-btn { width: 30px; height: 30px; font-size: 0.9rem; padding: 0; }
-  .cal-grid { gap: 3px; }
-  .cal-day { min-height: 60px; border-radius: 8px; }
-  .cal-header { font-size: 0.58rem; padding: 5px 0 6px; border-radius: 6px; }
-  .cal-header::after { width: 8px; height: 1.5px; bottom: 3px; }
-  .day-num { font-size: 0.8rem; top: 4px; right: 5px; }
-  .cal-day.today .day-num { width: 20px; height: 20px; font-size: 0.65rem; }
-  .day-shifts { height: 16px; gap: 1px; }
-  .shift .shift-icon { font-size: 0.45rem; }
-  .shift.bk-day .shift-icon, .shift.bk-night .shift-icon { font-size: 0.48rem; }
-  .shift .shift-text { font-size: 0.25rem; }
-  .shift.bk-full .shift-icon { font-size: 0.48rem; }
-  .cal-legend { padding: 8px 8px; border-radius: 10px; margin-bottom: 10px; }
+  .calendar-wrapper { padding: 22px 12px 20px; border-radius: 22px; margin-left: -10px; margin-right: -10px; }
+  .cal-month { font-size: 1.4rem; }
+  .cal-month::before, .cal-month::after { margin: 0 6px; font-size: 0.55rem; }
+  .cal-btn { width: 38px; height: 38px; font-size: 1.15rem; }
+  .cal-grid { gap: 5px; }
+  .cal-day { min-height: 90px; border-radius: 11px; }
+  .cal-header { font-size: 0.72rem; padding: 8px 0 10px; border-radius: 8px; }
+  .cal-header::after { width: 12px; }
+  .day-num { font-size: 1rem; top: 6px; right: 8px; }
+  .cal-day.today .day-num { width: 26px; height: 26px; font-size: 0.78rem; }
+  .day-shifts { height: 22px; }
+  .shift .shift-icon { font-size: 0.55rem; }
+  .shift.bk-day .shift-icon, .shift.bk-night .shift-icon { font-size: 0.6rem; }
+  .shift .shift-text { font-size: 0.35rem; }
+  .shift.bk-full .shift-icon { font-size: 0.6rem; }
 }
 
 /* ============ تلميح السلايد للتقويم ============ */
@@ -847,7 +786,7 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .c-no { flex:1; padding:12px; background:#f0f0f0; color:#555; border:none; border-radius:12px; font-family:'Tajawal',sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer; }
 
 @media(max-width:600px){
-  .cal-day{min-height:72px;} .day-shifts{height:22px;}
+  .cal-day{min-height:65px;} .day-shifts{height:32px;}
   .price-cards{flex-direction:row; gap:8px;}
   .price-card{padding:12px 6px;}
   .pc-icon{font-size:1.5rem;}
@@ -1364,7 +1303,6 @@ input[type=number] { -moz-appearance:textfield; }
     <div class="legend-item"><span class="legend-dot" style="background:#2D1654"></span><span>مسائي محجوز</span></div>
     <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span><span>يوم كامل</span></div>
     <div class="legend-item"><span class="legend-dot" style="background:#ccc"></span><span>متاح</span></div>
-    <div class="legend-item"><span class="legend-dot" style="background:repeating-linear-gradient(135deg,#FF9800,#FF9800 3px,#FFC107 3px,#FFC107 6px)"></span><span>⏳ جاري الطلب</span></div>
   </div>
 </header>
 
@@ -1931,92 +1869,32 @@ input[type=number] { -moz-appearance:textfield; }
     grid.innerHTML='';
     for(var i=0;i<hdrs.length;i++)grid.appendChild(hdrs[i]);
     var first=new Date(y,m,1).getDay(), dim=new Date(y,m+1,0).getDate();
+    for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
     for(var d=1;d<=dim;d++){
       var k=dkey(y,m,d),bs=bForDate(k);
-      // فصل المؤكدة والمعلقة
       var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
-      var confirmedBs=bs.filter(function(b){return b.status!=='pending';});
-      var pendingBs=bs.filter(function(b){return b.status==='pending';});
-      var cHasFull=confirmedBs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
-      var cdb2=cHasFull||confirmedBs.some(function(b){return b.shift==='day';});
-      var cnb=cHasFull||confirmedBs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
-      var cfb2=cdb2&&cnb;
-      var pHasFull=pendingBs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
-      var pdb2=pHasFull||pendingBs.some(function(b){return b.shift==='day';});
-      var pnb=pHasFull||pendingBs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
-      var pfb2=pdb2&&pnb;
-      // الظهور الكلي (مؤكد + معلق)
-      var db2=cdb2||pdb2;
-      var nb=cnb||pnb;
-      var fb2=cfb2||pfb2;
+      var db2=hasFullBoth||bs.some(function(b){return b.shift==='day';});
+      var nb=hasFullBoth||bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
+      var fb2=db2&&nb;
       var cd=new Date(y,m,d);cd.setHours(0,0,0,0);
       var past=cd<todayD,isT=cd.getTime()===todayD.getTime();
       var cell=document.createElement('div');
       cell.className='cal-day'+(past?' past':'')+(isT?' today':'');
       var ns=document.createElement('span');ns.className='day-num';ns.textContent=ar(d);cell.appendChild(ns);
       var sd=document.createElement('div');sd.className='day-shifts';
-
-      // عرض مؤكد + معلق معاً
-      // تحديد حالة كل شفت: 'free' | 'confirmed' | 'pending' | 'mixed'
-      function shiftState(shiftKey){
-        var cHas=confirmedBs.some(function(b){
-          if(shiftKey==='day') return b.shift==='day'||b.shift==='full'||b.shift==='full_dn';
-          if(shiftKey==='night') return b.shift==='night'||b.shift==='full'||b.shift==='full_nd';
-          return false;
-        });
-        var pHas=pendingBs.some(function(b){
-          if(shiftKey==='day') return b.shift==='day'||b.shift==='full'||b.shift==='full_dn';
-          if(shiftKey==='night') return b.shift==='night'||b.shift==='full'||b.shift==='full_nd';
-          return false;
-        });
-        if(cHas) return 'confirmed';
-        if(pHas) return 'pending';
-        return 'free';
-      }
-
-      var dayState=shiftState('day');
-      var nightState=shiftState('night');
-
-      // لو كلاهم مؤكد (يوم كامل مؤكد)
-      if(dayState==='confirmed'&&nightState==='confirmed'){
+      if(fb2){
         var s=document.createElement('div');s.className='shift bk-full';
         s.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">☀️</span><span class="shift-inner-text">محجوز</span></span><span class="shift-icon-wrap"><span class="shift-icon" style="font-size:0.65rem;">🌙</span><span class="shift-inner-text">محجوز</span></span>';
         sd.appendChild(s);
       }
-      // لو كلاهم معلق (يوم كامل معلق)
-      else if(dayState==='pending'&&nightState==='pending'){
-        var s=document.createElement('div');s.className='shift bk-full-pending';
-        s.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">⏳</span><span class="shift-inner-text">جاري الطلب</span></span><span class="shift-icon-wrap"><span class="shift-icon" style="font-size:0.65rem;">⏳</span><span class="shift-inner-text">جاري الطلب</span></span>';
-        sd.appendChild(s);
-      }
       else{
-        // شفت نهاري
-        var s1=document.createElement('div');s1.className='shift shift-day-slot';
-        if(dayState==='confirmed'){
-          s1.className+=' bk-day';
-          s1.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">☀️</span><span class="shift-inner-text">محجوز</span></span>';
-        } else if(dayState==='pending'){
-          s1.className+=' bk-day-pending';
-          s1.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">⏳</span><span class="shift-inner-text">جاري الطلب</span></span>';
-        } else {
-          s1.innerHTML='<span class="shift-icon">☀️</span>';
-        }
+        var s1=document.createElement('div');s1.className='shift shift-day-slot'+(db2?' bk-day':'');
+        s1.innerHTML=db2?'<span class="shift-icon-wrap"><span class="shift-icon">☀️</span><span class="shift-inner-text">محجوز</span></span>':'<span class="shift-icon">☀️</span>';
         sd.appendChild(s1);
-
-        // شفت مسائي
-        var s2=document.createElement('div');s2.className='shift shift-night-slot';
-        if(nightState==='confirmed'){
-          s2.className+=' bk-night';
-          s2.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">🌙</span><span class="shift-inner-text">محجوز</span></span>';
-        } else if(nightState==='pending'){
-          s2.className+=' bk-night-pending';
-          s2.innerHTML='<span class="shift-icon-wrap"><span class="shift-icon">⏳</span><span class="shift-inner-text">جاري الطلب</span></span>';
-        } else {
-          s2.innerHTML='<span class="shift-icon">🌙</span>';
-        }
+        var s2=document.createElement('div');s2.className='shift shift-night-slot'+(nb?' bk-night':'');
+        s2.innerHTML=nb?'<span class="shift-icon-wrap"><span class="shift-icon">🌙</span><span class="shift-inner-text">محجوز</span></span>':'<span class="shift-icon">🌙</span>';
         sd.appendChild(s2);
       }
-
       cell.appendChild(sd);
       if(!past){(function(dd,yy,mm){cell.onclick=function(){openPriceModal(dd,yy,mm);};})(d,y,m);}
       grid.appendChild(cell);
@@ -2110,11 +1988,9 @@ input[type=number] { -moz-appearance:textfield; }
     }
     selDate={d:d,y:y,m:m};selShift=null;
     var k=dkey(y,m,d),bs=bForDate(k);
-    // فقط الحجوزات المؤكدة تمنع الحجز - المعلقة لا تمنع
-    var confirmedBs2=bs.filter(function(b){return b.status!=='pending';});
-    var hasFullBoth=confirmedBs2.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
-    var db2=hasFullBoth||confirmedBs2.some(function(b){return b.shift==='day';});
-    var nb=hasFullBoth||confirmedBs2.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
+    var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
+    var db2=hasFullBoth||bs.some(function(b){return b.shift==='day';});
+    var nb=hasFullBoth||bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
     var cd=new Date(y,m,d);
     document.getElementById('priceModalDate').textContent=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
@@ -2193,9 +2069,7 @@ input[type=number] { -moz-appearance:textfield; }
     var nextDate=new Date(y,m,d);nextDate.setDate(nextDate.getDate()+1);
     var nextK=dkey(nextDate.getFullYear(),nextDate.getMonth(),nextDate.getDate());
     var nextBs=bForDate(nextK);
-    // فقط المؤكدة تمنع
-    var nextConfirmed=nextBs.filter(function(b){return b.status!=='pending';});
-    var nextDayBooked=nextConfirmed.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
+    var nextDayBooked=nextBs.some(function(b){return b.shift==='day'||b.shift==='full'||b.shift==='full_dn'||b.shift==='full_nd';});
     document.getElementById('pcFullND').className='price-card'+(nextDayBooked?' price-disabled':'');
     document.getElementById('pcFullND').style.cssText='flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;'+(nextDayBooked?'opacity:0.5;cursor:not-allowed;':'');
   };
@@ -2390,7 +2264,6 @@ input[type=number] { -moz-appearance:textfield; }
         youthCount:currentBookingType==='youth'?youthCount:null,
         extraAmount:extraAmount,
         totalPrice:totalPrice,
-        status:'pending',
         createdAt:new Date().toISOString()
       });
 
@@ -2408,7 +2281,6 @@ input[type=number] { -moz-appearance:textfield; }
           bookingType:currentBookingType,
           extraAmount:0, totalPrice:0,
           isFullDayExtension:true,
-          status:'pending',
           createdAt:new Date().toISOString()
         });
       }
@@ -2525,11 +2397,9 @@ input[type=number] { -moz-appearance:textfield; }
     var activeBookings=bookings.filter(function(b){return b.date>=ts;});
     var total=activeBookings.length;
     var upc=activeBookings.filter(function(b){return b.date>ts;}).length;
-    var pendingCount=activeBookings.filter(function(b){return b.status==='pending';}).length;
     document.getElementById('adminStats').innerHTML=
       '<div class="stat-card"><div class="stat-n">'+ar(total)+'</div><div class="stat-l">إجمالي الحجوزات</div></div>'+
-      '<div class="stat-card"><div class="stat-n">'+ar(upc)+'</div><div class="stat-l">حجوزات قادمة</div></div>'+
-      '<div class="stat-card" style="background:rgba(255,152,0,0.1);border:1.5px solid rgba(255,152,0,0.3);"><div class="stat-n" style="color:#FF9800;">'+ar(pendingCount)+'</div><div class="stat-l">⏳ جاري الطلب</div></div>';
+      '<div class="stat-card"><div class="stat-n">'+ar(upc)+'</div><div class="stat-l">حجوزات قادمة</div></div>';
 
     var c=document.getElementById('adminBookings');
     if(!activeBookings.length){
@@ -2565,19 +2435,13 @@ input[type=number] { -moz-appearance:textfield; }
       var phoneWarn=phoneHasWa||phoneDigits.length!==11;
 
       var extBadge=b.isFullDayExtension?'<span style="background:rgba(255,152,0,0.15);color:#e67e22;font-size:0.55rem;padding:2px 6px;border-radius:8px;font-weight:700;margin-right:4px;">امتداد</span>':'';
-      var statusBadge=b.status==='pending'?'<span style="background:linear-gradient(135deg,#FF9800,#F57C00);color:white;font-size:0.55rem;padding:2px 8px;border-radius:8px;font-weight:700;margin-right:4px;animation:pendingPulse 2s ease-in-out infinite;">⏳ جاري الطلب</span>':'<span style="background:rgba(39,174,96,0.15);color:#27ae60;font-size:0.55rem;padding:2px 8px;border-radius:8px;font-weight:700;margin-right:4px;">✅ مؤكد</span>';
-
-      // لون الصف حسب الحالة
-      var rowStyle=isToday2?'background:rgba(220,53,69,0.08);border:2px solid rgba(220,53,69,0.35);':
-                   isTomorrow2?'background:rgba(255,152,0,0.08);border:2px solid rgba(255,152,0,0.35);':
-                   b.status==='pending'?'background:rgba(255,152,0,0.04);border:2px dashed rgba(255,152,0,0.3);':'';
 
       html+='<div class="a-row" id="row_'+i+'" style="'+rowStyle+(b.isFullDayExtension?'opacity:0.7;':'')+'flex-direction:column;align-items:stretch;gap:10px;">'+
         // السطر الأول: الأيقونة + المعلومات + شارة
         '<div style="display:flex;align-items:center;gap:10px;">'+
           '<div class="a-badge" style="background:'+(bg[b.shift]||'rgba(201,168,76,0.15)')+'">'+((ic[b.shift])||'🌟')+'</div>'+
           '<div class="a-info" style="flex:1;">'+
-            '<div class="a-name">'+badge+statusBadge+extBadge+b.name+'</div>'+
+            '<div class="a-name">'+badge+extBadge+b.name+'</div>'+
             '<div class="a-meta">'+
               '<span>'+b.displayDate+'</span>'+
               '<span>'+(sl2[b.shift]||b.shift)+'</span>'+
@@ -2611,7 +2475,6 @@ input[type=number] { -moz-appearance:textfield; }
           '</div>'+
         '</div>'+
         '<button data-idx="'+i+'" class="btn-confirm-booking" style="width:100%;margin-top:8px;padding:11px;background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">✅ تثبيت وإرسال</button>'+
-        (b.status==='pending'?'<button data-fid="'+fid+'" class="btn-approve-booking" style="width:100%;margin-top:6px;padding:11px;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;animation:pendingPulse 2s ease-in-out infinite;">⏳ تأكيد الحجز (تحويل لمؤكد)</button>':'')+
       '</div>';
     }
 
@@ -2693,21 +2556,6 @@ input[type=number] { -moz-appearance:textfield; }
           try{await deleteDoc(doc(db,'bookings',fid2));toast('تم حذف الحجز');}
           catch(err){toast('خطأ: '+err.message);}
         });
-      };
-    });
-
-    // أحداث زر تأكيد الحجز (تحويل من معلق لمؤكد)
-    c.querySelectorAll('.btn-approve-booking').forEach(function(btn){
-      btn.onclick=async function(){
-        var fid4=btn.getAttribute('data-fid');
-        try{
-          await updateDoc(doc(db,'bookings',fid4),{status:'confirmed'});
-          btn.textContent='✅ تم التأكيد!';
-          btn.style.background='linear-gradient(135deg,#27ae60,#2ecc71)';
-          btn.style.animation='none';
-          btn.disabled=true;
-          toast('✅ تم تأكيد الحجز بنجاح');
-        }catch(err){toast('❌ خطأ: '+err.message);}
       };
     });
   }
