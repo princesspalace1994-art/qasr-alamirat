@@ -735,6 +735,23 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .success-warning { background:rgba(201,168,76,0.1); border:1.5px solid rgba(201,168,76,0.3); border-radius:12px; padding:14px; margin:16px 0; font-size:0.88rem; color:var(--deep2); font-weight:600; line-height:1.7; }
 .success-close { width:100%; padding:14px; background:linear-gradient(135deg,var(--deep2),var(--deep)); color:var(--gold-light); border:none; border-radius:12px; font-family:'Tajawal',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; margin-top:8px; }
 
+.booked-overlay { position:fixed; inset:0; background:rgba(26,10,46,0.75); backdrop-filter:blur(10px); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
+.booked-overlay.show { display:flex; }
+.booked-box { background:white; border-radius:24px; padding:36px 28px; max-width:400px; width:100%; text-align:center; box-shadow:0 30px 80px rgba(0,0,0,0.4); animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.booked-icon { font-size:4rem; margin-bottom:10px; display:block; animation:shakeSlow 0.6s ease-in-out; }
+@keyframes shakeSlow { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-8deg)} 40%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 80%{transform:rotate(5deg)} }
+.booked-title { font-family:'Amiri',serif; font-size:1.5rem; color:#c0392b; margin-bottom:6px; }
+.booked-date { font-size:1rem; color:var(--deep2); font-weight:700; margin-bottom:16px; }
+.booked-details { background:rgba(192,57,43,0.06); border:1.5px solid rgba(192,57,43,0.2); border-radius:14px; padding:16px; margin:12px 0; }
+.booked-detail-row { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:0.88rem; color:var(--text); border-bottom:1px solid rgba(192,57,43,0.08); }
+.booked-detail-row:last-child { border-bottom:none; }
+.booked-detail-icon { font-size:1.2rem; flex-shrink:0; }
+.booked-detail-label { color:var(--muted); font-weight:600; min-width:70px; text-align:right; }
+.booked-detail-value { font-weight:700; color:var(--deep2); }
+.booked-hint { font-size:0.82rem; color:var(--muted); margin-top:14px; line-height:1.7; }
+.booked-close { width:100%; padding:14px; background:linear-gradient(135deg,var(--deep2),var(--deep)); color:var(--gold-light); border:none; border-radius:12px; font-family:'Tajawal',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; margin-top:16px; transition:all 0.2s; }
+.booked-close:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,10,46,0.4); }
+
 .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--deep2); color:var(--gold-light); padding:13px 26px; border-radius:50px; font-weight:600; font-size:0.95rem; box-shadow:0 8px 30px rgba(26,10,46,0.3); z-index:9999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); }
 
@@ -763,6 +780,17 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .stat-l { font-size:0.72rem; color:var(--muted); margin-top:4px; }
 .a-sec-title { font-size:0.78rem; font-weight:700; color:var(--muted); letter-spacing:1.5px; margin-bottom:12px; }
 .a-bookings { display:flex; flex-direction:column; gap:10px; }
+.date-filter { background:white; border-radius:14px; padding:14px 18px; margin-bottom:16px; border:1px solid rgba(201,168,76,0.2); display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+.date-filter-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+.date-filter-group label { font-size:0.72rem; font-weight:700; color:var(--muted); }
+.date-filter-group input[type="date"] { padding:9px 12px; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.85rem; background:var(--cream); color:var(--text); outline:none; direction:ltr; text-align:center; }
+.date-filter-group input[type="date"]:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+.date-filter-btns { display:flex; gap:6px; align-items:flex-end; }
+.btn-filter-apply { padding:9px 18px; background:linear-gradient(135deg,var(--deep),var(--deep2)); color:var(--gold-light); border:none; border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
+.btn-filter-apply:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(26,10,46,0.3); }
+.btn-filter-clear { padding:9px 14px; background:#f0f0f0; color:#555; border:none; border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
+.btn-filter-clear:hover { background:#e0e0e0; }
+.date-filter-info { font-size:0.72rem; color:var(--gold); font-weight:600; width:100%; text-align:center; margin-top:4px; }
 .a-row { background:white; border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; border:1px solid rgba(201,168,76,0.12); }
 .a-badge { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
 .a-info { flex:1; min-width:0; }
@@ -1657,6 +1685,22 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </details>
       <div class="admin-stats" id="adminStats"></div>
+      <!-- فلتر التاريخ -->
+      <div class="date-filter" id="dateFilter">
+        <div class="date-filter-group">
+          <label>📅 من تاريخ</label>
+          <input type="date" id="filterDateFrom">
+        </div>
+        <div class="date-filter-group">
+          <label>📅 إلى تاريخ</label>
+          <input type="date" id="filterDateTo">
+        </div>
+        <div class="date-filter-btns">
+          <button class="btn-filter-apply" id="btnFilterApply">🔍 تصفية</button>
+          <button class="btn-filter-clear" id="btnFilterClear">✕ مسح</button>
+        </div>
+        <div class="date-filter-info" id="filterInfo"></div>
+      </div>
       <button id="btnCleanOrphans" onclick="cleanOrphanExtensions()" style="display:block;margin:8px auto;padding:6px 14px;background:#e74c3c;color:white;border:none;border-radius:8px;font-size:0.72rem;font-family:Tajawal,sans-serif;cursor:pointer;font-weight:700;">🧹 مسح حجوزات الامتداد اليتيمة</button>
       <div class="a-sec-title">قائمة الحجوزات</div>
       <div class="a-bookings" id="adminBookings"></div>
@@ -1686,6 +1730,18 @@ input[type=number] { -moz-appearance:textfield; }
       سيتواصل معك فريق الدعم على الرقم 07822216325 لإتمام الحجز
     </div>
     <button class="success-close" id="btnSuccessClose">حسناً ✓</button>
+  </div>
+</div>
+
+<!-- نافذة هذا اليوم محجوز -->
+<div class="booked-overlay" id="bookedOverlay">
+  <div class="booked-box">
+    <span class="booked-icon">🔒</span>
+    <h3 class="booked-title">هذا اليوم محجوز</h3>
+    <div class="booked-date" id="bookedDate"></div>
+    <div class="booked-details" id="bookedDetails"></div>
+    <div class="booked-hint">يمكنك اختيار يوم آخر متاح من التقويم للحجز</div>
+    <button class="booked-close" id="btnBookedClose">حسناً ✓</button>
   </div>
 </div>
 
@@ -1991,6 +2047,14 @@ input[type=number] { -moz-appearance:textfield; }
     var hasFullBoth=bs.some(function(b){return b.shift==='full'||b.shift==='full_dn';});
     var db2=hasFullBoth||bs.some(function(b){return b.shift==='day';});
     var nb=hasFullBoth||bs.some(function(b){return b.shift==='night'||b.shift==='full_nd';});
+    var fb2=db2&&nb;
+
+    // إذا اليوم محجوز بالكامل (نهاري + مسائي) → اعرض نافذة "محجوز"
+    if(fb2){
+      showBookedModal(d,y,m,bs);
+      return;
+    }
+
     var cd=new Date(y,m,d);
     document.getElementById('priceModalDate').textContent=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
     document.getElementById('pcDay').className='price-card'+(db2?' price-disabled':'');
@@ -2033,6 +2097,56 @@ input[type=number] { -moz-appearance:textfield; }
 
   document.getElementById('btnClosePriceModal').onclick=function(){document.getElementById('priceOverlay').classList.remove('open');};
   document.getElementById('priceOverlay').onclick=function(e){if(e.target===this)this.classList.remove('open');};
+
+  // ---- نافذة هذا اليوم محجوز ----
+  var sl3={day:'نهاري ☀️',night:'مسائي 🌙',full:'يوم كامل 🌟',full_dn:'صباحي-مسائي 🌟',full_nd:'مسائي-صباحي 🌟'};
+  var st3={day:'10ص — 6م',night:'7م — 8ص',full:'24 ساعة',full_dn:'10ص — 8ص (اليوم التالي)',full_nd:'7م — 6م (اليوم التالي)'};
+
+  function showBookedModal(d,y,m,bs){
+    var cd=new Date(y,m,d);
+    var dateStr=days[cd.getDay()]+'، '+ar(d)+' '+months[m]+' '+ar(y);
+    document.getElementById('bookedDate').textContent=dateStr;
+
+    var detailsHtml='';
+    for(var i=0;i<bs.length;i++){
+      var b=bs[i];
+      var shiftLabel=sl3[b.shift]||b.shift;
+      var shiftTime=st3[b.shift]||'';
+      var typeLabel=b.bookingType==='youth'?'شباب':'عوائل';
+      detailsHtml+='<div class="booked-detail-row">'+
+        '<span class="booked-detail-icon">'+(b.shift==='day'||b.shift==='full_dn'?'☀️':b.shift==='night'||b.shift==='full_nd'?'🌙':'🌟')+'</span>'+
+        '<span class="booked-detail-label">الشفت:</span>'+
+        '<span class="booked-detail-value">'+shiftLabel+'</span>'+
+      '</div>'+
+      '<div class="booked-detail-row">'+
+        '<span class="booked-detail-icon">🕐</span>'+
+        '<span class="booked-detail-label">الوقت:</span>'+
+        '<span class="booked-detail-value">'+shiftTime+'</span>'+
+      '</div>'+
+      '<div class="booked-detail-row">'+
+        '<span class="booked-detail-icon">👤</span>'+
+        '<span class="booked-detail-label">الاسم:</span>'+
+        '<span class="booked-detail-value">'+(b.name||'—')+'</span>'+
+      '</div>'+
+      '<div class="booked-detail-row">'+
+        '<span class="booked-detail-icon">🎯</span>'+
+        '<span class="booked-detail-label">النوع:</span>'+
+        '<span class="booked-detail-value">'+typeLabel+'</span>'+
+      '</div>'+
+      '<div class="booked-detail-row">'+
+        '<span class="booked-detail-icon">👥</span>'+
+        '<span class="booked-detail-label">الأشخاص:</span>'+
+        '<span class="booked-detail-value">'+(b.guests||'—')+'</span>'+
+      '</div>';
+      if(i<bs.length-1) detailsHtml+='<div style="border-bottom:2px solid rgba(192,57,43,0.15);margin:6px 0;"></div>';
+    }
+    document.getElementById('bookedDetails').innerHTML=detailsHtml;
+    document.getElementById('bookedOverlay').classList.add('show');
+    hideSelectDayHint();
+  }
+
+  document.getElementById('btnBookedClose').onclick=function(){document.getElementById('bookedOverlay').classList.remove('show');};
+  document.getElementById('bookedOverlay').onclick=function(e){if(e.target===this)this.classList.remove('show');};
 
   function selectShift(sh){
     var map={day:'pcDay',night:'pcNight',full:'pcFull',full_dn:'pcFullDN',full_nd:'pcFullND'};
@@ -2381,6 +2495,21 @@ input[type=number] { -moz-appearance:textfield; }
     });
   };
 
+  // ---- فلتر التاريخ ----
+  var dateFilterFrom='', dateFilterTo='';
+  document.getElementById('btnFilterApply').onclick=function(){
+    dateFilterFrom=document.getElementById('filterDateFrom').value||'';
+    dateFilterTo=document.getElementById('filterDateTo').value||'';
+    renderAdmin();
+  };
+  document.getElementById('btnFilterClear').onclick=function(){
+    dateFilterFrom=''; dateFilterTo='';
+    document.getElementById('filterDateFrom').value='';
+    document.getElementById('filterDateTo').value='';
+    document.getElementById('filterInfo').textContent='';
+    renderAdmin();
+  };
+
   function renderAdmin(){
     var pm={day:350000,night:400000,full:700000};
     var sn={day:'نهاري ☀️',night:'مسائي 🌙',full:'يوم كامل 🌟'};
@@ -2395,19 +2524,39 @@ input[type=number] { -moz-appearance:textfield; }
     var tomorrowStr=tomorrow2.getFullYear()+'-'+('0'+(tomorrow2.getMonth()+1)).slice(-2)+'-'+('0'+tomorrow2.getDate()).slice(-2);
 
     var activeBookings=bookings.filter(function(b){return b.date>=ts;});
-    var total=activeBookings.length;
-    var upc=activeBookings.filter(function(b){return b.date>ts;}).length;
+
+    // تطبيق فلتر التاريخ
+    var isFiltering=dateFilterFrom||dateFilterTo;
+    var filteredBookings=activeBookings;
+    if(isFiltering){
+      filteredBookings=activeBookings.filter(function(b){
+        if(dateFilterFrom && b.date<dateFilterFrom) return false;
+        if(dateFilterTo && b.date>dateFilterTo) return false;
+        return true;
+      });
+      // تحديث معلومات الفلتر
+      var infoText='🔍 عرض '+filteredBookings.length+' حجز';
+      if(dateFilterFrom && dateFilterTo) infoText+=' من '+dateFilterFrom+' إلى '+dateFilterTo;
+      else if(dateFilterFrom) infoText+=' من '+dateFilterFrom;
+      else if(dateFilterTo) infoText+=' إلى '+dateFilterTo;
+      document.getElementById('filterInfo').textContent=infoText;
+    }else{
+      document.getElementById('filterInfo').textContent='';
+    }
+
+    var total=filteredBookings.length;
+    var upc=filteredBookings.filter(function(b){return b.date>ts;}).length;
     document.getElementById('adminStats').innerHTML=
-      '<div class="stat-card"><div class="stat-n">'+ar(total)+'</div><div class="stat-l">إجمالي الحجوزات</div></div>'+
+      '<div class="stat-card"><div class="stat-n">'+ar(total)+'</div><div class="stat-l">'+(isFiltering?'حجوزات مفلترة':'إجمالي الحجوزات')+'</div></div>'+
       '<div class="stat-card"><div class="stat-n">'+ar(upc)+'</div><div class="stat-l">حجوزات قادمة</div></div>';
 
     var c=document.getElementById('adminBookings');
-    if(!activeBookings.length){
-      c.innerHTML='<div class="a-empty"><div style="font-size:2.5rem;opacity:0.3;margin-bottom:10px">📅</div><p>لا توجد حجوزات</p></div>';
+    if(!filteredBookings.length){
+      c.innerHTML='<div class="a-empty"><div style="font-size:2.5rem;opacity:0.3;margin-bottom:10px">📅</div><p>'+(isFiltering?'لا توجد حجوزات في هذا النطاق الزمني':'لا توجد حجوزات')+'</p></div>';
       return;
     }
 
-    var sorted=activeBookings.slice().sort(function(a,b){return a.date.localeCompare(b.date);});
+    var sorted=filteredBookings.slice().sort(function(a,b){return a.date.localeCompare(b.date);});
     var html='';
 
     for(var i=0;i<sorted.length;i++){
