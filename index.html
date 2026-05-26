@@ -780,17 +780,13 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .stat-l { font-size:0.72rem; color:var(--muted); margin-top:4px; }
 .a-sec-title { font-size:0.78rem; font-weight:700; color:var(--muted); letter-spacing:1.5px; margin-bottom:12px; }
 .a-bookings { display:flex; flex-direction:column; gap:10px; }
-.date-filter { background:white; border-radius:14px; padding:14px 18px; margin-bottom:16px; border:1px solid rgba(201,168,76,0.2); display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
-.date-filter-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
-.date-filter-group label { font-size:0.72rem; font-weight:700; color:var(--muted); }
-.date-filter-group input[type="date"] { padding:9px 12px; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.85rem; background:var(--cream); color:var(--text); outline:none; direction:ltr; text-align:center; }
-.date-filter-group input[type="date"]:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
-.date-filter-btns { display:flex; gap:6px; align-items:flex-end; }
-.btn-filter-apply { padding:9px 18px; background:linear-gradient(135deg,var(--deep),var(--deep2)); color:var(--gold-light); border:none; border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
-.btn-filter-apply:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(26,10,46,0.3); }
-.btn-filter-clear { padding:9px 14px; background:#f0f0f0; color:#555; border:none; border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
-.btn-filter-clear:hover { background:#e0e0e0; }
-.date-filter-info { font-size:0.72rem; color:var(--gold); font-weight:600; width:100%; text-align:center; margin-top:4px; }
+.name-filter { background:white; border-radius:14px; padding:12px 16px; margin-bottom:16px; border:1px solid rgba(201,168,76,0.2); display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.name-filter-input { flex:1; min-width:160px; padding:10px 14px; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.88rem; background:var(--cream); color:var(--text); outline:none; }
+.name-filter-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+.name-filter-input::placeholder { color:var(--muted); opacity:0.6; }
+.btn-name-clear { padding:10px 14px; background:#f0f0f0; color:#555; border:none; border-radius:10px; font-family:'Tajawal',sans-serif; font-size:0.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
+.btn-name-clear:hover { background:#e0e0e0; }
+.name-filter-info { font-size:0.72rem; color:var(--gold); font-weight:600; width:100%; text-align:center; margin-top:2px; }
 .a-row { background:white; border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; border:1px solid rgba(201,168,76,0.12); }
 .a-badge { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
 .a-info { flex:1; min-width:0; }
@@ -1685,21 +1681,12 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </details>
       <div class="admin-stats" id="adminStats"></div>
-      <!-- فلتر التاريخ -->
-      <div class="date-filter" id="dateFilter">
-        <div class="date-filter-group">
-          <label>📅 من تاريخ</label>
-          <input type="date" id="filterDateFrom">
-        </div>
-        <div class="date-filter-group">
-          <label>📅 إلى تاريخ</label>
-          <input type="date" id="filterDateTo">
-        </div>
-        <div class="date-filter-btns">
-          <button class="btn-filter-apply" id="btnFilterApply">🔍 تصفية</button>
-          <button class="btn-filter-clear" id="btnFilterClear">✕ مسح</button>
-        </div>
-        <div class="date-filter-info" id="filterInfo"></div>
+      <!-- فلتر الأسماء -->
+      <div class="name-filter" id="nameFilter">
+        <span style="font-size:1.1rem;">🔍</span>
+        <input type="text" class="name-filter-input" id="filterNameInput" placeholder="ابحث بالاسم...">
+        <button class="btn-name-clear" id="btnNameClear">✕</button>
+        <div class="name-filter-info" id="filterInfo"></div>
       </div>
       <button id="btnCleanOrphans" onclick="cleanOrphanExtensions()" style="display:block;margin:8px auto;padding:6px 14px;background:#e74c3c;color:white;border:none;border-radius:8px;font-size:0.72rem;font-family:Tajawal,sans-serif;cursor:pointer;font-weight:700;">🧹 مسح حجوزات الامتداد اليتيمة</button>
       <div class="a-sec-title">قائمة الحجوزات</div>
@@ -2495,17 +2482,15 @@ input[type=number] { -moz-appearance:textfield; }
     });
   };
 
-  // ---- فلتر التاريخ ----
-  var dateFilterFrom='', dateFilterTo='';
-  document.getElementById('btnFilterApply').onclick=function(){
-    dateFilterFrom=document.getElementById('filterDateFrom').value||'';
-    dateFilterTo=document.getElementById('filterDateTo').value||'';
+  // ---- فلتر الأسماء ----
+  var nameFilterText='';
+  document.getElementById('filterNameInput').oninput=function(){
+    nameFilterText=this.value.trim();
     renderAdmin();
   };
-  document.getElementById('btnFilterClear').onclick=function(){
-    dateFilterFrom=''; dateFilterTo='';
-    document.getElementById('filterDateFrom').value='';
-    document.getElementById('filterDateTo').value='';
+  document.getElementById('btnNameClear').onclick=function(){
+    nameFilterText='';
+    document.getElementById('filterNameInput').value='';
     document.getElementById('filterInfo').textContent='';
     renderAdmin();
   };
@@ -2525,21 +2510,16 @@ input[type=number] { -moz-appearance:textfield; }
 
     var activeBookings=bookings.filter(function(b){return b.date>=ts;});
 
-    // تطبيق فلتر التاريخ
-    var isFiltering=dateFilterFrom||dateFilterTo;
+    // تطبيق فلتر الأسماء
+    var isFiltering=nameFilterText.length>0;
     var filteredBookings=activeBookings;
     if(isFiltering){
+      var searchLower=nameFilterText.toLowerCase();
       filteredBookings=activeBookings.filter(function(b){
-        if(dateFilterFrom && b.date<dateFilterFrom) return false;
-        if(dateFilterTo && b.date>dateFilterTo) return false;
-        return true;
+        var bName=(b.name||'').toLowerCase();
+        return bName.indexOf(searchLower)!==-1;
       });
-      // تحديث معلومات الفلتر
-      var infoText='🔍 عرض '+filteredBookings.length+' حجز';
-      if(dateFilterFrom && dateFilterTo) infoText+=' من '+dateFilterFrom+' إلى '+dateFilterTo;
-      else if(dateFilterFrom) infoText+=' من '+dateFilterFrom;
-      else if(dateFilterTo) infoText+=' إلى '+dateFilterTo;
-      document.getElementById('filterInfo').textContent=infoText;
+      document.getElementById('filterInfo').textContent='🔍 عرض '+filteredBookings.length+' حجز تطابق "'+nameFilterText+'"';
     }else{
       document.getElementById('filterInfo').textContent='';
     }
@@ -2547,12 +2527,12 @@ input[type=number] { -moz-appearance:textfield; }
     var total=filteredBookings.length;
     var upc=filteredBookings.filter(function(b){return b.date>ts;}).length;
     document.getElementById('adminStats').innerHTML=
-      '<div class="stat-card"><div class="stat-n">'+ar(total)+'</div><div class="stat-l">'+(isFiltering?'حجوزات مفلترة':'إجمالي الحجوزات')+'</div></div>'+
+      '<div class="stat-card"><div class="stat-n">'+ar(total)+'</div><div class="stat-l">'+(isFiltering?'نتائج البحث':'إجمالي الحجوزات')+'</div></div>'+
       '<div class="stat-card"><div class="stat-n">'+ar(upc)+'</div><div class="stat-l">حجوزات قادمة</div></div>';
 
     var c=document.getElementById('adminBookings');
     if(!filteredBookings.length){
-      c.innerHTML='<div class="a-empty"><div style="font-size:2.5rem;opacity:0.3;margin-bottom:10px">📅</div><p>'+(isFiltering?'لا توجد حجوزات في هذا النطاق الزمني':'لا توجد حجوزات')+'</p></div>';
+      c.innerHTML='<div class="a-empty"><div style="font-size:2.5rem;opacity:0.3;margin-bottom:10px">🔍</div><p>'+(isFiltering?'لا توجد حجوزات تطابق "'+nameFilterText+'"':'لا توجد حجوزات')+'</p></div>';
       return;
     }
 
