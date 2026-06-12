@@ -1700,17 +1700,7 @@ input[type=number] { -moz-appearance:textfield; }
             <button id="btnAddImg" style="padding:10px 18px;background:linear-gradient(135deg,#1D6F42,#2E8B57);color:white;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;">+ إضافة</button>
           </div>
 
-          <!-- حقل مفتاح API -->
-          <details style="margin-bottom:12px;border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:8px 12px;background:#FAF6EE;">
-            <summary style="cursor:pointer;font-size:0.78rem;color:var(--muted);font-weight:600;">⚙️ إعدادات الرفع (مفتاح ImgBB API)</summary>
-            <div style="margin-top:8px;">
-              <div style="font-size:0.7rem;color:var(--muted);margin-bottom:6px;line-height:1.5;">💡 احصل على مفتاح مجاني من <a href="https://api.imgbb.com/" target="_blank" style="color:var(--gold);font-weight:700;">api.imgbb.com</a></div>
-              <div style="display:flex;gap:6px;">
-                <input type="text" id="imgbbApiKey" placeholder="الصق مفتاح API هنا..." dir="ltr" style="flex:1;padding:8px 10px;border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;background:white;outline:none;">
-                <button id="btnSaveApiKey" style="padding:8px 14px;background:linear-gradient(135deg,var(--deep),var(--deep2));color:var(--gold-light);border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">💾 حفظ</button>
-              </div>
-            </div>
-          </details>
+
 
           <div id="imgsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;"></div>
         </div>
@@ -3139,23 +3129,7 @@ input[type=number] { -moz-appearance:textfield; }
 
   // ---- نظام رفع الصور بالسحب والإفلات ----
   var pendingFiles=[]; // الملفات المعلقة للرفع
-  var IMGBB_API_KEY=localStorage.getItem('qasr_imgbb_key')||'';
 
-  // تحميل المفتاح المحفوظ
-  (function(){
-    var keyInput=document.getElementById('imgbbApiKey');
-    if(keyInput && IMGBB_API_KEY) keyInput.value=IMGBB_API_KEY;
-    var btnSave=document.getElementById('btnSaveApiKey');
-    if(btnSave){
-      btnSave.onclick=function(){
-        var k=document.getElementById('imgbbApiKey').value.trim();
-        if(!k){toast('❌ أدخل مفتاح API');return;}
-        IMGBB_API_KEY=k;
-        localStorage.setItem('qasr_imgbb_key',k);
-        toast('✅ تم حفظ مفتاح API');
-      };
-    }
-  })();
 
   // منطقة السحب والإفلات
   (function(){
@@ -3257,14 +3231,12 @@ input[type=number] { -moz-appearance:textfield; }
     }
   })();
 
-  // رفع الملفات إلى ImgBB
+  // رفع الملفات إلى Telegraph
   (function(){
     var btn=document.getElementById('btnUploadFiles');
     if(!btn) return;
     btn.onclick=async function(){
       if(!pendingFiles.length){toast('❌ لا توجد صور للرفع');return;}
-      if(!IMGBB_API_KEY){toast('❌ أدخل مفتاح ImgBB API أولاً من الإعدادات بالأسفل');return;}
-
       var progressDiv=document.getElementById('uploadProgress');
       var progressBar=document.getElementById('progressBar');
       var progressText=document.getElementById('progressText');
@@ -3282,24 +3254,23 @@ input[type=number] { -moz-appearance:textfield; }
       for(var i=0;i<pendingFiles.length;i++){
         var f=pendingFiles[i];
         try{
-          var formData=new FormData();
-          formData.append('image',f);
-          formData.append('key',IMGBB_API_KEY);
+          // رفع عبر Telegraph - بدون الحاجة لمفتاح API
+          var tFormData=new FormData();
+          tFormData.append('file',f);
 
-          var resp=await fetch('https://api.imgbb.com/1/upload',{
+          var resp=await fetch('https://telegra.ph/upload',{
             method:'POST',
-            body:formData
+            body:tFormData
           });
           var data=await resp.json();
 
-          if(data.success && data.data && data.data.url){
-            // نستخدم الرابط المباشر بصيغة i.ibb.co إذا متوفر
-            var imgUrl=data.data.display_url||data.data.url;
+          if(data && data[0] && data[0].src){
+            var imgUrl='https://telegra.ph'+data[0].src;
             newUrls.push(imgUrl);
             done++;
           } else {
             failed++;
-            console.error('ImgBB upload failed for:',f.name, data);
+            console.error('Telegraph upload failed for:',f.name, data);
           }
         }catch(err){
           failed++;
