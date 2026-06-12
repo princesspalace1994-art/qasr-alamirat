@@ -3231,7 +3231,87 @@ input[type=number] { -moz-appearance:textfield; }
     }
   })();
 
-  // رفع الملفات إلى Telegraph
+  // دالة ضغط الصور قبل الرفع (تصغير الحجم وتقليل الجودة)
+  function compressImage(file,maxW,quality){
+    return new Promise(function(resolve,reject){
+      // إذا الملف صغير (أقل من 1MB) وهو JPEG، نرفعه مباشرة بدون ضغط
+      if(file.size<=1048576 && file.type==='image/jpeg'){
+        resolve(file); return;
+      }
+      var reader=new FileReader();
+      reader.onerror=function(){reject(new Error('فشل قراءة الملف'));};
+      reader.onload=function(e){
+        var img=new Image();
+        img.onerror=function(){reject(new Error('فشل تحميل الصورة'));};
+        img.onload=function(){
+          var canvas=document.createElement('canvas');
+          var w=img.width, h=img.height;
+          if(w>maxW){h=Math.round(h*maxW/w); w=maxW;}
+          canvas.width=w; canvas.height=h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          canvas.toBlob(function(blob){
+            if(!blob){reject(new Error('فشل ضغط الصورة'));return;}
+            resolve(new File([blob],file.name.replace(/\.\w+$/,'.jpg'),{type:'image/jpeg'}));
+          },'image/jpeg',quality);
+        };
+        img.src=e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // دالة رفع صورة عبر عدة خدمات (بدون مفتاح API)
+  async function uploadOneImage(file){
+    // ضغط الصورة أولاً
+    var compressed=await compressImage(file,1600,0.8);
+
+    // المحاولة 1: Telegraph
+    try{
+      var fd1=new FormData();
+      fd1.append('file',compressed);
+      var r1=await fetch('https://telegra.ph/upload',{method:'POST',body:fd1});
+      var d1=await r1.json();
+      if(d1 && d1[0] && d1[0].src){
+        return 'https://telegra.ph'+d1[0].src;
+      }
+      if(d1 && d1.error) console.warn('Telegraph error:',d1.error);
+    }catch(e1){console.warn('Telegraph fail:',e1.message);}
+
+    // المحاولة 2: Imgur بدون مفتاح (رفع مجهول)
+    try{
+      var fd2=new FormData();
+      fd2.append('image',compressed);
+      var r2=await fetch('https://api.imgur.com/3/image',{
+        method:'POST',
+        headers:{'Authorization':'Client-ID 546c25a59c58ad7'},
+        body:fd2
+      });
+      var d2=await r2.json();
+      if(d2 && d2.success && d2.data && d2.data.link){
+        return d2.data.link;
+      }
+    }catch(e2){console.warn('Imgur fail:',e2.message);}
+
+    // المحاولة 3: Uploadcare
+    try{
+      var fd3=new FormData();
+      fd3.append('UPLOADCARE_PUB_KEY','demopublickey');
+      fd3.append('UPLOADCARE_STORE','1');
+      fd3.append('file',compressed);
+      var r3=await fetch('https://upload.uploadcare.com/base/',{
+        method:'POST',
+        body:fd3
+      });
+      var d3=await r3.json();
+      if(d3 && d3.file){
+        return 'https://ucarecdn.com/'+d3.file+'/';
+      }
+    }catch(e3){console.warn('Uploadcare fail:',e3.message);}
+
+    throw new Error('فشل الرفع عبر جميع الخدمات');
+  }
+
+  // رفع الملفات
   (function(){
     var btn=document.getElementById('btnUploadFiles');
     if(!btn) return;
@@ -3254,27 +3334,12 @@ input[type=number] { -moz-appearance:textfield; }
       for(var i=0;i<pendingFiles.length;i++){
         var f=pendingFiles[i];
         try{
-          // رفع عبر Telegraph - بدون الحاجة لمفتاح API
-          var tFormData=new FormData();
-          tFormData.append('file',f);
-
-          var resp=await fetch('https://telegra.ph/upload',{
-            method:'POST',
-            body:tFormData
-          });
-          var data=await resp.json();
-
-          if(data && data[0] && data[0].src){
-            var imgUrl='https://telegra.ph'+data[0].src;
-            newUrls.push(imgUrl);
-            done++;
-          } else {
-            failed++;
-            console.error('Telegraph upload failed for:',f.name, data);
-          }
+          var imgUrl=await uploadOneImage(f);
+          newUrls.push(imgUrl);
+          done++;
         }catch(err){
           failed++;
-          console.error('Upload error for:',f.name, err);
+          console.error('Upload failed for:',f.name, err);
         }
         // تحديث شريط التقدم
         var pct=Math.round(((i+1)/total)*100);
@@ -3302,8 +3367,10 @@ input[type=number] { -moz-appearance:textfield; }
 
       if(failed===0){
         toast('✅ تم رفع '+done+' صورة بنجاح!');
-      } else {
+      } else if(done>0){
         toast('⚠️ تم رفع '+done+' صورة، فشل '+failed+' صورة');
+      } else {
+        toast('❌ فشل رفع جميع الصور — تأكد من اتصال الإنترنت وحاول مرة أخرى');
       }
     };
   })();
