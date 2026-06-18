@@ -1495,7 +1495,7 @@ input[type=number] { -moz-appearance:textfield; }
       <div class="price-card" id="pcNight">
         <span class="pc-icon">🌙</span>
         <div class="pc-label">مسائي</div>
-        <div class="pc-time">٧م — ٨ص</div>
+        <div class="pc-time">٨م — ٨ص</div>
         <div class="pc-price">٤٠٠,٠٠٠ <span>د.ع</span></div>
       </div>
       <div class="price-card" id="pcFull" style="position:relative;">
@@ -2420,7 +2420,7 @@ input[type=number] { -moz-appearance:textfield; }
         createdAt:new Date().toISOString()
       });
 
-      // مسائي-صباحي فقط: يحجز نهاري اليوم التالي (7م اليوم → 6م بكرا)
+      // مسائي-صباحي فقط: يحجز نهاري اليوم التالي (8م اليوم → 6م بكرا)
       if(selShift==='full_nd'){
         var nextDate=new Date(y,m,d);
         nextDate.setDate(nextDate.getDate()+1);
