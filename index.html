@@ -1517,7 +1517,7 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
         <div class="price-card" id="pcFullND" style="flex:1;max-width:155px;cursor:pointer;padding:8px 6px;margin:0;border:1.5px solid rgba(201,168,76,0.3);border-radius:10px;text-align:center;background:white;transition:all 0.2s;">
           <div style="font-size:0.75rem;font-weight:700;color:var(--deep2);margin-bottom:3px;">مسائي - صباحي</div>
-          <div style="font-size:0.6rem;color:var(--muted);line-height:1.5;">7م اليوم - 6م اليوم التالي</div>
+          <div style="font-size:0.6rem;color:var(--muted);line-height:1.5;">8م اليوم - 6م اليوم التالي</div>
         </div>
       </div>
     </div>
@@ -1533,9 +1533,9 @@ input[type=number] { -moz-appearance:textfield; }
       <select id="pmShiftSelect" class="price-input" style="margin-bottom:0;cursor:pointer;">
         <option value="">-- اختر الشفت --</option>
         <option value="day">☀️ نهاري (10ص — 6م)</option>
-        <option value="night">🌙 مسائي (7م — 8ص)</option>
+        <option value="night">🌙 مسائي (8م — 8ص)</option>
         <option value="full_dn">🌟 كامل: صباحي - مسائي (10ص — 8ص اليوم التالي)</option>
-        <option value="full_nd">🌟 كامل: مسائي - صباحي (7م — 6م اليوم التالي)</option>
+        <option value="full_nd">🌟 كامل: مسائي - صباحي (8م — 6م اليوم التالي)</option>
       </select>
     </div>
 
@@ -2139,7 +2139,7 @@ input[type=number] { -moz-appearance:textfield; }
 
   // ---- نافذة هذا اليوم محجوز ----
   var sl3={day:'نهاري ☀️',night:'مسائي 🌙',full:'يوم كامل 🌟',full_dn:'صباحي-مسائي 🌟',full_nd:'مسائي-صباحي 🌟'};
-  var st3={day:'10ص — 6م',night:'7م — 8ص',full:'24 ساعة',full_dn:'10ص — 8ص (اليوم التالي)',full_nd:'7م — 6م (اليوم التالي)'};
+  var st3={day:'10ص — 6م',night:'8م — 8ص',full:'24 ساعة',full_dn:'10ص — 8ص (اليوم التالي)',full_nd:'8م — 6م (اليوم التالي)'};
 
   function showBookedModal(d,y,m,bs){
     var cd=new Date(y,m,d);
@@ -2398,7 +2398,7 @@ input[type=number] { -moz-appearance:textfield; }
     var dd=ar(d)+' '+months[m]+' '+ar(y);
     var sl={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'يوم كامل (صباحي-مسائي)',full_nd:'يوم كامل (مسائي-صباحي)'};
     var se={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️🌙',full_nd:'🌙☀️'};
-    var st={day:'١٠ص—٦م',night:'٧م—٨ص',full:'٢٤ ساعة',full_dn:'10ص اليوم - 8ص اليوم التالي',full_nd:'7م اليوم - 6م اليوم التالي'};
+    var st={day:'١٠ص—٦م',night:'٨م—٨ص',full:'٢٤ ساعة',full_dn:'10ص اليوم - 8ص اليوم التالي',full_nd:'8م اليوم - 6م اليوم التالي'};
     var dKey=new Date(dkey(y,m,d)).getDay();
     var dynPrices=customPrices[dKey]||defaultPrices[dKey];
     // حساب السعر الأساسي + الإضافي
@@ -2457,7 +2457,7 @@ input[type=number] { -moz-appearance:textfield; }
         fullDayNote="\n📌 صباحي "+dayName+" 10ص - "+days[nxD.getDay()]+" "+ar(nxD.getDate())+"/"+ar(nxD.getMonth()+1)+" 8ص";
       } else if(selShift==="full_nd"){
         var nxD=new Date(y,m,d);nxD.setDate(nxD.getDate()+1);
-        fullDayNote="\n📌 مسائي "+dayName+" 7م - "+days[nxD.getDay()]+" "+ar(nxD.getDate())+"/"+ar(nxD.getMonth()+1)+" 6م";
+        fullDayNote="\n📌 مسائي "+dayName+" 8م - "+days[nxD.getDay()]+" "+ar(nxD.getDate())+"/"+ar(nxD.getMonth()+1)+" 6م";
       }
       }
       var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n📋 طلب حجز جديد\n\n👤 الاسم: '+name+'\n📅 التاريخ: '+dayName+' '+dd+'\n'+se[selShift]+' الشفت: '+sl[selShift]+' ('+st[selShift]+')'+fullDayNote+'\n🎯 نوع الحجز: '+typeLabel+'\n👥 عدد الأشخاص: '+guestsDisplay+'\n'+priceSection+'\n📞 الجوال: '+phoneClean+'\n━━━━━━━━━━━━━━━━━\n📋 الشروط:\n◆ ممنوع الخمور\n◆ الإدارة غير مسؤولة عن أي حادث\n◆ المحافظة على نظافة المكان\n◆ مخالفة الشروط = إلغاء الحجز بدون استرجاع\n\n✅ الزبون وافق على جميع الشروط\n━━━━━━━━━━━━━━━━━\n⚠️ الحجز يثبت بعد اتمام الدفع';
@@ -2553,7 +2553,7 @@ input[type=number] { -moz-appearance:textfield; }
     var ic={day:'☀️',night:'🌙',full:'🌟',full_dn:'☀️🌙',full_nd:'🌙☀️'};
     var bg={day:'rgba(26,82,118,0.1)',night:'rgba(45,22,84,0.1)',full:'rgba(201,168,76,0.15)',full_dn:'rgba(201,168,76,0.15)',full_nd:'rgba(201,168,76,0.15)'};
     var sl2={day:'نهاري',night:'مسائي',full:'يوم كامل',full_dn:'صباحي-مسائي',full_nd:'مسائي-صباحي'};
-    var st2={day:'١٠ص—٦م',night:'٧م—٨ص',full:'٢٤ ساعة',full_dn:'10ص-8ص',full_nd:'7م-6م'};
+    var st2={day:'١٠ص—٦م',night:'٨م—٨ص',full:'٢٤ ساعة',full_dn:'10ص-8ص',full_nd:'8م-6م'};
 
     var now=new Date();
     var ts=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2)+'-'+('0'+now.getDate()).slice(-2);
@@ -2679,7 +2679,7 @@ input[type=number] { -moz-appearance:textfield; }
         var bTypeLabel=b2.bookingType==='youth'?'شباب':'عوائل';
         var cfn="";
         if(b2.shift==="full_dn"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 صباحي "+dayNm+" 10ص - "+dayNames[nx.getDay()]+" 8ص";}
-        else if(b2.shift==="full_nd"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 مسائي "+dayNm+" 7م - "+dayNames[nx.getDay()]+" 6م";}
+        else if(b2.shift==="full_nd"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 مسائي "+dayNm+" 8م - "+dayNames[nx.getDay()]+" 6م";}
         var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n🎯 نوع الحجز: '+bTypeLabel+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
 
         // إرسال نفس رسالة التثبيت للإيميل
