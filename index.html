@@ -19,8 +19,8 @@
 <meta property="og:description" content="منتجع قصر الاميرات — احجز الآن واستمتع بأجمل الأوقات مع عائلتك 🏰 نظام حجز إلكتروني سهل وسريع">
 <meta property="og:image" content="preview.jpg">
 <meta property="og:image:secure_url" content="preview.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="1536">
+<meta property="og:image:height" content="1024">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="منتجع قصر الاميرات">
 <meta property="og:type" content="website">
@@ -61,6 +61,39 @@ header .hero-photo {
 }
 header::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A84C' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
 .header-inner { position:relative; z-index:1; text-align:center; padding:18px 20px 10px; }
+
+/* === سلايدر الهيرو (حركة من اليمين الى اليسار) === */
+.hero-slides {
+  position:absolute; inset:0; z-index:0; overflow:hidden;
+  pointer-events:none;
+}
+.hero-slide {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background-size:cover; background-position:center;
+  opacity:0;
+  transform: translateX(60px) scale(1.08);
+  transition: opacity 1.4s ease, transform 7s ease-out;
+  will-change:opacity, transform;
+}
+.hero-slide.active {
+  opacity:0.55;
+  transform: translateX(0) scale(1.12);
+}
+.hero-slide.exiting {
+  opacity:0;
+  transform: translateX(-60px) scale(1.12);
+  transition: opacity 1.4s ease, transform 1.4s ease-in;
+}
+/* تعتيم خفيف تحت النص */
+.hero-slides::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(26,10,46,0.35) 0%, rgba(26,10,46,0.55) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition:none !important; transform:none !important; }
+  .hero-slide.active { opacity:0.55; }
+}
+
 .crown { font-size:1.8rem; color:var(--gold); display:block; margin-bottom:4px; animation:float 3s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .resort-name { font-family:'Amiri',serif; font-size:clamp(1.5rem,5vw,2.2rem); color:var(--gold-light); letter-spacing:3px; text-shadow:0 0 40px rgba(201,168,76,0.4); }
@@ -1373,6 +1406,7 @@ input[type=number] { -moz-appearance:textfield; }
 
 <header>
   <div class="hero-photo"></div>
+  <div class="hero-slides" id="heroSlides" aria-hidden="true"></div>
   <div class="header-inner">
     <span class="crown">👑</span>
     <h1 class="resort-name">منتجع قصر الاميرات</h1>
@@ -3016,38 +3050,86 @@ input[type=number] { -moz-appearance:textfield; }
     g.innerHTML=html;
     // تشغيل السلايد التلقائي
     startGalleryAutoSlide();
+    // تشغيل سلايدر الهيرو بنفس الصور
+    renderHeroSlides(galleryImages.slice());
   }
 
-  // ---- السلايد التلقائي للمعرض ----
+  // ---- سلايدر الهيرو (حركة من اليمين الى اليسار) ----
+  var heroSlidesState={timer:null, idx:0, slides:[], images:[]};
+  function renderHeroSlides(images){
+    var host=document.getElementById('heroSlides');
+    if(!host) return;
+    // إيقاف أي تايمر سابق
+    if(heroSlidesState.timer){clearInterval(heroSlidesState.timer); heroSlidesState.timer=null;}
+    host.innerHTML='';
+    // فلتر الصور الفارغة
+    images=(images||[]).filter(function(u){return u && u.length>0;});
+    if(!images.length){
+      // ماكو صور: نخلي الهيرو يطلع عادي بدون سلايدر
+      heroSlidesState.slides=[];
+      return;
+    }
+    heroSlidesState.images=images;
+    heroSlidesState.idx=0;
+    images.forEach(function(url,i){
+      var d=document.createElement('div');
+      d.className='hero-slide'+(i===0?' active':'');
+      d.style.backgroundImage="url('"+url+"')";
+      host.appendChild(d);
+    });
+    heroSlidesState.slides=host.querySelectorAll('.hero-slide');
+    // إذا صورة وحدة، ما نحرك
+    if(images.length<2) return;
+    // كل 4.5 ثانية نبدّل الصورة
+    heroSlidesState.timer=setInterval(function(){
+      if(!heroSlidesState.slides.length) return;
+      var cur=heroSlidesState.slides[heroSlidesState.idx];
+      var nextIdx=(heroSlidesState.idx+1)%heroSlidesState.slides.length;
+      var nxt=heroSlidesState.slides[nextIdx];
+      // نشغل التالي
+      nxt.classList.add('active');
+      // نخرج الحالي
+      cur.classList.remove('active');
+      cur.classList.add('exiting');
+      // نظف exiting بعد ما يخلص الانتقال
+      setTimeout(function(){ cur.classList.remove('exiting'); },1500);
+      heroSlidesState.idx=nextIdx;
+    },4500);
+  }
+
+  // ---- السلايد التلقائي للمعرض (حركة مستمرة من اليمين الى اليسار) ----
   var galleryAutoSlideTimer=null;
   var galleryUserPaused=false;
   function startGalleryAutoSlide(){
     var g=document.getElementById('galleryGrid');
     if(!g||!galleryImages.length||galleryImages.length<2) return;
-    // إيقاف أي تايمر سابق
     if(galleryAutoSlideTimer){clearInterval(galleryAutoSlideTimer);}
 
+    // سرعة ثابتة: نحرك 1px كل 30ms (33px/ثانية تقريباً)
     galleryAutoSlideTimer=setInterval(function(){
       if(galleryUserPaused) return;
-      // إذا الصور أقل من العرض، لا تحرك
       if(g.scrollWidth<=g.clientWidth+5) return;
+      // في RTL scrollLeft عادة سالب، نستخدم القيمة المطلقة للحساب
+      var current=Math.abs(g.scrollLeft);
       var maxScroll=g.scrollWidth-g.clientWidth;
-      // في RTL، scrollLeft يكون قيم سالبة في معظم المتصفحات الحديثة
-      var sl=Math.abs(g.scrollLeft);
-      // إذا وصلنا للنهاية، نرجع للبداية بسلاسة
-      if(sl>=maxScroll-5){
-        g.scrollTo({left:0,behavior:'smooth'});
+      if(current>=maxScroll-5){
+        // رجوع للبداية بدون أنيميشن عشان يستمر السلايد
+        g.scrollTo({left:0,behavior:'auto'});
       } else {
-        g.scrollBy({left:300,behavior:'smooth'});
+        // في RTL: scrollBy بـ + يجيب الصور من اليمين لليسار (السهم البصري يطلع لليسار)
+        g.scrollBy({left:1,behavior:'auto'});
       }
-    },500); // كل ثانية
+    },30);
 
-    // إيقاف السلايد عند تفاعل المستخدم
+    // إيقاف مؤقت عند تفاعل المستخدم
     g.addEventListener('mouseenter',function(){galleryUserPaused=true;});
     g.addEventListener('mouseleave',function(){galleryUserPaused=false;});
     g.addEventListener('touchstart',function(){
       galleryUserPaused=true;
-      // استئناف بعد 6 ثواني من آخر لمس
+      clearTimeout(window._galleryResumeTimer);
+      window._galleryResumeTimer=setTimeout(function(){galleryUserPaused=false;},6000);
+    },{passive:true});
+    g.addEventListener('touchend',function(){
       clearTimeout(window._galleryResumeTimer);
       window._galleryResumeTimer=setTimeout(function(){galleryUserPaused=false;},6000);
     },{passive:true});
