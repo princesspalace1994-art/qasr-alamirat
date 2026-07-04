@@ -808,8 +808,9 @@ select:focus, input:focus { border-color:var(--gold); background:white; }
 .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--deep2); color:var(--gold-light); padding:13px 26px; border-radius:50px; font-weight:600; font-size:0.95rem; box-shadow:0 8px 30px rgba(26,10,46,0.3); z-index:9999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); }
 
-.admin-btn { position:fixed; bottom:24px; left:24px; width:48px; height:48px; border-radius:50%; background:var(--deep2); border:2px solid var(--gold); color:var(--gold); font-size:1.2rem; cursor:pointer; z-index:500; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(26,10,46,0.4); transition:all 0.2s; }
-.admin-btn:hover { transform:scale(1.1); }
+.admin-btn { position:fixed; bottom:24px; left:24px; width:48px; height:48px; border-radius:50%; background:var(--deep2); border:2px solid var(--gold); color:var(--gold); font-size:1.2rem; cursor:pointer; z-index:500; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(26,10,46,0.4); transition:all 0.2s; opacity:0.18; }
+.admin-btn:hover { transform:scale(1.1); opacity:0.85; }
+.admin-btn.clicked-once { opacity:0.6; transform:scale(1.05); }
 .admin-overlay { position:fixed; inset:0; background:rgba(26,10,46,0.75); backdrop-filter:blur(10px); z-index:2000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; padding:20px; }
 .admin-overlay.open { opacity:1; pointer-events:all; }
 .admin-login { background:var(--deep2); border-radius:24px; padding:40px; width:100%; max-width:360px; text-align:center; border:1px solid rgba(201,168,76,0.3); box-shadow:0 30px 80px rgba(0,0,0,0.5); }
@@ -1628,8 +1629,9 @@ input[type=number] { -moz-appearance:textfield; }
   </div>
 </div>
 
-<!-- ADMIN -->
-<button class="admin-btn" id="btnOpenAdmin">⚙️</button>
+<!-- ADMIN (مخفي تماماً — يفتح بضغطة واحدة على الزاوية المخفية أو Ctrl+Shift+A) -->
+<button class="admin-btn" id="btnOpenAdmin" style="display:none;" aria-hidden="true" tabindex="-1">⚙️</button>
+
 <div class="admin-overlay" id="adminOverlay">
   <div class="admin-login" id="adminLogin">
     <div style="font-size:2rem;color:var(--gold);margin-bottom:12px">👑</div>
@@ -2536,7 +2538,29 @@ input[type=number] { -moz-appearance:textfield; }
     else{document.getElementById('adminLogin').style.display='block';document.getElementById('adminPanel').className='admin-panel';document.getElementById('adminPass').value='';document.getElementById('adminErr').textContent='';}
   }
   function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');}
-  document.getElementById('btnOpenAdmin').onclick=openAdmin;
+  // فتح لوحة الإدارة بضغطة واحدة على المنطقة المخفية بالزاوية
+  (function(){
+    var hotZone=document.getElementById('adminHotZone');
+    if(hotZone){
+      // ضغطة واحدة على الزاوية المخفية -> افتح اللوحة (تطلب كلمة السر)
+      hotZone.addEventListener('click',function(){ openAdmin(); });
+      // لمس للجوال
+      hotZone.addEventListener('touchstart',function(e){
+        e.preventDefault();
+        openAdmin();
+      },{passive:false});
+    }
+    // الاحتفاظ بزر الإدارة المخفي للتوافق مع الكود القديم
+    var adminBtn=document.getElementById('btnOpenAdmin');
+    if(adminBtn){ adminBtn.addEventListener('click',function(){ openAdmin(); }); }
+  })();
+  // اختصار كيبورد للكمبيوتر: Ctrl + Shift + A
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey && e.shiftKey && (e.key==='A'||e.key==='a'||e.code==='KeyA')){
+      e.preventDefault();
+      openAdmin();
+    }
+  });
   document.getElementById('btnAdminCancel').onclick=closeAdmin;
   document.getElementById('btnAdminClose').onclick=closeAdmin;
   document.getElementById('adminOverlay').onclick=function(e){if(e.target===this)closeAdmin();};
@@ -3476,20 +3500,20 @@ input[type=number] { -moz-appearance:textfield; }
         <span class="contact-value">0782 221 6325</span>
       </div>
     </a>
-    <!-- واتساب -->
-    <a href="https://wa.me/9647822216325" target="_blank" class="contact-card">
-      <span class="contact-icon">💬</span>
-      <div class="contact-info">
-        <span class="contact-label">واتساب</span>
-        <span class="contact-value">0782 221 6325</span>
-      </div>
-    </a>
     <!-- العنوان -->
     <a href="https://waze.com/ul/hsyp3t98gu" target="_blank" class="contact-card">
       <span class="contact-icon">📍</span>
       <div class="contact-info">
         <span class="contact-label">العنوان</span>
         <span class="contact-value contact-value-rtl">منتجع قصر الاميرات</span>
+      </div>
+    </a>
+    <!-- واتساب (آخر بطاقة) -->
+    <a href="https://wa.me/9647822216325" target="_blank" class="contact-card">
+      <span class="contact-icon">💬</span>
+      <div class="contact-info">
+        <span class="contact-label">واتساب</span>
+        <span class="contact-value">0782 221 6325</span>
       </div>
     </a>
   </div>
@@ -3505,6 +3529,9 @@ input[type=number] { -moz-appearance:textfield; }
     </a>
   </div>
 </div>
+
+<!-- منطقة مخفية بآخر الصفحة — ضغطة وحدة تفتح لوحة الإدارة -->
+<div id="adminHotZone" title="" aria-hidden="true" style="width:100%;height:60px;background:transparent;cursor:default;"></div>
 
 </body>
 </html>
