@@ -1593,18 +1593,19 @@ input[type=number] { -moz-appearance:textfield; }
     <div style="margin-bottom:12px;" id="adultsWrap">
       <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;" id="adultsLabel">👨‍👩‍👧 عدد الأشخاص البالغين *</label>
       <select id="pmAdults" class="price-input" style="margin-bottom:0;cursor:pointer;">
+        <option value="" selected disabled>— اختر عدد الأشخاص —</option>
         <option value="1-5">1 — 5 أشخاص</option>
-        <option value="6-10" selected>6 — 10 أشخاص</option>
+        <option value="6-10">6 — 10 أشخاص</option>
         <option value="11-20">11 — 20 شخص</option>
-        <option value="21-25">21 — 25 شخص</option>
-        <option value="25+">أكثر من 25 (إضافي 10,000 د.ع/شخص)</option>
+        <option value="21-30">21 — 30 شخص</option>
+        <option value="30+">أكثر من 30 (إضافي 5,000 د.ع/شخص)</option>
       </select>
     </div>
 
     <!-- إدخال عدد الأشخاص للشباب (مخفي بالافتراضي) -->
     <div style="margin-bottom:12px;display:none;" id="youthCountWrap">
-      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">🧑‍🤝‍🧑 عدد الأشخاص (الحد الأقصى 25، فوق ذلك إضافي 10,000 د.ع/شخص) *</label>
-      <input type="text" inputmode="numeric" id="pmYouthCount" class="price-input" value="5" style="margin-bottom:0;" dir="ltr">
+      <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600;">🧑‍🤝‍🧑 عدد الأشخاص (الحد الأقصى 25، فوق ذلك إضافي 5,000 د.ع/شخص) *</label>
+      <input type="text" inputmode="numeric" id="pmYouthCount" class="price-input" placeholder="اكتب عدد الأشخاص" style="margin-bottom:0;" dir="ltr">
       <div id="youthExtraInfo" style="margin-top:8px;font-size:0.8rem;color:var(--muted);display:none;background:rgba(201,168,76,0.08);padding:8px 12px;border-radius:8px;border:1px dashed rgba(201,168,76,0.3);">
         <strong style="color:var(--gold);">ℹ️ تنبيه:</strong> <span id="youthExtraText"></span>
       </div>
@@ -2330,7 +2331,7 @@ input[type=number] { -moz-appearance:textfield; }
 
   // ---- نوع الحجز: شباب / عوائل ----
   var currentBookingType='family'; // الافتراضي: عوائل
-  var YOUTH_EXTRA_PER_PERSON=10000; // الزيادة لكل شخص فوق 10
+  var YOUTH_EXTRA_PER_PERSON=5000; // الزيادة لكل شخص فوق 25
   var YOUTH_FREE_LIMIT=25;
 
   (function(){
@@ -2368,7 +2369,7 @@ input[type=number] { -moz-appearance:textfield; }
       if(count>YOUTH_FREE_LIMIT){
         var extra=count-YOUTH_FREE_LIMIT;
         var extraAmount=extra*YOUTH_EXTRA_PER_PERSON;
-        youthExtraText.textContent='عدد الأشخاص الإضافي: '+extra+' × 10,000 د.ع = '+extraAmount.toLocaleString()+' د.ع زيادة';
+        youthExtraText.textContent='عدد الأشخاص الإضافي: '+extra+' × 5,000 د.ع = '+extraAmount.toLocaleString()+' د.ع زيادة';
         youthExtraInfo.style.display='block';
       } else {
         youthExtraInfo.style.display='none';
@@ -2424,7 +2425,15 @@ input[type=number] { -moz-appearance:textfield; }
       }
     } else {
       typeLabel='👨‍👩‍👧‍👦 عوائل';
-      guestsDisplay=document.getElementById('pmAdults').value||'1-5';
+      var adultsVal=document.getElementById('pmAdults').value;
+      if(!adultsVal){
+        toast('❌ اختر عدد الأشخاص');
+        document.getElementById('pmAdults').focus();
+        document.getElementById('pmAdults').style.borderColor='#e74c3c';
+        setTimeout(function(){document.getElementById('pmAdults').style.borderColor='';},3000);
+        return;
+      }
+      guestsDisplay=adultsVal;
     }
 
     var btn=document.getElementById('btnConfirmBooking');
@@ -2485,7 +2494,7 @@ input[type=number] { -moz-appearance:textfield; }
       var dayName=days[new Date(dkey(y,m,d)).getDay()];
       var priceSection='💰 السعر الأساسي: '+basePrice.toLocaleString()+' د.ع';
       if(extraAmount>0){
-        priceSection+='\n➕ إضافي ('+(youthCount-YOUTH_FREE_LIMIT)+' شخص × 10,000): '+extraAmount.toLocaleString()+' د.ع';
+        priceSection+='\n➕ إضافي ('+(youthCount-YOUTH_FREE_LIMIT)+' شخص × 5,000): '+extraAmount.toLocaleString()+' د.ع';
         priceSection+='\n💎 الإجمالي: '+totalPrice.toLocaleString()+' د.ع';
       var fullDayNote="";
       if(selShift==="full_dn"){
