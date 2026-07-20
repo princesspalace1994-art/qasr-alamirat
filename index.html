@@ -2752,7 +2752,12 @@ input[type=number] { -moz-appearance:textfield; }
         var cfn="";
         if(b2.shift==="full_dn"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 صباحي "+dayNm+" 10ص - "+dayNames[nx.getDay()]+" 8ص";}
         else if(b2.shift==="full_nd"){var nx=new Date(b2.date);nx.setDate(nx.getDate()+1);cfn="\n📌 مسائي "+dayNm+" 8م - "+dayNames[nx.getDay()]+" 6م";}
-        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n🎯 نوع الحجز: '+bTypeLabel+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
+        // بناء قسم الخصم: يظهر فقط إذا في خصم فعلي
+        var discountSection='';
+        if(discN>0){
+          discountSection='\n🏷️ الخصم: '+discN.toLocaleString()+' د.ع\n💎 السعر بعد الخصم: '+afterDisc.toLocaleString()+' د.ع';
+        }
+        var msg='منتجع قصر الاميرات 👑\n━━━━━━━━━━━━━━━━━\n✅ تم تثبيت حجزك!\n\n👤 الاسم: '+b2.name+'\n📅 التاريخ: '+dayNm+' '+b2.displayDate+'\n'+ic[b2.shift]+' الشفت: '+sl2[b2.shift]+' ('+st2[b2.shift]+')'+cfn+'\n🎯 نوع الحجز: '+bTypeLabel+'\n💰 سعر الحجز: '+amtN.toLocaleString()+' د.ع'+discountSection+'\n💵 المدفوع: '+depN.toLocaleString()+' د.ع\n💳 المتبقي: '+remaining+' د.ع\n📞 الجوال: '+b2.phone+'\n👨‍👩‍👧 الأشخاص: '+b2.guests+'\n\n🌟 منتجع قصر الاميرات يتمنى لكم يوماً سعيداً ومميزاً\n━━━━━━━━━━━━━━━━━';
 
         // إرسال نفس رسالة التثبيت للإيميل
         try {
